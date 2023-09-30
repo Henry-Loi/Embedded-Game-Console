@@ -1,24 +1,17 @@
-
-# Prerequisites
-*.d
-
 # Object files
 *.o
 *.ko
 *.obj
 *.elf
-
-# Linker output
-*.ilk
-*.map
-*.exp
+*.dep
+*.crf
+*.d
 
 # Precompiled Headers
 *.gch
 *.pch
 
 # Libraries
-*.lib
 *.a
 *.la
 *.lo
@@ -34,14 +27,16 @@
 *.out
 *.app
 *.i*86
-*.x86_64
-*.hex
+*.x86_64s
 
 # Debug files
 *.dSYM/
 *.su
 *.idb
 *.pdb
+
+# Temporary files
+*.TMP
 
 # Kernel Module Compile Results
 *.mod*
@@ -71,3 +66,21 @@ ctrlp.root
 [Rr]elease
 [Dd]ebug
 .launch
+
+*.uvguix.*
+*.swp
+*.htm
+*.axf
+
+*.map
+
+cmake-build-*
+*.sublime-*
+.idea
+*.tmp
+*.vscode
+*.DS_Store
+*.pyc
+
+build/
+.cache/
