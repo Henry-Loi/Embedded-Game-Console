@@ -84,3 +84,6 @@ cmake-build-*
 
 build/
 .cache/
+
+# doc files
+~$scussionWS.docx
