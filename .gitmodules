@@ -1,3 +1,0 @@
-[submodule "lvgl"]
-	path = LTDC_TEST_STM32F429IGT6/lvgl
-	url = https://github.com/lvgl/lvgl.git
