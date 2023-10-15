@@ -103,7 +103,7 @@ int main(void)
   MX_FATFS_Init();
   MX_RTC_Init();
   /* USER CODE BEGIN 2 */
-  uint32_t last_ticks = 0;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -111,11 +111,8 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+
     /* USER CODE BEGIN 3 */
-	  if (get_ticks() - last_ticks >= 100){
-		  gpio_toggle(LED1);
-		  last_ticks = get_ticks();
-	  }
   }
   /* USER CODE END 3 */
 }

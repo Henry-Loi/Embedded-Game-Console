@@ -8,7 +8,7 @@
 function(user_proj_config)
 	set(PROJ_NAME "LTDC_Daili_Project" PARENT_SCOPE)
 
-	set(STM32FXXX "STM32F429x" PARENT_SCOPE)
+	set(STM32FXXX "STM32F429IG" PARENT_SCOPE)
 	set(USE_GCC 1 PARENT_SCOPE)                #use gcc instead of armcc
 	# set(STFU_GCC 1 PARENT_SCOPE)               #tell gcc to shut the fuck up because it has so many more warnings
 	set(CUBE_PROJECT 1 PARENT_SCOPE)           #This is a cube generated project (DCUBE_PROJECT_LL means use LL)
