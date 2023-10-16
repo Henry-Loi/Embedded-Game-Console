@@ -33,7 +33,9 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "LCD_LTDC.h"
+#include "fonts.h"
+#include "FT5426.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

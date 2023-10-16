@@ -38,7 +38,7 @@ function:	SDRAM device configuration
 ******************************************************************************/
 void BSP_SDRAM_Init(void)
 {
-	sdramHandle.Instance = FMC_SDRAM_DEVICE;///¥Ê“…
+	sdramHandle.Instance = FMC_SDRAM_DEVICE;
   BSP_SDRAM_Initialization_sequence(REFRESH_COUNT);
 }
 

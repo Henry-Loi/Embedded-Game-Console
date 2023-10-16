@@ -20,18 +20,18 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "dma.h"
 #include "dma2d.h"
-#include "fatfs.h"
 #include "ltdc.h"
-#include "sdio.h"
 #include "usart.h"
 #include "gpio.h"
 #include "fmc.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "LCD_LTDC.h"
+#include "fonts.h"
+#include "sdram.h"
+//#include "FT5426.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -95,19 +95,42 @@ int main(void)
   MX_GPIO_Init();
   MX_LTDC_Init();
   MX_FMC_Init();
-  MX_DMA2D_Init();
   MX_USART1_UART_Init();
-  MX_DMA_Init();
-  MX_SDIO_SD_Init();
-  MX_FATFS_Init();
+  MX_DMA2D_Init();
   /* USER CODE BEGIN 2 */
-
+  BSP_LCD_Init();
+  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,GPIO_PIN_SET);
+  for(int i = 0; i < 10; i++)
+  {
+	  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_1,SET);
+	  HAL_Delay(100);
+	  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_1,RESET);
+	  HAL_Delay(100);
+	}
+//  __HAL_RCC_DMA2D_CLK_ENABLE();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  BSP_LCD_Clear(LCD_COLOR_WHITE);
+
+  volatile uint32_t last_ticks = 0;
+  uint8_t LED = 0;
   while (1)
   {
+	  if (HAL_GetTick() - last_ticks >= 50){
+		  if(LED)
+		  {
+			  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_1,SET);
+		  }
+		  else
+		  {
+			  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_1,RESET);
+		  }
+		  LED = (++LED)%2;
+		  last_ticks = HAL_GetTick();
+	  }
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
