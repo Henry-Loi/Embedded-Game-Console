@@ -61,8 +61,8 @@ all: main-build
 main-build: LTDC_Martin_Test.elf secondary-outputs
 
 # Tool invocations
-LTDC_Martin_Test.elf LTDC_Martin_Test.map: $(OBJS) $(USER_OBJS) /home/areion/Github/CubeIDE/ELEC3300-Project/LTDC_Martin_Test/STM32F429IGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "LTDC_Martin_Test.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/areion/Github/CubeIDE/ELEC3300-Project/LTDC_Martin_Test/STM32F429IGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="LTDC_Martin_Test.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+LTDC_Martin_Test.elf LTDC_Martin_Test.map: $(OBJS) $(USER_OBJS) C:\Users\PC\Documents\GitHub\Robotics\Robocon\PCB\ELEC3300-Project\LTDC_Martin_Test\STM32F429IGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "LTDC_Martin_Test.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\PC\Documents\GitHub\Robotics\Robocon\PCB\ELEC3300-Project\LTDC_Martin_Test\STM32F429IGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="LTDC_Martin_Test.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
