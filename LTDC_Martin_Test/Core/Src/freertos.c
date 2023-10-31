@@ -20,12 +20,12 @@
 /* Includes ------------------------------------------------------------------*/
 #include "FreeRTOS.h"
 
-#include "led_task.h"
 #include "main.h"
+#include "os.h"
 #include "task.h"
+#include "user/led_task.h"
 
 #include "cmsis_os.h"
-#include "stm32f429xx.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -49,12 +49,14 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-osThreadId_t LEDTaskHandle;
-const osThreadAttr_t LEDTask_attributes = {
-	.name = "LEDTask",
-	.stack_size = 128 * 4,
-	.priority = (osPriority_t)osPriorityNormal,
-};
+// osThreadId_t LEDTaskHandle;
+// const osThreadAttr_t LEDTask_attributes = {
+// 	.name = "LEDTask",
+// 	.stack_size = 128 * 4,
+// 	.priority = (osPriority_t)osPriorityNormal,
+// };
+DEFINE_THREAD_ATTR(led_thread, osPriorityNormal);
+
 /* USER CODE END Variables */
 /* Definitions for LEDTask */
 
@@ -98,7 +100,8 @@ void MX_FREERTOS_Init(void) {
 
 	/* USER CODE BEGIN RTOS_THREADS */
 	/* add threads, ... */
-	LEDTaskHandle = osThreadNew(led_task, NULL, &LEDTask_attributes);
+	// osThreadId_t LEDTaskHandle = osThreadNew(led_task, NULL, &LEDTask_attr);
+	CREATE_THREAD(led_thread, led_blinky, NULL);
 
 	/* USER CODE END RTOS_THREADS */
 
@@ -110,20 +113,4 @@ void MX_FREERTOS_Init(void) {
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
-
-/**
- * @brief  Function implementing the LEDTask thread.
- * @param  argument: Not used
- * @retval None
- */
-/* USER CODE END Header_StartDefaultTask */
-void led_task(void* argument) {
-	/* USER CODE BEGIN StartDefaultTask */
-	/* Infinite loop */
-	for (;;) {
-		led_blinky();
-		osDelay(1);
-	}
-	/* USER CODE END StartDefaultTask */
-}
 /* USER CODE END Application */
