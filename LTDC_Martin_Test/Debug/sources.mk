@@ -24,5 +24,5 @@ SUBDIRS := \
 Core/Src \
 Core/Src/fonts \
 Core/Startup \
-Drivers/STM32F4xx_HAL_Driver \
+Drivers/STM32F4xx_HAL_Driver/Src \
 
