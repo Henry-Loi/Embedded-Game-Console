@@ -14,8 +14,19 @@
 #define led_toggle(led) gpio_toggle(led)
 
 /* Board GPIO defines */
+// board led defines
 #define LED1_GPIO_Port GPIOB
 #define LED1_Pin	   GPIO_PIN_1
 
 #define LED2_GPIO_Port GPIOB
 #define LED2_Pin	   GPIO_PIN_0
+
+// ltdc defines
+#define RGBLCD_M0_GPIO_Port GPIOG
+#define RGBLCD_M0_Pin		GPIO_PIN_6
+
+#define RGBLCD_M1_GPIO_Port GPIOI
+#define RGBLCD_M1_Pin		GPIO_PIN_2
+
+#define RGBLCD_M2_GPIO_Port GPIOI
+#define RGBLCD_M2_Pin		GPIO_PIN_7
