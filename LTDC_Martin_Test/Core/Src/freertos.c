@@ -23,7 +23,6 @@
 #include "main.h"
 #include "os.h"
 #include "task.h"
-#include "user/led_task.h"
 
 #include "cmsis_os.h"
 
@@ -101,7 +100,6 @@ void MX_FREERTOS_Init(void) {
 	/* USER CODE BEGIN RTOS_THREADS */
 	/* add threads, ... */
 	// osThreadId_t LEDTaskHandle = osThreadNew(led_task, NULL, &LEDTask_attr);
-	CREATE_THREAD(led_thread, led_blinky, NULL);
 
 	/* USER CODE END RTOS_THREADS */
 
