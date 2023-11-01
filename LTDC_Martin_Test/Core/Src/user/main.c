@@ -68,7 +68,8 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-DEFINE_THREAD(led_thread, led_blinky);
+DEFINE_THREAD(led_task, led_blinky);
+DEFINE_THREAD(lcd_task, lcd_thread);
 
 void led_blinky(void* par) {
 	uint32_t last_ticks = 0;
@@ -112,23 +113,26 @@ int main(void) {
 
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
-	LTDC_INIT();
 	MX_FMC_Init();
 	MX_USART1_UART_Init();
-	MX_DMA2D_Init();
 	/* USER CODE BEGIN 2 */
-	BSP_LCD_Init();
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET);
-	__HAL_RCC_DMA2D_CLK_ENABLE();
 	/* USER CODE END 2 */
 
 	/* Init scheduler */
 	osKernelInitialize(); /* Call init function for freertos objects (in freertos.c) */
-	BSP_LCD_Clear(LCD_COLOR_WHITE);
 
 	// MX_FREERTOS_Init(); /* default init function */
 
-	os_create_thread(led_thread, NULL, 4);
+	// led debug thread
+	os_create_thread(led_task, NULL, 4);
+
+	// user define thread starts here
+	os_create_thread(lcd_task, NULL, 4);
+
+
+	// user define thread ends here
+
 
 	/* Start scheduler */
 	osKernelStart();

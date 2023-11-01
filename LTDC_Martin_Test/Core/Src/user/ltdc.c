@@ -40,16 +40,6 @@ uint8_t get_lcd_id(void) {
 }
 
 /* LTDC init function */
-void LTDC_INIT(void) {
-	uint8_t id;
-
-	id = get_lcd_id();
-
-	MX_LTDC_Init();
-	MX_DMA2D_Init();
-}
-
-
 void MX_LTDC_Init(void) {
 	/* USER CODE BEGIN LTDC_Init 0 */
 
