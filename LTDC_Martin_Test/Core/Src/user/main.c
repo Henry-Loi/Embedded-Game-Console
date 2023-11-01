@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+#include "board.h"
 #include "dma2d.h"
 #include "fmc.h"
 #include "gpio.h"
@@ -76,13 +77,8 @@ void led_blinky(void* par) {
 	while (1) {
 		osDelay(4);
 		if (HAL_GetTick() - last_ticks >= 100) {
-			if (LED) {
-				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, SET);
-			} else {
-				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, RESET);
-			}
-			LED = (++LED) % 2;
-			last_ticks = HAL_GetTick();
+			gpio_toggle(LED1);
+			last_ticks = get_ticks();
 		}
 	}
 }
@@ -97,7 +93,7 @@ int main(void) {
 	/* USER CODE BEGIN 1 */
 
 	/* USER CODE END 1 */
-	
+
 	/* MCU Configuration--------------------------------------------------------*/
 
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
