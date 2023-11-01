@@ -13,7 +13,7 @@
  * ������Ƶ:www.yuanzige.com
  * ������̳:www.openedv.com
  * ��˾��ַ:www.alientek.com
- * ������?:openedv.taobao.com
+ * ������?:openedv.taobao.com
  *
  ****************************************************************************************************
  */
@@ -181,6 +181,6 @@
 void atk_rgblcd_ltdc_init(uint16_t width, uint16_t height,
 						  const atk_rgblcd_timing_t* timing); /* RGB LCDģ��LTDC�ӿڳ�ʼ�� */
 void atk_rgblcd_ltdc_enable(void);							  /* ʹ��RGB LCDģ��LTDC�ӿ� */
-void atk_rgblcd_ltdc_disable(void); /* ����RGB LCDģ��LTDC�ӿ� */
+void atk_rgblcd_ltdc_disable(void);							  /* ����RGB LCDģ��LTDC�ӿ� */
 
 #endif

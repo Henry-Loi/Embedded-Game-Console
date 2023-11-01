@@ -34,12 +34,14 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.
+  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.</center></h2>
   *
-  * This software is licensed under terms that can be found in the LICENSE file in
-  * the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
+  * This software component is licensed by ST under BSD 3-Clause license,
+  * the "License"; You may not use this file except in compliance with the
+  * License. You may obtain a copy of the License at:
+  *                        opensource.org/licenses/BSD-3-Clause
+  *
   ******************************************************************************
   */ 
 
@@ -161,7 +163,7 @@ __RAM_FUNC HAL_StatusTypeDef HAL_FLASHEx_DisableFlashSleepMode(void)
   */
 
 #endif /* STM32F410xx || STM32F411xE || STM32F446xx || STM32F412Zx || STM32F412Vx || STM32F412Rx || STM32F412Cx */
-#endif /* HAL_FLASH_MODULE_ENABLED */
+#endif /* HAL_FLASH_MODULE_ENABLED */1
 /**
   * @}
   */
@@ -170,3 +172,4 @@ __RAM_FUNC HAL_StatusTypeDef HAL_FLASHEx_DisableFlashSleepMode(void)
   * @}
   */
 
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -6,13 +6,12 @@
  ******************************************************************************
  * @attention
  *
- * <h2><center>&copy; Copyright (c) 2023 STMicroelectronics.
- * All rights reserved.</center></h2>
+ * Copyright (c) 2023 STMicroelectronics.
+ * All rights reserved.
  *
- * This software component is licensed by ST under Ultimate Liberty license
- * SLA0044, the "License"; You may not use this file except in compliance with
- * the License. You may obtain a copy of the License at:
- *                             www.st.com/SLA0044
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
  *
  ******************************************************************************
  */
@@ -20,12 +19,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-#include "board.h"
 #include "dma2d.h"
 #include "fmc.h"
 #include "gpio.h"
 #include "ltdc.h"
-#include "os.h"
 #include "usart.h"
 
 #include "cmsis_os.h"
@@ -33,10 +30,14 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
 #include "LCD_LTDC.h"
+#include "board.h"
 #include "fonts.h"
+#include "os.h"
 #include "sdram.h"
-// #include "FT5426.h"
+
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -63,26 +64,26 @@
 void SystemClock_Config(void);
 void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
 DEFINE_THREAD(led_task, led_blinky);
-DEFINE_THREAD(lcd_task, lcd_thread);
+DEFINE_THREAD_SIZED(lcd_task, lcd_thread, 4096);
 
 void led_blinky(void* par) {
 	uint32_t last_ticks = 0;
 
+
+	// led_on(LED2);
 	while (1) {
 		osDelay(4);
 		if (HAL_GetTick() - last_ticks >= 100) {
-			gpio_toggle(LED1);
-			gpio_toggle(LED2);
+			// gpio_toggle(LED1);
 			last_ticks = get_ticks();
 		}
 	}
 }
+/* USER CODE END PFP */
+
+/* Private user code ---------------------------------------------------------*/
+/* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
 
@@ -113,35 +114,32 @@ int main(void) {
 
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
+	// MX_LTDC_Init();
 	MX_FMC_Init();
 	MX_USART1_UART_Init();
+	// MX_DMA2D_Init();
 	/* USER CODE BEGIN 2 */
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET);
+	SDRAM_Init();
 	/* USER CODE END 2 */
 
 	/* Init scheduler */
 	osKernelInitialize(); /* Call init function for freertos objects (in freertos.c) */
+	// MX_FREERTOS_Init();
 
-	// MX_FREERTOS_Init(); /* default init function */
 
-	// led debug thread
 	os_create_thread(led_task, NULL, 4);
-
-	// user define thread starts here
 	os_create_thread(lcd_task, NULL, 4);
-
-
-	// user define thread ends here
-
 
 	/* Start scheduler */
 	osKernelStart();
 
-	/* IMPORTANT: We should never get here as control is now taken by the scheduler */
+	/* We should never get here as control is now taken by the scheduler */
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	while (1) {
 		/* USER CODE END WHILE */
+
 		/* USER CODE BEGIN 3 */
 	}
 	/* USER CODE END 3 */
@@ -205,7 +203,8 @@ void SystemClock_Config(void) {
 void Error_Handler(void) {
 	/* USER CODE BEGIN Error_Handler_Debug */
 	/* User can add his own implementation to report the HAL error return state */
-
+	__disable_irq();
+	while (1) {}
 	/* USER CODE END Error_Handler_Debug */
 }
 
@@ -220,7 +219,7 @@ void Error_Handler(void) {
 void assert_failed(uint8_t* file, uint32_t line) {
 	/* USER CODE BEGIN 6 */
 	/* User can add his own implementation to report the file name and line number,
-	   tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+	   ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
 	/* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

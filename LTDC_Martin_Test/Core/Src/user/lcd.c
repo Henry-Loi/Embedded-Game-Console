@@ -2,12 +2,13 @@
 /* Includes ------------------------------------------------------------------*/
 #include "LCD_LTDC.h"
 #include "atk_rgblcd/atk_rgblcd.h"
+#include "atk_rgblcd/atk_rgblcd_ltdc.h"
 #include "board.h"
 #include "dma2d.h"
 #include "ltdc.h"
+#include "main.h"
 
 #include "cmsis_os2.h"
-
 
 
 // #include "GUI_Paint.h"
@@ -302,36 +303,52 @@ static void LL_FillBuffer(uint32_t LayerIndex, void* pDst, uint32_t xSize, uint3
 }
 
 void lcd_thread(void* par) {
-	// MX_LTDC_Init();
-	// MX_DMA2D_Init();
-	// BSP_LCD_Init();
-	// __HAL_RCC_DMA2D_CLK_ENABLE();
+	MX_LTDC_Init();
+	MX_DMA2D_Init();
+	BSP_LCD_Init();
+	__HAL_RCC_DMA2D_CLK_ENABLE();
 
-	// BSP_LCD_Clear(LCD_COLOR_WHITE);
+
+	BSP_LCD_Clear(LCD_COLOR_RED);
+
 	uint8_t ret;
 	uint16_t pid;
 
-	ret = atk_rgblcd_init();	/* 初始化RGB LCD模块 */
-	pid = atk_rgblcd_get_pid(); /* 获取RGB LCD模块PID */
+	ret = atk_rgblcd_init(); /* 初始化RGB LCD模块 */
+	// pid = atk_rgblcd_get_pid(); /* 获取RGB LCD模块PID */
+	// led_off(LED1);
+
 	if ((ret != 0) || (pid != ATK_RGBLCD_PID_7016)) {
 		// printf("ATK-MD0700R-1024600 connection error!\r\n");
 		// while (1) {
 		// 	LED0_TOGGLE();
 		// 	delay_ms(200);
 		// }
-		led_off(LED2);
 	}
 
 	/* RGB LCD模块LCD清屏 */
-	atk_rgblcd_clear(ATK_RGBLCD_RED);
 
-	atk_rgblcd_show_string(10, 10, atk_rgblcd_get_lcd_width(), 32, "STM32", ATK_RGBLCD_LCD_FONT_32, ATK_RGBLCD_RED);
-	atk_rgblcd_show_string(10, 42, atk_rgblcd_get_lcd_width(), 24, "ATK-MD0700R-1024600", ATK_RGBLCD_LCD_FONT_24,
-						   ATK_RGBLCD_RED);
-	atk_rgblcd_show_string(10, 66, atk_rgblcd_get_lcd_width(), 16, "ATOM@ALIENTEK", ATK_RGBLCD_LCD_FONT_16,
-						   ATK_RGBLCD_RED);
+	// atk_rgblcd_show_string(10, 10, atk_rgblcd_get_lcd_width(), 32, "STM32", ATK_RGBLCD_LCD_FONT_32, ATK_RGBLCD_RED);
+	// atk_rgblcd_show_string(10, 42, atk_rgblcd_get_lcd_width(), 24, "ATK-MD0700R-1024600", ATK_RGBLCD_LCD_FONT_24,
+	// 					   ATK_RGBLCD_RED);
+	// atk_rgblcd_show_string(10, 66, atk_rgblcd_get_lcd_width(), 16, "ATOM@ALIENTEK", ATK_RGBLCD_LCD_FONT_16,
+	// 					   ATK_RGBLCD_RED);
 
+	volatile uint32_t last_ticks = 0;
 	while (1) {
 		osDelay(4);
+
+		if (HAL_DMA2D_Start_IT(&hdma2d, g_atk_rgblcd_sta.fb, ATK_RGBLCD_LTDC_LAYER_FB_ADDR, g_atk_rgblcd_sta.width,
+							   g_atk_rgblcd_sta.height)
+			!= HAL_OK) {
+			Error_Handler();
+		}
+
+		if (HAL_GetTick() - last_ticks >= 100) {
+			atk_rgblcd_clear(ATK_RGBLCD_RED);
+			// gpio_toggle(LED1);
+			// gpio_toggle(LED2);
+			last_ticks = get_ticks();
+		}
 	}
 }

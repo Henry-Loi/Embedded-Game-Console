@@ -22,6 +22,7 @@
 #include "atk_rgblcd.h"
 
 // #include "./SYSTEM/usart/usart.h"
+#include "../board.h"
 #include "atk_rgblcd_font.h"
 #include "atk_rgblcd_ltdc.h"
 #include "gpio.h"
@@ -34,14 +35,6 @@
 #define ATK_RGBLCD_FB			  g_atk_rgblcd_sta.fb
 
 /* RGB LCD?????????? */
-typedef struct {
-	uint8_t id;
-	uint16_t pid;
-	uint16_t width;
-	uint16_t height;
-	atk_rgblcd_timing_t timing;
-	atk_rgblcd_touch_type_t touch_type;
-} atk_rgblcd_param_t;
 
 /* RGB LCD?????????? */
 static const atk_rgblcd_param_t atk_rgblcd_param[] = {
@@ -84,13 +77,7 @@ static const atk_rgblcd_param_t atk_rgblcd_param[] = {
 };
 
 /* RGB LCD???????????? */
-static struct {
-	const atk_rgblcd_param_t* param;
-	uint16_t width;
-	uint16_t height;
-	atk_rgblcd_lcd_disp_dir_t disp_dir;
-	uint16_t* fb;
-} g_atk_rgblcd_sta = {0};
+RGBLCD_Status_t g_atk_rgblcd_sta = {0};
 
 /**
  * @brief       RGB LCD???ID???
@@ -240,8 +227,11 @@ static void atk_rgblcd_dma2d_init(void) {
  * @retval      ??
  */
 static inline void atk_rgblcd_dma2d_fill(uint16_t xs, uint16_t ys, uint16_t xe, uint16_t ye, uint16_t color) {
+	uint32_t timeout = 0;
+
 	atk_rgblcd_pos_transform(&xs, &ys);
 	atk_rgblcd_pos_transform(&xe, &ye);
+
 
 	if (xs > xe) {
 		xs = xs ^ xe;
@@ -257,14 +247,23 @@ static inline void atk_rgblcd_dma2d_fill(uint16_t xs, uint16_t ys, uint16_t xe, 
 	DMA2D->CR &= ~DMA2D_CR_START;												/* ??DMA2D */
 	DMA2D->OOR = ATK_RGBLCD_LCD_RAW_WIDTH - (xe - xs + 1);						/* ????? */
 	DMA2D->OMAR = (uint32_t)&ATK_RGBLCD_FB[ys * ATK_RGBLCD_LCD_RAW_WIDTH + xs]; /* ???????? */
-	DMA2D->NLR &= ~DMA2D_NLR_PL_Msk;											/* ??????????? */
+
+	DMA2D->NLR &= ~DMA2D_NLR_PL_Msk; /* ??????????? */
 	DMA2D->NLR |= ((xe - xs + 1) << DMA2D_NLR_PL_Pos);
 	DMA2D->NLR &= ~DMA2D_NLR_NL_Msk; /* ??????? */
 	DMA2D->NLR |= ((ye - ys + 1) << DMA2D_NLR_NL_Pos);
 	DMA2D->OCOLR = color;		 /* ?????? */
 	DMA2D->CR |= DMA2D_CR_START; /* ????DMA2D */
-	while ((DMA2D->ISR & DMA2D_ISR_TCIF) != DMA2D_ISR_TCIF)
-		;							 /* ???DMA2D??????? */
+								 // STUCK HERE
+
+	while ((DMA2D->ISR & DMA2D_ISR_TCIF) == 0) {
+		// timeout++;
+		// if (timeout > 0X1FFFFF)
+		// 	break;
+	}
+	led_off(LED1);
+
+
 	DMA2D->IFCR |= DMA2D_IFCR_CTCIF; /* ???????????? */
 }
 #endif
@@ -284,16 +283,21 @@ uint8_t atk_rgblcd_init(void) {
 	if (ret != ATK_RGBLCD_EOK) {
 		return ATK_RGBLCD_ERROR;
 	}
+
 	atk_rgblcd_hw_init(); /* RGB LCD??????????? */
 	atk_rgblcd_ltdc_init(ATK_RGBLCD_LCD_RAW_WIDTH, ATK_RGBLCD_LCD_RAW_HEIGHT,
 						 &g_atk_rgblcd_sta.param->timing); /* RGB LCD???LTDC??????? */
 	g_atk_rgblcd_sta.fb = (uint16_t*)ATK_RGBLCD_LTDC_LAYER_FB_ADDR;
 	// #if (ATK_RGBLCD_USING_DMA2D != 0)
+	//
 	atk_rgblcd_dma2d_init(); /* ?????DMA2D */
 							 // #endif
 	atk_rgblcd_set_disp_dir(ATK_RGBLCD_LCD_DISP_DIR_0);
+
 	atk_rgblcd_clear(ATK_RGBLCD_WHITE);
+
 	atk_rgblcd_backlight_on(); /* ????RGB LCD???LCD???? */
+
 #if (ATK_RGBLCD_USING_TOUCH != 0)
 	ret = atk_rgblcd_touch_init(g_atk_rgblcd_sta.param->touch_type);
 	if (ret != ATK_RGBLCD_TOUCH_EOK) {
@@ -409,9 +413,11 @@ void atk_rgblcd_fill(uint16_t xs, uint16_t ys, uint16_t xe, uint16_t ye, uint16_
 	if (xe >= ATK_RGBLCD_LCD_WIDTH) {
 		xe = ATK_RGBLCD_LCD_WIDTH - 1;
 	}
+
 	if (ye >= ATK_RGBLCD_LCD_HEIGHT) {
 		ye = ATK_RGBLCD_LCD_HEIGHT - 1;
 	}
+
 
 #if (ATK_RGBLCD_USING_DMA2D != 0)
 	atk_rgblcd_dma2d_fill(xs, ys, xe, ye, color);

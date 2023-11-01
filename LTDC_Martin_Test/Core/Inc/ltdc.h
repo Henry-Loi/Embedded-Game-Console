@@ -40,8 +40,6 @@ extern LTDC_HandleTypeDef hltdc;
 
 void MX_LTDC_Init(void);
 
-void LTDC_INIT(void);
-
 /* USER CODE BEGIN Prototypes */
 
 /* USER CODE END Prototypes */
@@ -51,3 +49,4 @@ void LTDC_INIT(void);
 #endif
 
 #endif /* __LTDC_H__ */
+

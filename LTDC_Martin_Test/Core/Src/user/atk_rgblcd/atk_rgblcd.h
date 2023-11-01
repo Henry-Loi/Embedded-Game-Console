@@ -13,7 +13,7 @@
  * ������Ƶ:www.yuanzige.com
  * ������̳:www.openedv.com
  * ��˾��ַ:www.alientek.com
- * ������?:openedv.taobao.com
+ * ������?:openedv.taobao.com
  *
  ****************************************************************************************************
  */
@@ -52,7 +52,7 @@
 	#define ATK_RGBLCD_FONT_12 1
 #endif
 
-/* RGB LCDģ��ʱ��ṹ��? */
+/* RGB LCDģ��ʱ��ṹ��? */
 typedef struct {
 	uint32_t clock_freq;
 	uint8_t pixel_clock_polarity;
@@ -169,42 +169,57 @@ typedef enum {
 #define ATK_RGBLCD_BRRED   0xFC07
 #define ATK_RGBLCD_GRAY	   0x8430
 
-/* �������? */
+/* �������? */
 #define ATK_RGBLCD_EOK	  0 /* û�д��� */
 #define ATK_RGBLCD_ERROR  1 /* ���� */
 #define ATK_RGBLCD_EINVAL 2 /* �Ƿ����� */
 
 /* �������� */
-uint8_t atk_rgblcd_init(void);			  /* RGB LCDģ���ʼ��? */
-uint16_t atk_rgblcd_get_pid(void);		  /* ��ȡRGB LCDģ��PID */
-uint16_t atk_rgblcd_get_lcd_width(void);  /* ��ȡRGB LCDģ��LCD���� */
-uint16_t atk_rgblcd_get_lcd_height(void); /* ��ȡRGB LCDģ��LCD�߶� */
-void atk_rgblcd_backlight_on(void);		  /* ����RGB LCDģ��LCD���� */
-void atk_rgblcd_backlight_off(void);	  /* �ر�RGB LCDģ��LCD���� */
-void atk_rgblcd_display_on(void);		  /* ����RGB LCDģ��LCD��ʾ */
-void atk_rgblcd_display_off(void);		  /* �ر�RGB LCDģ��LCD��ʾ */
-uint8_t atk_rgblcd_set_disp_dir(
-	atk_rgblcd_lcd_disp_dir_t disp_dir); /* ����RGB LCDģ��LCD��ʾ���� */
-atk_rgblcd_lcd_disp_dir_t atk_rgblcd_get_disp_dir(void); /* ��ȡRGB LCDģ��LCDɨ�跽�� */
-void atk_rgblcd_fill(uint16_t xs, uint16_t ys, uint16_t xe, uint16_t ye,
-					 uint16_t color);  /* RGB LCDģ��LCD�������? */
-void atk_rgblcd_clear(uint16_t color); /* RGB LCDģ��LCD���� */
+uint8_t atk_rgblcd_init(void);										 /* RGB LCDģ���ʼ��? */
+uint16_t atk_rgblcd_get_pid(void);									 /* ��ȡRGB LCDģ��PID */
+uint16_t atk_rgblcd_get_lcd_width(void);							 /* ��ȡRGB LCDģ��LCD���� */
+uint16_t atk_rgblcd_get_lcd_height(void);							 /* ��ȡRGB LCDģ��LCD�߶� */
+void atk_rgblcd_backlight_on(void);									 /* ����RGB LCDģ��LCD���� */
+void atk_rgblcd_backlight_off(void);								 /* �ر�RGB LCDģ��LCD���� */
+void atk_rgblcd_display_on(void);									 /* ����RGB LCDģ��LCD��ʾ */
+void atk_rgblcd_display_off(void);									 /* �ر�RGB LCDģ��LCD��ʾ */
+uint8_t atk_rgblcd_set_disp_dir(atk_rgblcd_lcd_disp_dir_t disp_dir); /* ����RGB LCDģ��LCD��ʾ���� */
+atk_rgblcd_lcd_disp_dir_t atk_rgblcd_get_disp_dir(void);			 /* ��ȡRGB LCDģ��LCDɨ�跽�� */
+void atk_rgblcd_fill(uint16_t xs, uint16_t ys, uint16_t xe, uint16_t ye, uint16_t color); /* RGB LCDģ��LCD�������? */
+void atk_rgblcd_clear(uint16_t color);								/* RGB LCDģ��LCD���� */
 void atk_rgblcd_draw_point(uint16_t x, uint16_t y, uint16_t color); /* RGB LCDģ��LCD���� */
 uint16_t atk_rgblcd_read_point(uint16_t x, uint16_t y);				/* RGB LCDģ��LCD���� */
-void atk_rgblcd_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
-						  uint16_t color); /* RGB LCDģ��LCD���߶� */
+void atk_rgblcd_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color); /* RGB LCDģ��LCD���߶� */
 void atk_rgblcd_draw_rect(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
 						  uint16_t color); /* RGB LCDģ��LCD�����ο� */
-void atk_rgblcd_draw_circle(uint16_t x, uint16_t y, uint16_t r,
-							uint16_t color); /* RGB LCDģ��LCD��Բ�ο� */
+void atk_rgblcd_draw_circle(uint16_t x, uint16_t y, uint16_t r, uint16_t color); /* RGB LCDģ��LCD��Բ�ο� */
 void atk_rgblcd_show_char(uint16_t x, uint16_t y, char ch, atk_rgblcd_lcd_font_t font,
 						  uint16_t color); /* RGB LCDģ��LCD��ʾ1���ַ� */
 void atk_rgblcd_show_string(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char* str,
 							atk_rgblcd_lcd_font_t font, uint16_t color); /* RGB LCDģ��LCD��ʾ�ַ��� */
 void atk_rgblcd_show_xnum(uint16_t x, uint16_t y, uint32_t num, uint8_t len, atk_rgblcd_num_mode_t mode,
-						  atk_rgblcd_lcd_font_t font,
-						  uint16_t color); /* RGB LCDģ��LCD��ʾ���֣��ɿ�����ʾ��λ0 */
+						  atk_rgblcd_lcd_font_t font, uint16_t color); /* RGB LCDģ��LCD��ʾ���֣��ɿ�����ʾ��λ0 */
 void atk_rgblcd_show_num(uint16_t x, uint16_t y, uint32_t num, uint8_t len, atk_rgblcd_lcd_font_t font,
 						 uint16_t color); /* RGB LCDģ��LCD��ʾ���֣�����ʾ��λ0 */
 
+
+typedef struct {
+	uint8_t id;
+	uint16_t pid;
+	uint16_t width;
+	uint16_t height;
+	atk_rgblcd_timing_t timing;
+	atk_rgblcd_touch_type_t touch_type;
+} atk_rgblcd_param_t;
+
+typedef struct {
+	const atk_rgblcd_param_t* param;
+	uint16_t width;
+	uint16_t height;
+	atk_rgblcd_lcd_disp_dir_t disp_dir;
+	uint16_t* fb;
+} RGBLCD_Status_t;
+
+
+extern RGBLCD_Status_t g_atk_rgblcd_sta;
 #endif
