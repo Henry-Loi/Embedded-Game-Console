@@ -72,12 +72,12 @@ DEFINE_THREAD(led_thread, led_blinky);
 
 void led_blinky(void* par) {
 	uint32_t last_ticks = 0;
-	uint8_t LED = 0;
 
 	while (1) {
 		osDelay(4);
 		if (HAL_GetTick() - last_ticks >= 100) {
 			gpio_toggle(LED1);
+			gpio_toggle(LED2);
 			last_ticks = get_ticks();
 		}
 	}
