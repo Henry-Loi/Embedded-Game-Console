@@ -279,14 +279,11 @@ void BSP_LCD_DrawPixel(uint16_t Xpos, uint16_t Ypos, uint32_t RGB_Code) {
 static void LL_FillBuffer(uint32_t LayerIndex, void* pDst, uint32_t xSize, uint32_t ySize, uint32_t OffLine,
 						  uint32_t ColorIndex) {
 	/* Register to memory mode with ARGB8888 as color Mode */
-	hDma2dHandler.Init.Mode = DMA2D_R2M;
-	if (hLtdcHandler.LayerCfg[ActiveLayer].PixelFormat == LTDC_PIXEL_FORMAT_RGB565) { /* RGB565 format */
+	if (1) { /* RGB565 format */
 		hDma2dHandler.Init.ColorMode = DMA2D_RGB565;
 		ColorIndex = ((ColorIndex & LCD_COLOR_RED) << 8) | ((ColorIndex & LCD_COLOR_GREEN) << 5)
 					 | ((ColorIndex & LCD_COLOR_BLUE) << 3);
-	} else { /* ARGB8888 format */
-		hDma2dHandler.Init.ColorMode = DMA2D_ARGB8888;
-	}
+	} 
 	hDma2dHandler.Init.OutputOffset = OffLine;
 
 	hDma2dHandler.Instance = DMA2D;
@@ -303,13 +300,14 @@ static void LL_FillBuffer(uint32_t LayerIndex, void* pDst, uint32_t xSize, uint3
 }
 
 void lcd_thread(void* par) {
-	MX_LTDC_Init();
-	MX_DMA2D_Init();
-	BSP_LCD_Init();
-	__HAL_RCC_DMA2D_CLK_ENABLE();
+	MX_LTDC_Init();	//HERE
+	MX_DMA2D_Init(); //HERE Did the basic DMA2D, 
+	BSP_LCD_Init();	//HERE
+	__HAL_RCC_DMA2D_CLK_ENABLE();	//Initialized
 
 
 	BSP_LCD_Clear(LCD_COLOR_RED);
+	while(1){}
 
 	uint8_t ret;
 	uint16_t pid;
