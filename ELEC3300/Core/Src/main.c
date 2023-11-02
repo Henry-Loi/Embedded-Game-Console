@@ -97,12 +97,18 @@ int main(void) {
 
 	MX_FMC_Init();
 
-	SDRAM_Init();
-
-	MX_LTDC_Init();
 	/* USER CODE BEGIN 2 */
 	uint32_t last_ticks = 0;
+	SDRAM_Init();
+	// sdram_initialization_sequence();
+	// HAL_SDRAM_ProgramRefreshRate(&hsdram1, 730);
+
+	lcd_init();
+
+	lcd_clear(RED);
+
 	/* USER CODE END 2 */
+	MX_LTDC_Init();
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
