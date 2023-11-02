@@ -95,7 +95,6 @@ int main(void) {
 
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
-	HAL_GPIO_WritePin(LCD_BACKLIGHT_GPIO_Port, LCD_BACKLIGHT_Pin, 1);
 	MX_LTDC_Init();
 	MX_FMC_Init();
 	MX_DMA2D_Init();
