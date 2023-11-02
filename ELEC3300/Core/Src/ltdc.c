@@ -57,8 +57,6 @@ void MX_LTDC_Init(void) {
 	if (HAL_LTDC_Init(&hltdc) != HAL_OK) {
 		Error_Handler();
 	}
-	while (1)
-		;
 	pLayerCfg.WindowX0 = 0;
 	pLayerCfg.WindowX1 = 1024;
 	pLayerCfg.WindowY0 = 0;
@@ -72,11 +70,13 @@ void MX_LTDC_Init(void) {
 	pLayerCfg.ImageWidth = 0;
 	pLayerCfg.ImageHeight = 0;
 	pLayerCfg.Backcolor.Blue = 0;
-	pLayerCfg.Backcolor.Green = 0;
+	pLayerCfg.Backcolor.Green = 255;
 	pLayerCfg.Backcolor.Red = 0;
 	if (HAL_LTDC_ConfigLayer(&hltdc, &pLayerCfg, 0) != HAL_OK) {
 		Error_Handler();
 	}
+	while (1)
+		;
 	pLayerCfg1.WindowX0 = 0;
 	pLayerCfg1.WindowX1 = 0;
 	pLayerCfg1.WindowY0 = 0;
