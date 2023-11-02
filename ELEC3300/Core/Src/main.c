@@ -27,8 +27,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "sdram/sdram_fmc_drv.h"
-#include "user/ltdc_driver.h"
+#include "user/lcd.h"
+#include "user/sdram.h"
+
 
 /* USER CODE END Includes */
 

@@ -1,21 +1,6 @@
-/**
+#ifndef _SDRAM_H_
 
- *@file    sdram_fmc_drv.h
-
- *@brief   使用 FMC 操作 SDRAM
-
- *@author  mculover666
-
- *@date    2020-08-27
-
- *@note    此驱动测试 W9825G6KH SDRAM芯片通过
-
-*/
-
-
-#ifndef _SDRAM_FMC_DRV_H_
-
-#define _SDRAM_FMC_DRV_H_
+#define _SDRAM_H_
 
 
 #include "fmc.h"

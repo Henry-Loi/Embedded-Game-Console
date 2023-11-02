@@ -21,7 +21,7 @@
 #include "dma2d.h"
 
 /* USER CODE BEGIN 0 */
-#include "user/ltdc_driver.h"
+#include "user/lcd.h"
 /* USER CODE END 0 */
 
 DMA2D_HandleTypeDef hdma2d;

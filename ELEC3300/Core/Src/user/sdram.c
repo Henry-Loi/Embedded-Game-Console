@@ -1,4 +1,4 @@
-#include "sdram_fmc_drv.h"
+#include "sdram.h"
 
 static int SDRAM_SendCommand(uint32_t CommandMode, uint32_t Bank, uint32_t RefreshNum, uint32_t RegVal)
 
