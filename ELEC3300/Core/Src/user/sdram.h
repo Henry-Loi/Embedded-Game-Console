@@ -31,8 +31,8 @@
 
 void SDRAM_Init(void);
 
-// gary's solution
-uint8_t sdram_send_cmd(uint8_t bankx, uint8_t cmd, uint8_t refresh, uint16_t regval);
-void sdram_initialization_sequence(void);
+// // gary's solution
+// uint8_t sdram_send_cmd(uint8_t bankx, uint8_t cmd, uint8_t refresh, uint16_t regval);
+// void sdram_initialization_sequence(void);
 
-#endif /* _SDRAM_FMC_DRV_H_ */
+#endif /* _SDRAM_H_ */

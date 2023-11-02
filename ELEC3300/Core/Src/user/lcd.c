@@ -4,6 +4,20 @@
 #include "lcd_font.h"
 #include "strhelper.h"
 
+typedef struct {
+	uint8_t curr_buffer;
+	char char_buffer[2][LCD_MAX_CHAR_WIDTH][LCD_MAX_CHAR_HEIGHT];
+	Color_t color_buffer[2][LCD_MAX_CHAR_WIDTH][LCD_MAX_CHAR_HEIGHT];
+	FontSize_t fontsize_buffer[2][LCD_MAX_CHAR_WIDTH][LCD_MAX_CHAR_HEIGHT];
+
+} TFTBuffer_t;
+
+TFTBuffer_t tft_buffer = {0};
+
+#define CURR_BUF  tft_buffer.curr_buffer
+#define CHAR_BUF  tft_buffer.char_buffer
+#define COLOR_BUF tft_buffer.color_buffer
+#define FSIZE_BUF tft_buffer.fontsize_buffer
 
 void tft_backlight_control(uint8_t brightness) {
 	if (brightness) {
@@ -26,10 +40,30 @@ void tft_clear(Color_t color) {
 #endif
 }
 
-void lcd_init() {
-	tft_clear(WHITE);
-	tft_backlight_control(255);
+void tft_clear_buf(uint8_t buf) {
+	for (int x = 0; x < LCD_MAX_CHAR_WIDTH; x++) {
+		for (int y = 0; y < LCD_MAX_CHAR_HEIGHT; y++) {
+			CHAR_BUF[buf][x][y] = ' ';
+		}
+	}
 }
+
+void lcd_init() {
+	tft_clear(BLACK);
+	tft_clear_buf(0);
+	tft_clear_buf(1);
+	tft_backlight_control(255);
+
+	for (int x = 0; x < LCD_MAX_CHAR_WIDTH; x++) {
+		for (int y = 0; y < LCD_MAX_CHAR_HEIGHT; y++) {
+			COLOR_BUF[CURR_BUF][x][y] = WHITE;
+			FSIZE_BUF[CURR_BUF][x][y] = Font32;
+			COLOR_BUF[!CURR_BUF][x][y] = WHITE;
+			FSIZE_BUF[!CURR_BUF][x][y] = Font32;
+		}
+	}
+}
+
 
 void tft_draw_point(uint16_t x, uint16_t y, Color_t color) {
 	uint32_t pos;
@@ -129,7 +163,8 @@ void tft_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, Color_t c
 	}
 }
 
-void tft_print_char(uint16_t x, uint16_t y, char ch, Color_t color, FontSize_t fsize) {
+// void tft_print_char(uint16_t x, uint16_t y, char ch, Color_t color, FontSize_t fsize) {
+void tft_write_char(uint16_t x, uint16_t y, char ch, Color_t color, FontSize_t fsize) {
 	const uint8_t* ch_code;
 	uint8_t ch_width;
 	uint8_t ch_height;
@@ -197,6 +232,12 @@ void tft_print_char(uint16_t x, uint16_t y, char ch, Color_t color, FontSize_t f
 	}
 }
 
+void tft_print_char(uint16_t x, uint16_t y, char ch, Color_t color, FontSize_t fsize) {
+	CHAR_BUF[CURR_BUF][x][y] = ch;
+	COLOR_BUF[CURR_BUF][x][y] = color;
+	FSIZE_BUF[CURR_BUF][x][y] = fsize;
+}
+
 void tft_prints(uint8_t x, uint8_t y, const char* fmt, ...) {
 	char buf[255] = {0}, *fp = buf;
 
@@ -204,6 +245,24 @@ void tft_prints(uint8_t x, uint8_t y, const char* fmt, ...) {
 	va_start(args, fmt);
 	print(&fp, fmt, args);
 
+	// TODO maybe don't hardcode text color
 	for (int i = 0; buf[i] != NULL; i++)
 		tft_print_char(x + i, y, buf[i], WHITE, Font32);
+}
+
+// NOTE: THIS ONLY WORKS FOR CHARS NOW BECAUSE I CAN'T THINK OF A EASY WAY TO DEAL WITH THE ENTIRE DISPLAY
+// MAKING A 1024x600 BUFFER IS WAY TOO LARGE IT CAN'T FIT
+// This means that updating doesn't work for draw dot/line
+void tft_update() {
+	for (int x = 0; x < LCD_MAX_CHAR_WIDTH; x++) {
+		for (int y = 0; y < LCD_MAX_CHAR_HEIGHT; y++) {
+			if (CHAR_BUF[CURR_BUF][x][y] != CHAR_BUF[!CURR_BUF][x][y]) {
+				// TODO maybe don't hardcode bg color
+				tft_write_char(x, y, CHAR_BUF[!CURR_BUF][x][y], BLACK, FSIZE_BUF[CURR_BUF][x][y]);
+				tft_write_char(x, y, CHAR_BUF[CURR_BUF][x][y], COLOR_BUF[CURR_BUF][x][y], FSIZE_BUF[CURR_BUF][x][y]);
+			}
+		}
+	}
+	CURR_BUF = !CURR_BUF;
+	tft_clear_buf(CURR_BUF);
 }

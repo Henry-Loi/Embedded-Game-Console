@@ -250,7 +250,7 @@ static char* ftos2(char* data, float a, uint32_t dp) {
 
 #include <stdarg.h>
 
-static __forceinline void printchar(char** str, int c) {
+static void printchar(char** str, int c) {
 	**str = (char)c;
 	++(*str);
 }

@@ -9,6 +9,8 @@
 // default spacing for font32
 #define LCD_CHAR_SPACING_WIDTH	16
 #define LCD_CHAR_SPACING_HEIGHT 24
+#define LCD_MAX_CHAR_WIDTH		64
+#define LCD_MAX_CHAR_HEIGHT		24
 
 #define LCD_BL_GPIO_PORT GPIOB
 #define LCD_BL_GPIO_PIN	 GPIO_PIN_5
@@ -49,5 +51,7 @@ void tft_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, Color_t c
 void tft_print_char(uint16_t x, uint16_t y, char ch, Color_t color, FontSize_t fsize);
 
 void tft_prints(uint8_t x, uint8_t y, const char* fmt, ...);
+
+void tft_update();
 
 #endif /* _LCD_H_ */

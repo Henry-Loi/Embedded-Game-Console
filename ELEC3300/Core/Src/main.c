@@ -101,21 +101,7 @@ int main(void) {
 	/* USER CODE BEGIN 2 */
 	uint32_t last_ticks = 0;
 	SDRAM_Init();
-	// sdram_initialization_sequence();
-	// HAL_SDRAM_ProgramRefreshRate(&hsdram1, 730);
-
 	lcd_init();
-
-	tft_clear(BLACK);
-
-	tft_draw_line(0, 0, 1024, 600, RED);
-	tft_print_char(0, 0, 'x', WHITE, Font32);
-	tft_print_char(0, 1, 'x', WHITE, Font32);
-	tft_print_char(1, 1, 'x', WHITE, Font32);
-	tft_print_char(1, 0, 'x', WHITE, Font32);
-	tft_prints(3, 3, "test");
-
-
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -124,17 +110,20 @@ int main(void) {
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		if (HAL_GetTick() - last_ticks > 300) {
-			last_ticks = HAL_GetTick();
-		} else if (HAL_GetTick() - last_ticks > 200) {
-			HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_SET);
-		} else {
-			HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_RESET);
-		}
-	}
-	/* USER CODE END 3 */
-}
+		tft_prints(0, 0, "%d", HAL_GetTick());
+		tft_prints(0, 1, "This is a test");
+		tft_prints(0, 2, "%d	%0.3f	%c	%s", 108, 0.05, 'a', "hi");
+		tft_draw_line(0, 0, 1024, 600, RED);
+		tft_draw_line(0, 600, 1024, 0, GREEN);
 
+		if (HAL_GetTick() - last_ticks > 100) {
+			last_ticks = HAL_GetTick();
+			tft_update();
+			HAL_GPIO_TogglePin(LED0_GPIO_Port, LED0_Pin);
+		}
+		/* USER CODE END 3 */
+	}
+}
 /**
  * @brief System Clock Configuration
  * @retval None
