@@ -37,6 +37,11 @@
 #define WHITE  0xFFFF
 
 /**
+ * @brief   whether use dma2d to transfer data to lcd framebuffer.
+ */
+#define USE_DMA2D_EN 1
+
+/**
  * @brief       Control the lcd backlight.
  * @param[in]   brightness  the value of lcd backlight.
  * @return      None
@@ -56,5 +61,9 @@ void lcd_init(void);
  * @return      None
  */
 void lcd_clear(uint16_t color);
+
+
+void lcd_draw_point(uint16_t x, uint16_t y, uint16_t color);
+uint16_t lcd_read_point(uint16_t x, uint16_t y);
 
 #endif /* _LCD_RGB_LTDC_DRV_H_ */

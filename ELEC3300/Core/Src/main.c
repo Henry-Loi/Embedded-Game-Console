@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+#include "dma2d.h"
 #include "fmc.h"
 #include "gpio.h"
 #include "ltdc.h"
@@ -94,9 +95,9 @@ int main(void) {
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
 	HAL_GPIO_WritePin(LCD_BACKLIGHT_GPIO_Port, LCD_BACKLIGHT_Pin, 1);
-
+	MX_LTDC_Init();
 	MX_FMC_Init();
-
+	MX_DMA2D_Init();
 	/* USER CODE BEGIN 2 */
 	uint32_t last_ticks = 0;
 	SDRAM_Init();
@@ -105,10 +106,14 @@ int main(void) {
 
 	lcd_init();
 
-	lcd_clear(RED);
+	lcd_clear(BLACK);
 
+	for (int i = 0; i < 600; i++) {
+		for (int j = 0; j < 600; j++) {
+			lcd_draw_point(i, j, BLUE);
+		}
+	}
 	/* USER CODE END 2 */
-	MX_LTDC_Init();
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
@@ -116,7 +121,6 @@ int main(void) {
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		lcd_init();
 		if (HAL_GetTick() - last_ticks > 300) {
 			last_ticks = HAL_GetTick();
 		} else if (HAL_GetTick() - last_ticks > 200) {
