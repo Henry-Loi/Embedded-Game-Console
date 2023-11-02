@@ -6,6 +6,10 @@
 #define LCD_WIDTH  1024
 #define LCD_HEIGHT 600
 
+// default spacing for font32
+#define LCD_CHAR_SPACING_WIDTH	16
+#define LCD_CHAR_SPACING_HEIGHT 24
+
 #define LCD_BL_GPIO_PORT GPIOB
 #define LCD_BL_GPIO_PIN	 GPIO_PIN_5
 
@@ -23,19 +27,27 @@
 #define YELLOW 0xFFE0
 #define WHITE  0xFFFF
 
+typedef uint16_t Color_t;
+
 // @brief whether or not to use DMA for transfer
 #define USE_DMA2D_EN 1
 
-void lcd_backlight_control(uint8_t bightness);
+typedef enum { Font12, Font16, Font24, Font32 } FontSize_t;
+
+void tft_backlight_control(uint8_t bightness);
 
 void lcd_init(void);
 
-void lcd_clear(uint16_t color);
+void tft_clear(Color_t color);
 
-void lcd_draw_point(uint16_t x, uint16_t y, uint16_t color);
+void tft_draw_point(uint16_t x, uint16_t y, Color_t color);
 
-uint16_t lcd_read_point(uint16_t x, uint16_t y);
+uint16_t tft_read_point(uint16_t x, uint16_t y);
 
-void lcd_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color);
+void tft_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, Color_t color);
+
+void tft_print_char(uint16_t x, uint16_t y, char ch, Color_t color, FontSize_t fsize);
+
+void tft_prints(uint8_t x, uint8_t y, const char* fmt, ...);
 
 #endif /* _LCD_H_ */

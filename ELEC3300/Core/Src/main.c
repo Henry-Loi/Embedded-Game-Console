@@ -106,14 +106,16 @@ int main(void) {
 
 	lcd_init();
 
-	lcd_clear(BLACK);
+	tft_clear(BLACK);
 
-	for (int i = 0; i < 600; i++) {
-		for (int j = 0; j < 600; j++) {
-			lcd_draw_point(i, j, BLUE);
-		}
-	}
-	lcd_draw_line(0, 0, 1024, 600, RED);
+	tft_draw_line(0, 0, 1024, 600, RED);
+	tft_print_char(0, 0, 'x', WHITE, Font32);
+	tft_print_char(0, 1, 'x', WHITE, Font32);
+	tft_print_char(1, 1, 'x', WHITE, Font32);
+	tft_print_char(1, 0, 'x', WHITE, Font32);
+	tft_prints(3, 3, "test");
+
+
 	/* USER CODE END 2 */
 
 	/* Infinite loop */

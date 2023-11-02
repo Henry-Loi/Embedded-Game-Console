@@ -1,8 +1,11 @@
 #include "lcd.h"
 
 #include "dma2d.h"
+#include "lcd_font.h"
+#include "strhelper.h"
 
-void lcd_backlight_control(uint8_t brightness) {
+
+void tft_backlight_control(uint8_t brightness) {
 	if (brightness) {
 		HAL_GPIO_WritePin(LCD_BL_GPIO_PORT, LCD_BL_GPIO_PIN, GPIO_PIN_SET);
 	} else {
@@ -10,7 +13,7 @@ void lcd_backlight_control(uint8_t brightness) {
 	}
 }
 
-void lcd_clear(uint16_t color) {
+void tft_clear(Color_t color) {
 #if USE_DMA2D_EN
 	dma2d_transfer_data_r2m((uint32_t*)LCD_FRAME_BUFFER, LCD_WIDTH, LCD_HEIGHT, 0, color);
 #else
@@ -24,11 +27,11 @@ void lcd_clear(uint16_t color) {
 }
 
 void lcd_init() {
-	lcd_clear(WHITE);
-	lcd_backlight_control(255);
+	tft_clear(WHITE);
+	tft_backlight_control(255);
 }
 
-void lcd_draw_point(uint16_t x, uint16_t y, uint16_t color) {
+void tft_draw_point(uint16_t x, uint16_t y, Color_t color) {
 	uint32_t pos;
 	uint16_t* ptr;
 
@@ -47,7 +50,7 @@ void lcd_draw_point(uint16_t x, uint16_t y, uint16_t color) {
 #endif
 }
 
-uint16_t lcd_read_point(uint16_t x, uint16_t y) {
+uint16_t tft_read_point(uint16_t x, uint16_t y) {
 	uint32_t pos;
 	uint16_t *ptr, data;
 
@@ -64,7 +67,7 @@ uint16_t lcd_read_point(uint16_t x, uint16_t y) {
 	return data;
 }
 
-void lcd_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
+void tft_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, Color_t color) {
 	uint16_t us;
 	uint16_t usC_Current, usP_Current;
 
@@ -109,7 +112,7 @@ void lcd_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t 
 
 
 	for (us = 0; us <= lDistance + 1; us++) {
-		lcd_draw_point(usC_Current, usP_Current, color);
+		tft_draw_point(usC_Current, usP_Current, color);
 
 		lError_C += lDelta_C;
 		lError_P += lDelta_P;
@@ -124,4 +127,83 @@ void lcd_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t 
 			usP_Current += lIncrease_P;
 		}
 	}
+}
+
+void tft_print_char(uint16_t x, uint16_t y, char ch, Color_t color, FontSize_t fsize) {
+	const uint8_t* ch_code;
+	uint8_t ch_width;
+	uint8_t ch_height;
+	uint8_t ch_size;
+	uint8_t ch_offset;
+	uint8_t byte_index;
+	uint8_t byte_code;
+	uint8_t bit_index;
+	uint8_t width_index = 0;
+	uint8_t height_index = 0;
+
+	uint16_t px = x * LCD_CHAR_SPACING_WIDTH;
+	uint16_t py = y * LCD_CHAR_SPACING_HEIGHT;
+
+	ch_offset = ch - ' ';
+
+	switch (fsize) {
+		case Font12:
+			ch_code = rgblcd_font_12[ch_offset];
+			ch_width = LCD_FONT_12_CHAR_WIDTH;
+			ch_height = LCD_FONT_12_CHAR_HEIGHT;
+			ch_size = LCD_FONT_12_CHAR_SIZE;
+			break;
+
+		case Font16:
+			ch_code = rgblcd_font_16[ch_offset];
+			ch_width = LCD_FONT_16_CHAR_WIDTH;
+			ch_height = LCD_FONT_16_CHAR_HEIGHT;
+			ch_size = LCD_FONT_16_CHAR_SIZE;
+			break;
+		case Font24:
+			ch_code = rgblcd_font_24[ch_offset];
+			ch_width = LCD_FONT_24_CHAR_WIDTH;
+			ch_height = LCD_FONT_24_CHAR_HEIGHT;
+			ch_size = LCD_FONT_24_CHAR_SIZE;
+			break;
+		case Font32:
+			ch_code = rgblcd_font_32[ch_offset];
+			ch_width = LCD_FONT_32_CHAR_WIDTH;
+			ch_height = LCD_FONT_32_CHAR_HEIGHT;
+			ch_size = LCD_FONT_32_CHAR_SIZE;
+			break;
+		default: break;
+	}
+
+
+	if ((px + ch_width > LCD_WIDTH) || (py + ch_height > LCD_HEIGHT)) {
+		return;
+	}
+
+	for (byte_index = 0; byte_index < ch_size; byte_index++) {
+		byte_code = ch_code[byte_index];
+		for (bit_index = 0; bit_index < 8; bit_index++) {
+			if ((byte_code & 0x80) != 0) {
+				tft_draw_point(px + width_index, py + height_index, color);
+			}
+			width_index++;
+			if (width_index == ch_width) {
+				width_index = 0;
+				height_index++;
+				break;
+			}
+			byte_code <<= 1;
+		}
+	}
+}
+
+void tft_prints(uint8_t x, uint8_t y, const char* fmt, ...) {
+	char buf[255] = {0}, *fp = buf;
+
+	va_list args;
+	va_start(args, fmt);
+	print(&fp, fmt, args);
+
+	for (int i = 0; buf[i] != NULL; i++)
+		tft_print_char(x + i, y, buf[i], WHITE, Font32);
 }
