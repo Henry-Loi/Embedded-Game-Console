@@ -114,6 +114,7 @@ int main(void) {
 			lcd_draw_point(i, j, BLUE);
 		}
 	}
+	lcd_draw_line(0, 0, 1024, 600, RED);
 	/* USER CODE END 2 */
 
 	/* Infinite loop */

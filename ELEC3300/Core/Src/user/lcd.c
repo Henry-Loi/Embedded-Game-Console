@@ -63,3 +63,65 @@ uint16_t lcd_read_point(uint16_t x, uint16_t y) {
 
 	return data;
 }
+
+void lcd_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
+	uint16_t us;
+	uint16_t usC_Current, usP_Current;
+
+	int32_t lError_C = 0, lError_P = 0, lDelta_C, lDelta_P, lDistance;
+	int32_t lIncrease_C, lIncrease_P;
+
+
+	lDelta_C = x2 - x1;
+	lDelta_P = y2 - y1;
+
+	usC_Current = x1;
+	usP_Current = y1;
+
+
+	if (lDelta_C > 0)
+		lIncrease_C = 1;
+
+	else if (lDelta_C == 0)
+		lIncrease_C = 0;
+
+	else {
+		lIncrease_C = -1;
+		lDelta_C = -lDelta_C;
+	}
+
+
+	if (lDelta_P > 0)
+		lIncrease_P = 1;
+
+	else if (lDelta_P == 0)
+		lIncrease_P = 0;
+	else {
+		lIncrease_P = -1;
+		lDelta_P = -lDelta_P;
+	}
+
+	if (lDelta_C > lDelta_P)
+		lDistance = lDelta_C;
+
+	else
+		lDistance = lDelta_P;
+
+
+	for (us = 0; us <= lDistance + 1; us++) {
+		lcd_draw_point(usC_Current, usP_Current, color);
+
+		lError_C += lDelta_C;
+		lError_P += lDelta_P;
+
+		if (lError_C > lDistance) {
+			lError_C -= lDistance;
+			usC_Current += lIncrease_C;
+		}
+
+		if (lError_P > lDistance) {
+			lError_P -= lDistance;
+			usP_Current += lIncrease_P;
+		}
+	}
+}
