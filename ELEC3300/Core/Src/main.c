@@ -105,7 +105,7 @@ int main(void) {
 	SDRAM_Init();
 	lcd_init();
 	lv_init();
-	lv_port_disp_init();
+	// lv_port_disp_init();
 	// lv_port_disp_init();
 	// lv_port_indev_init();
 
