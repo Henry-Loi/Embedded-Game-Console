@@ -27,11 +27,11 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "ft5206.h"
 #include "lv_conf.h"
 #include "lvgl/lvgl.h"
 #include "user/lcd.h"
 #include "user/sdram.h"
-
 
 /* USER CODE END Includes */
 
@@ -105,9 +105,11 @@ int main(void) {
 	SDRAM_Init();
 	lcd_init();
 
-	lv_init();
-	lv_port_disp_init();
+	// lv_init();
+	// lv_port_disp_init();
 
+	ft5206_init();
+	TouchTypedef screen;
 	// lv_obj_t* btn = lv_btn_create(lv_scr_act());
 	// lv_obj_set_pos(btn, 10, 10);
 	// lv_obj_set_size(btn, 120, 50);
@@ -122,18 +124,27 @@ int main(void) {
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		// tft_prints(0, 0, "%d", HAL_GetTick());
+		tft_prints(0, 0, "%d", HAL_GetTick());
 		// tft_prints(0, 1, "This is a test");
 		// tft_prints(0, 2, "%d	%0.3f	%c	%s", 108, 0.05, 'a', "hi");
 		// tft_draw_line(0, 0, 1024, 600, RED);
 		// tft_draw_line(0, 600, 1024, 0, GREEN);
 
-		// if (HAL_GetTick() - last_ticks > 100) {
-		// 	last_ticks = HAL_GetTick();
-		// 	tft_update();
-		// 	HAL_GPIO_TogglePin(LED0_GPIO_Port, LED0_Pin);
-		// }
-		lv_task_handler();
+		if (!ft5206_scan(&screen)) {
+			tft_prints(0, 1, "Touch error");
+		} else {
+			tft_prints(0, 1, "Touch num:%d", screen.touch_num);
+			for (int i = 0; i < screen.touch_num; i++) {
+				tft_prints(0, i + 2, "x:%d y:%d", screen.x[i], screen.y[i]);
+			}
+		}
+
+		if (HAL_GetTick() - last_ticks > 100) {
+			last_ticks = HAL_GetTick();
+			tft_update();
+			HAL_GPIO_TogglePin(LED0_GPIO_Port, LED0_Pin);
+		}
+		// lv_task_handler();
 		/* USER CODE END 3 */
 	}
 }
