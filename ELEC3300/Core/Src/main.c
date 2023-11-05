@@ -27,6 +27,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "lv_port_disp.h"
+#include "lvgl.h"
 #include "user/lcd.h"
 #include "user/sdram.h"
 
@@ -102,6 +104,11 @@ int main(void) {
 	uint32_t last_ticks = 0;
 	SDRAM_Init();
 	lcd_init();
+	lv_init();
+	lv_port_disp_init();
+	// lv_port_disp_init();
+	// lv_port_indev_init();
+
 	/* USER CODE END 2 */
 
 	/* Infinite loop */

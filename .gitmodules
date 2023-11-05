@@ -1,0 +1,3 @@
+[submodule "ELEC3300/Drivers/lvgl"]
+	path = ELEC3300/Drivers/lvgl
+	url = https://github.com/lvgl/lvgl

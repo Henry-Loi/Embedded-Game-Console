@@ -366,10 +366,10 @@ ENDMACRO()
 if(NOT DEFINED SOURCE_FILES)
 	if(DEFINED CUBE_PROJECT OR DEFINED CUBE_PROJECT_LL)
 		file(GLOB_RECURSE MIDDLEWARE_SOURCES "./Middlewares/*.c")
-		file(GLOB SOURCE_FILES "Core/Src/*.c" "./Drivers/${STM32_FAMILY}xx_HAL_Driver/Src/*.c")
+		file(GLOB SOURCE_FILES "Core/Src/*.c" "Core/Src/*/*.c" "./Drivers/${STM32_FAMILY}xx_HAL_Driver/Src/*.c" "./Drivers/lvgl/src/*.c" "./Drivers/lvgl/src/*/*.c" "./Drivers/lvgl/src/*/*/*.c" "./Drivers/lvgl/src/*/*/*/*.c")
 		file(GLOB_RECURSE ADD_SOURCE_FILES "Core/Src/*.c") # source in subfolders
-		file(GLOB_RECURSE ADD_AI_SOURCE_FILES "./X-CUBE-AI/App/*.c") 
-		set(SOURCE_FILES ${SOURCE_FILES} ${MIDDLEWARE_SOURCES} ${ADD_SOURCE_FILES} ${ADD_AI_SOURCE_FILES})
+
+		set(SOURCE_FILES ${SOURCE_FILES} ${MIDDLEWARE_SOURCES})
 	elseif(DEFINED SOURCE_DIR)
 		file(GLOB_RECURSE SOURCE_FILES "${SOURCE_DIR}/*.c")
 	else()
@@ -384,21 +384,14 @@ if(NOT DEFINED INCLUDE_DIRS)
 	if(DEFINED CUBE_PROJECT OR DEFINED CUBE_PROJECT_LL)
 		file(GLOB_RECURSE MIDDLEWARE_INCLUDES LIST_DIRECTORIES true "./Middlewares/*/Inc")
 		file(GLOB_RECURSE DRIVERS_INCLUDES LIST_DIRECTORIES true "./Drivers/*/Inc")
-		# file(GLOB_RECURSE CMSIS_INCLUDES LIST_DIRECTORIES true "./CMSIS/*/Inc")
-
-		file(GLOB AI_INCLUDES_0 LIST_DIRECTORIES true "./X-CUBE-AI")
-		file(GLOB_RECURSE AI_INCLUDES_1 LIST_DIRECTORIES true "./X-CUBE-AI/App")
-		file(GLOB_RECURSE AI_INCLUDES_2 LIST_DIRECTORIES true "./X-CUBE-AI/Target")
-
-		# file(GLOB_RECURSE DRIVER_INCLUDES LIST_DIRECTORIES true "./Drivers/*/Inc")
+		file(GLOB LVGL_INCLUDES LIST_DIRECTORIES true "./Drivers/lvgl")
 		set(INCLUDE_DIRS ${ADD_INCLUDE_DIRS}
 			Core/Inc/
 			${MIDDLEWARE_INCLUDES}
 			${DRIVERS_INCLUDES}
-			#${CMSIS_INCLUDES}
-			${AI_INCLUDES_0}
-			${AI_INCLUDES_1}
-			${AI_INCLUDES_2}
+			./Drivers/lvgl 
+			./Drivers/lvgl/lvgl 
+			./Drivers/lvgl/lvgl/src
 		)
 	elseif(DEFINED SOURCE_DIR)
 		file(GLOB INCLUDE_DIRS "${SOURCE_DIR}/*/")
