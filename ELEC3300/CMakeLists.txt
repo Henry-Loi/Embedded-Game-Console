@@ -960,3 +960,30 @@ if(DEFINED GDB_TARGET)
 else()
 	message("No program found for gdb")
 endif()
+
+
+# Set the paths to the required directories
+set(LVGL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/lvgl")
+set(LV_DRV_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/lv_drivers")
+
+# Add the necessary include directories
+include_directories(
+    ${LVGL_DIR}/src
+    ${LV_DRV_DIR}/display
+    ${LV_DRV_DIR}/indev
+)
+
+# Add your source files
+file(GLOB SOURCES 
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/*.c"
+)
+
+# Add the lvgl library
+add_library(lvgl STATIC IMPORTED)
+set_target_properties(lvgl PROPERTIES IMPORTED_LOCATION ${LVGL_DIR}/build/lvgl.a)
+
+# Add your executable
+add_executable(YourExecutable ${SOURCES})
+
+# Link the lvgl library to your executable
+target_link_libraries(YourExecutable lvgl)

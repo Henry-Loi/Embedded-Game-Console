@@ -14,20 +14,20 @@ extern "C" {
  *      INCLUDES
  *********************/
 #ifndef LV_DRV_NO_CONF
-#ifdef LV_CONF_INCLUDE_SIMPLE
-#include "lv_drv_conf.h"
-#else
-#include "../../lv_drv_conf.h"
-#endif
+	#ifdef LV_CONF_INCLUDE_SIMPLE
+		#include "lv_drv_conf.h"
+	#else
+		#include "../../lv_drv_conf.h"
+	#endif
 #endif
 
 #if USE_EVDEV || USE_BSD_EVDEV
 
-#ifdef LV_LVGL_H_INCLUDE_SIMPLE
-#include "lvgl.h"
-#else
-#include "lvgl/lvgl.h"
-#endif
+	#ifdef LV_LVGL_H_INCLUDE_SIMPLE
+		#include "lvgl.h"
+	#else
+		#include "../lvgl.h"
+	#endif
 
 /*********************
  *      DEFINES
@@ -56,12 +56,12 @@ bool evdev_set_file(char* dev_name);
  * Get the current position and state of the evdev
  * @param data store the evdev data here
  */
-void evdev_read(lv_indev_drv_t * drv, lv_indev_data_t * data);
+void evdev_read(lv_indev_drv_t* drv, lv_indev_data_t* data);
 
 
-/**********************
- *      MACROS
- **********************/
+	/**********************
+	 *      MACROS
+	 **********************/
 
 #endif /* USE_EVDEV */
 
