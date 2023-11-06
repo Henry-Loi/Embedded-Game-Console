@@ -27,11 +27,17 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "lv_100ask_modules/lv_100ask_modules.h"
 #include "lv_conf.h"
+#include "lv_drivers/display/fbdev.h"
+#include "lv_drivers/indev/evdev.h"
+#include "lv_lib_png/lv_png.h"
 #include "lvgl/lvgl.h"
 #include "user/lcd.h"
 #include "user/sdram.h"
 
+
+#define DISP_BUF_SIZE (1024 * 600)
 
 /* USER CODE END Includes */
 
@@ -106,14 +112,51 @@ int main(void) {
 	lcd_init();
 
 	lv_init();
-	lv_port_disp_init();
+	fbdev_init();
 
-	// lv_obj_t* btn = lv_btn_create(lv_scr_act());
-	// lv_obj_set_pos(btn, 10, 10);
-	// lv_obj_set_size(btn, 120, 50);
-	// lv_obj_t* label = lv_label_create(btn);
-	// lv_label_set_text(label, "Button");
-	// lv_obj_center(label);
+	/*Linux frame buffer device init*/
+	fbdev_init();
+
+	/*A small buffer for LittlevGL to draw the screen's content*/
+	static lv_color_t buf[DISP_BUF_SIZE];
+
+	/*Initialize a descriptor for the buffer*/
+	static lv_disp_draw_buf_t disp_buf;
+	lv_disp_draw_buf_init(&disp_buf, buf, NULL, DISP_BUF_SIZE);
+
+	/*Initialize and register a display driver*/
+	static lv_disp_drv_t disp_drv;
+	lv_disp_drv_init(&disp_drv);
+	disp_drv.draw_buf = &disp_buf;
+	disp_drv.flush_cb = fbdev_flush;
+	disp_drv.hor_res = 1024;
+	disp_drv.ver_res = 600;
+	lv_disp_drv_register(&disp_drv);
+
+	/* Linux input device init */
+	evdev_init();
+
+	/* Initialize and register a display input driver */
+	lv_indev_drv_t indev_drv;
+	lv_indev_drv_init(&indev_drv); /*Basic initialization*/
+
+	indev_drv.type = LV_INDEV_TYPE_POINTER;
+	indev_drv.read_cb = evdev_read; // lv_gesture_dir_t lv_indev_get_gesture_dir(const lv_indev_t * indev)
+	lv_indev_t* my_indev = lv_indev_drv_register(&indev_drv);
+
+	// 支持png
+	lv_png_init();
+
+	// Set Image Cache size
+	lv_img_cache_set_size(32);
+
+	// 调用进程间通信管理初始化函数
+	lv_100ask_dbus_handler_init("net.ask100.lvgl.Main", "/net/ask100/lvgl/Main");
+
+	/* 初始化桌面环境 */
+	// lv_100ask_boot_animation(lv_100ask_demo_init_icon, 1500); //开机动画
+	lv_100ask_demo_init_icon();
+
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
