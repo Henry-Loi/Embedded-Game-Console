@@ -27,11 +27,11 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "lv_animation.h"
 #include "lv_conf.h"
 #include "lvgl/lvgl.h"
 #include "user/lcd.h"
 #include "user/sdram.h"
-
 
 /* USER CODE END Includes */
 
@@ -114,6 +114,9 @@ int main(void) {
 	// lv_obj_t* label = lv_label_create(btn);
 	// lv_label_set_text(label, "Button");
 	// lv_obj_center(label);
+
+	lv_boot_animation(lv_init_icon, 5000); // 开机动画
+	// lv_init_icon();
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -128,12 +131,13 @@ int main(void) {
 		// tft_draw_line(0, 0, 1024, 600, RED);
 		// tft_draw_line(0, 600, 1024, 0, GREEN);
 
-		// if (HAL_GetTick() - last_ticks > 100) {
-		// 	last_ticks = HAL_GetTick();
-		// 	tft_update();
-		// 	HAL_GPIO_TogglePin(LED0_GPIO_Port, LED0_Pin);
-		// }
+		if (HAL_GetTick() - last_ticks > 100) {
+			last_ticks = HAL_GetTick();
+			// 	tft_update();
+			HAL_GPIO_TogglePin(LED0_GPIO_Port, LED0_Pin);
+		}
 		lv_task_handler();
+
 		/* USER CODE END 3 */
 	}
 }
