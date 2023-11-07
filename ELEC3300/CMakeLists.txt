@@ -951,7 +951,7 @@ if(DEFINED DEBUG_TARGET)
 	add_custom_target(debug DEPENDS ${DEBUG_TARGET})
 	message("debug using ${DEBUG_TARGET}")
 else()
-	message("No program found for debug")
+	message("o program found for debug")
 endif()
 
 if(DEFINED GDB_TARGET)

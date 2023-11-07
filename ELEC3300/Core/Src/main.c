@@ -31,7 +31,7 @@
 #include "lv_conf.h"
 #include "lv_drivers/display/fbdev.h"
 #include "lv_drivers/indev/evdev.h"
-#include "lv_lib_png/lv_png.h"
+// #include "lv_lib_png/lv_png.h"
 #include "lvgl/lvgl.h"
 #include "user/lcd.h"
 #include "user/sdram.h"
@@ -145,7 +145,7 @@ int main(void) {
 	lv_indev_t* my_indev = lv_indev_drv_register(&indev_drv);
 
 	// 支持png
-	lv_png_init();
+	// lv_png_init();
 
 	// Set Image Cache size
 	lv_img_cache_set_size(32);
