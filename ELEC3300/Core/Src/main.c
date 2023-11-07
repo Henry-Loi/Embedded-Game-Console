@@ -136,9 +136,9 @@ int main(void) {
 				   HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_4));
 
 		for (int i = 0; i < MAX_TOUCH_POINTS; i++) {
-			tft_prints(0, 1 + i * 3, "Point %d: ", i);
-			tft_prints(0, 2 + i * 3, "x: %d", touch_feedback.point[i].x);
-			tft_prints(0, 3 + i * 3, "y: %d", touch_feedback.point[i].y);
+			tft_prints(0, 3 + i * 3, "Point %d: ", i);
+			tft_prints(0, 4 + i * 3, "x: %d", touch_feedback.point[i].x);
+			tft_prints(0, 5 + i * 3, "y: %d", touch_feedback.point[i].y);
 		}
 
 
