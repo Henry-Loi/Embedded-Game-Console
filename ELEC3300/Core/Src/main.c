@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+#include "adc.h"
 #include "dma2d.h"
 #include "fmc.h"
 #include "gpio.h"
@@ -32,6 +33,8 @@
 #include "user/display/lcd.h"
 #include "user/display/touch.h"
 #include "user/sdram.h"
+
+#include "stm32f4xx_hal_gpio.h"
 
 
 /* USER CODE END Includes */
@@ -53,7 +56,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+volatile uint16_t joy_adc_values[4] = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -101,6 +104,7 @@ int main(void) {
 	MX_LTDC_Init();
 	MX_FMC_Init();
 	MX_DMA2D_Init();
+	MX_ADC1_Init();
 	/* USER CODE BEGIN 2 */
 	uint32_t last_ticks = 0;
 	SDRAM_Init();
@@ -108,12 +112,14 @@ int main(void) {
 	lv_init();
 	lv_port_disp_init();
 	touch_init();
-	// lv_obj_t* btn = lv_btn_create(lv_scr_act());
-	// lv_obj_set_pos(btn, 10, 10);
-	// lv_obj_set_size(btn, 120, 50);
-	// lv_obj_t* label = lv_label_create(btn);
-	// lv_label_set_text(label, "Button");
-	// lv_obj_center(label);
+
+	if (HAL_ADCEx_Calibration_Start(&hadc1) != HAL_OK) {
+		/*debug message if needed*/
+	}
+	if (HAL_ADCEx_MultiModeStart_DMA(&hadc1, (volatile void*)joy_adc_values, 4 / 2) != HAL_OK) {
+		/*debug message if needed*/
+	}
+
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -123,10 +129,12 @@ int main(void) {
 
 		/* USER CODE BEGIN 3 */
 		tft_prints(0, 0, "%d", HAL_GetTick());
-		// tft_prints(0, 1, "This is a test");
-		// tft_prints(0, 2, "%d	%0.3f	%c	%s", 108, 0.05, 'a', "hi");
-		// tft_draw_line(0, 0, 1024, 600, RED);
-		// tft_draw_line(0, 600, 1024, 0, GREEN);
+
+		tft_prints(0, 1, "Joy L > x: %d y: %d btn: %d", joy_adc_values[0], joy_adc_values[1],
+				   HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_6));
+		tft_prints(0, 2, "Joy R > x: %d y: %d btn: %d", joy_adc_values[2], joy_adc_values[3],
+				   HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_4));
+
 		for (int i = 0; i < MAX_TOUCH_POINTS; i++) {
 			tft_prints(0, 1 + i * 3, "Point %d: ", i);
 			tft_prints(0, 2 + i * 3, "x: %d", touch_feedback.point[i].x);
@@ -137,7 +145,7 @@ int main(void) {
 		if (HAL_GetTick() - last_ticks > 100) {
 			last_ticks = HAL_GetTick();
 			tft_update();
-			HAL_GPIO_TogglePin(LED0_GPIO_Port, LED0_Pin);
+			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 		}
 		// lv_task_handler();
 		touch_update();
