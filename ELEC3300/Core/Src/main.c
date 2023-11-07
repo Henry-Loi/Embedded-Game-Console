@@ -29,7 +29,8 @@
 /* USER CODE BEGIN Includes */
 #include "lv_conf.h"
 #include "lvgl/lvgl.h"
-#include "user/lcd.h"
+#include "user/display/lcd.h"
+#include "user/display/touch.h"
 #include "user/sdram.h"
 
 
@@ -104,10 +105,9 @@ int main(void) {
 	uint32_t last_ticks = 0;
 	SDRAM_Init();
 	lcd_init();
-
 	lv_init();
 	lv_port_disp_init();
-
+	touch_init();
 	// lv_obj_t* btn = lv_btn_create(lv_scr_act());
 	// lv_obj_set_pos(btn, 10, 10);
 	// lv_obj_set_size(btn, 120, 50);
@@ -122,21 +122,29 @@ int main(void) {
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		// tft_prints(0, 0, "%d", HAL_GetTick());
+		tft_prints(0, 0, "%d", HAL_GetTick());
 		// tft_prints(0, 1, "This is a test");
 		// tft_prints(0, 2, "%d	%0.3f	%c	%s", 108, 0.05, 'a', "hi");
 		// tft_draw_line(0, 0, 1024, 600, RED);
 		// tft_draw_line(0, 600, 1024, 0, GREEN);
+		for (int i = 0; i < MAX_TOUCH_POINTS; i++) {
+			tft_prints(0, 1 + i * 3, "Point %d: ", i);
+			tft_prints(0, 2 + i * 3, "x: %d", touch_feedback.point[i].x);
+			tft_prints(0, 3 + i * 3, "y: %d", touch_feedback.point[i].y);
+		}
 
-		// if (HAL_GetTick() - last_ticks > 100) {
-		// 	last_ticks = HAL_GetTick();
-		// 	tft_update();
-		// 	HAL_GPIO_TogglePin(LED0_GPIO_Port, LED0_Pin);
-		// }
-		lv_task_handler();
-		/* USER CODE END 3 */
+
+		if (HAL_GetTick() - last_ticks > 100) {
+			last_ticks = HAL_GetTick();
+			tft_update();
+			HAL_GPIO_TogglePin(LED0_GPIO_Port, LED0_Pin);
+		}
+		// lv_task_handler();
+		touch_update();
 	}
+	/* USER CODE END 3 */
 }
+
 /**
  * @brief System Clock Configuration
  * @retval None

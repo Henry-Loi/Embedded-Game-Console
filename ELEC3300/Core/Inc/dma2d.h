@@ -49,3 +49,4 @@ void dma2d_transfer_data_r2m(uint32_t* addr, uint32_t xSize, uint32_t ySize, uin
 #endif
 
 #endif /* __DMA2D_H__ */
+
