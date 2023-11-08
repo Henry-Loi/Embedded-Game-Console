@@ -70,10 +70,10 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+// SDRAM
 #define EXT_SDRAM_ADDR ((uint32_t)0xC0000000)
 #define EXT_SDRAM_SIZE (32 * 1024 * 1024)
 
-uint32_t bsp_TestExtSDRAM(void);
 /* USER CODE END 0 */
 
 /**
@@ -111,20 +111,29 @@ int main(void) {
 	MX_ADC1_Init();
 	MX_SDIO_SD_Init();
 	MX_FATFS_Init();
+
 	/* USER CODE BEGIN 2 */
+
 	uint32_t last_ticks = 0;
+
 	SDRAM_Init();
+
+	// LCD
 	lcd_init();
 	lv_init();
 	lv_port_disp_init();
 	touch_init();
 
-	if (HAL_ADCEx_Calibration_Start(&hadc1) != HAL_OK) {
+	// ADC
+	if (HAL_ADCEx_InjectedStart(&hadc1) != HAL_OK) {
 		/*debug message if needed*/
 	}
 	if (HAL_ADCEx_MultiModeStart_DMA(&hadc1, (volatile void*)joy_adc_values, 4 / 2) != HAL_OK) {
 		/*debug message if needed*/
 	}
+
+	// FATFS
+	fatfs_file_system_test();
 
 	/* USER CODE END 2 */
 

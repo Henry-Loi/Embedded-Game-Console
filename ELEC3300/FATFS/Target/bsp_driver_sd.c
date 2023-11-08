@@ -28,12 +28,11 @@
 
 /* USER CODE END 0 */
 #else
-	/* USER CODE BEGIN FirstSection */
-	/* can be used to modify / undefine following code or add new definitions */
+/* USER CODE BEGIN FirstSection */
+/* can be used to modify / undefine following code or add new definitions */
 	/* USER CODE END FirstSection */
 	/* Includes ------------------------------------------------------------------*/
 	#include "bsp_driver_sd.h"
-	#include "main.h"
 
 /* Extern variables ---------------------------------------------------------*/
 

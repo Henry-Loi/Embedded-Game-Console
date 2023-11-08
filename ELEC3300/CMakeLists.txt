@@ -960,3 +960,32 @@ if(DEFINED GDB_TARGET)
 else()
 	message("No program found for gdb")
 endif()
+
+include_directories(
+    STMLIB
+    STMLIB/inc
+    STMLIB/CORE
+    STMLIB/USB
+    STMLIB/USB/STM32_USB_Device_Library/Class/cdc/inc
+    STMLIB/USB/STM32_USB_Device_Library/Core/inc
+    STMLIB/USB/STM32_USB_OTG_Driver/inc
+    STMLIB/SDIO
+    FreeRTOS/Source/include
+    FreeRTOS/Source/portable/GCC/ARM_CM4F
+    FATFS
+	FATFS/App
+	FATFS/Target
+    MAVLINK
+    MAVLINK/common
+    SRC/CONTROL 
+    SRC/DRIVER 
+    SRC/LOG 
+    SRC/MATH 
+    SRC/MESSAGE 
+    SRC/MODULE 
+    SRC/NAVIGATION 
+    SRC/SENSOR
+    SRC/SYSTEM
+    SRC/TASK
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
