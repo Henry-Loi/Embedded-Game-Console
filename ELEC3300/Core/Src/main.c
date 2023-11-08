@@ -29,6 +29,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "lv_conf.h"
+#include "lv_os.h"
 #include "lvgl/lvgl.h"
 #include "user/display/lcd.h"
 #include "user/display/touch.h"
@@ -70,7 +71,6 @@ void SystemClock_Config(void);
 #define EXT_SDRAM_ADDR ((uint32_t)0xC0000000)
 #define EXT_SDRAM_SIZE (32 * 1024 * 1024)
 
-uint32_t bsp_TestExtSDRAM(void);
 /* USER CODE END 0 */
 
 /**
@@ -108,12 +108,20 @@ int main(void) {
 	/* USER CODE BEGIN 2 */
 	uint32_t last_ticks = 0;
 	SDRAM_Init();
+
 	lcd_init();
-	lv_init();
-	lv_port_disp_init();
 	touch_init();
 
-	if (HAL_ADCEx_Calibration_Start(&hadc1) != HAL_OK) {
+
+	// lvgl init function calls
+	lv_init();
+	lv_port_disp_init();  /* lvgl lcd display init */
+	lv_port_indev_init(); /* lvgl lcd touch screen init */
+
+	// test touch btn
+	lv_example();
+
+	if (HAL_ADCEx_InjectedStart(&hadc1) != HAL_OK) {
 		/*debug message if needed*/
 	}
 	if (HAL_ADCEx_MultiModeStart_DMA(&hadc1, (volatile void*)joy_adc_values, 4 / 2) != HAL_OK) {
@@ -144,10 +152,10 @@ int main(void) {
 
 		if (HAL_GetTick() - last_ticks > 100) {
 			last_ticks = HAL_GetTick();
-			tft_update();
+			// tft_update();
 			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 		}
-		// lv_task_handler();
+		lv_task_handler();
 		touch_update();
 	}
 	/* USER CODE END 3 */
