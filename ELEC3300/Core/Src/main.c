@@ -132,7 +132,7 @@ int main(void) {
 	SDRAM_Init();
 
 	// FATFS
-	// fatfs_file_system_test();
+	fatfs_file_system_test(0);
 
 	/* USER CODE END 2 */
 
