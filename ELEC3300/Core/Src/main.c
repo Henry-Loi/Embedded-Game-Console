@@ -67,7 +67,26 @@ void SystemClock_Config(void);
 #define EXT_SDRAM_ADDR ((uint32_t)0xC0000000)
 #define EXT_SDRAM_SIZE (32 * 1024 * 1024)
 
-uint32_t bsp_TestExtSDRAM(void);
+static void btn_event_cb(lv_event_t* e) {
+	lv_event_code_t code = lv_event_get_code(e);
+	lv_obj_t* btn = lv_event_get_target(e);
+	if (code == LV_EVENT_CLICKED) {
+		static uint8_t cnt = 0;
+		cnt++;
+		lv_obj_t* label = lv_obj_get_child(btn, 0);
+		lv_label_set_text_fmt(label, "Button: %d", cnt);
+	}
+}
+
+void lv_example(void) {
+	lv_obj_t* btn = lv_btn_create(lv_scr_act());
+	lv_obj_set_pos(btn, 10, 10);
+	lv_obj_set_size(btn, 120, 50);
+	lv_obj_add_event_cb(btn, btn_event_cb, LV_EVENT_ALL, NULL);
+	lv_obj_t* label = lv_label_create(btn);
+	lv_label_set_text(label, "Button");
+	lv_obj_center(label);
+}
 /* USER CODE END 0 */
 
 /**
@@ -107,13 +126,11 @@ int main(void) {
 	lcd_init();
 	lv_init();
 	lv_port_disp_init();
+
 	touch_init();
-	// lv_obj_t* btn = lv_btn_create(lv_scr_act());
-	// lv_obj_set_pos(btn, 10, 10);
-	// lv_obj_set_size(btn, 120, 50);
-	// lv_obj_t* label = lv_label_create(btn);
-	// lv_label_set_text(label, "Button");
-	// lv_obj_center(label);
+	lv_port_indev_init();
+
+	lv_example();
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -127,19 +144,19 @@ int main(void) {
 		// tft_prints(0, 2, "%d	%0.3f	%c	%s", 108, 0.05, 'a', "hi");
 		// tft_draw_line(0, 0, 1024, 600, RED);
 		// tft_draw_line(0, 600, 1024, 0, GREEN);
-		for (int i = 0; i < MAX_TOUCH_POINTS; i++) {
-			tft_prints(0, 1 + i * 3, "Point %d: ", i);
-			tft_prints(0, 2 + i * 3, "x: %d", touch_feedback.point[i].x);
-			tft_prints(0, 3 + i * 3, "y: %d", touch_feedback.point[i].y);
-		}
+		// for (int i = 0; i < MAX_TOUCH_POINTS; i++) {
+		// 	tft_prints(0, 1 + i * 3, "Point %d: ", i);
+		// 	tft_prints(0, 2 + i * 3, "x: %d", touch_feedback.point[i].x);
+		// 	tft_prints(0, 3 + i * 3, "y: %d", touch_feedback.point[i].y);
+		// }
 
 
 		if (HAL_GetTick() - last_ticks > 100) {
 			last_ticks = HAL_GetTick();
-			tft_update();
+			// tft_update();
 			HAL_GPIO_TogglePin(LED0_GPIO_Port, LED0_Pin);
 		}
-		// lv_task_handler();
+		lv_task_handler();
 		touch_update();
 	}
 	/* USER CODE END 3 */
