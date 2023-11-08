@@ -34,9 +34,9 @@
 #include "lv_conf.h"
 #include "lv_os.h"
 #include "lvgl/lvgl.h"
+#include "sdram.h"
 #include "user/display/lcd.h"
 #include "user/display/touch.h"
-#include "user/sdram.h"
 
 #include "stm32f4xx_hal_gpio.h"
 
@@ -119,9 +119,9 @@ int main(void) {
 
 	SDRAM_Init();
 
+	// lcd init
 	lcd_init();
 	touch_init();
-
 
 	// lvgl init function calls
 	lv_init();
@@ -131,12 +131,10 @@ int main(void) {
 	// test touch btn
 	lv_example();
 
-	if (HAL_ADCEx_InjectedStart(&hadc1) != HAL_OK) {
-		/*debug message if needed*/
-	}
+	// ADC DMA (Joystick)
+	if (HAL_ADCEx_InjectedStart(&hadc1) != HAL_OK) {} /*debug message if needed*/
 	if (HAL_ADCEx_MultiModeStart_DMA(&hadc1, (volatile void*)joy_adc_values, 4 / 2) != HAL_OK) {
-		/*debug message if needed*/
-	}
+	} /*debug message if needed*/
 
 	// FATFS
 	fatfs_file_system_test();
