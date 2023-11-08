@@ -18,6 +18,8 @@
 /* USER CODE END Header */
 #include "fatfs.h"
 
+#include "lcd.h"
+
 uint8_t retSDRAMDISK;  /* Return value for SDRAMDISK */
 char SDRAMDISKPath[4]; /* SDRAMDISK logical drive path */
 FATFS SDRAMDISKFatFS;  /* File system object for SDRAMDISK logical drive */
@@ -54,7 +56,7 @@ DWORD get_fattime(void) {
 }
 
 /* USER CODE BEGIN Application */
-UINT fatfs_file_system_test(void) {
+UINT fatfs_file_system_test(int r) {
 	// FATFS
 	FATFS fs;	   /* FatFs file system object */
 	FIL file;	   /* file object */
@@ -64,74 +66,74 @@ UINT fatfs_file_system_test(void) {
 	BYTE WriteBuffer[] = "This is STM32 working with FatFs\r\n";
 	f_res = f_mount(&fs, "0:", 1);
 
-	/*----------------------- formatting test ---------------------------*/
-	printf("\r\n****** Register the file system object to the FatFs module ******\r\n");
+	/*----------------------- file system formatting test ---------------------------*/
+	tft_prints(0, r++, "\r\n****** Register the file system object to the FatFs module ******\r\n");
 
-	/* 如�?�没??��?�件系�?�就?��式�?��?�建??�建??�件系�?? */
+	/* if no file system then create one */
 	if (f_res == FR_NO_FILESYSTEM) {
-		printf("The SD card does not yet have a file system and is about to be formatted...\r\n");
+		tft_prints(0, r++, "The SD card does not yet have a file system and is about to be formatted...\r\n");
 		/* formatting */
 		f_res = f_mkfs("0:", 0, 0, NULL, 0);
 		if (f_res == FR_OK) {
-			printf("The SD card successfully formatted the file system\r\n");
-			/* ?��式�?��?��?��?��?��?��?�载 */
+			tft_prints(0, r++, "The SD card successfully formatted the file system\r\n");
+			/* unmount object after formatting */
 			f_res = f_mount(NULL, "0:", 1);
-			/* ??�新??�载 */
+			/* remount object */
 			f_res = f_mount(&fs, "0:", 1);
 		} else {
-			printf("The format failed\r\n");
-			while (1)
-				;
+			tft_prints(0, r++, "The format failed\r\n");
+			// while (1)
+			// 	;
 		}
 	} else if (f_res != FR_OK) {
-		printf(" mount error : %d \r\n", f_res);
-		while (1)
-			;
+		tft_prints(0, r++, " mount error : %d \r\n", f_res);
+		// while (1)
+		// 	;
 	} else {
-		printf(" mount success!!! \r\n");
+		tft_prints(0, r++, " mount success!!! \r\n");
 	}
 
-	/*----------------------- write test -----------------------------*/
-	/* ??��???�件，�?��?��?�件不�?�在??��?�建�? */
-	printf("\r\n****** Create and Open new text file objects with write access ******\r\n");
+	/*----------------------- file system write test -----------------------------*/
+	/* open a file, if file doesn't exit then create it */
+	tft_prints(0, r++, "\r\n****** Create and Open new text file objects with write access ******\r\n");
 	f_res = f_open(&file, "0:FatFs STM32cube.txt", FA_CREATE_ALWAYS | FA_WRITE);
 
 	if (f_res == FR_OK) {
-		printf(" open file sucess!!! \r\n");
-		/* 将�?��?��?�储?��??�容??�入?��??�件??? */
-		printf("\r\n****** Write data to the text files ******\r\n");
+		tft_prints(0, r++, " open file sucess!!! \r\n");
+		/* write specified sector content into file */
+		tft_prints(0, r++, "\r\n****** Write data to the text files ******\r\n");
 		f_res = f_write(&file, WriteBuffer, sizeof(WriteBuffer), &fnum);
 		if (f_res == FR_OK) {
-			printf(" write file success!!! (%d)\n", fnum);
-			printf(" write Data : %s\r\n", WriteBuffer);
+			tft_prints(0, r++, " write file success!!! (%d)\n", fnum);
+			tft_prints(0, r++, " write Data : %s\r\n", WriteBuffer);
 		} else {
-			printf(" write file error : %d\r\n", f_res);
+			tft_prints(0, r++, " write file error : %d\r\n", f_res);
 		}
-		/* 不�?�读??��?�关?��??�件 */
+		/* close file */
 		f_close(&file);
 	} else {
-		printf(" open file error : %d\r\n", f_res);
+		tft_prints(0, r++, " open file error : %d\r\n", f_res);
 	}
 
-	/*------------------- ??�件系�?��?��?��?�读测�?? ------------------------------------*/
-	printf("\r\n****** Read data from the text files ******\r\n");
+	/*------------------- file system read test ------------------------------------*/
+	tft_prints(0, r++, "\r\n****** Read data from the text files ******\r\n");
 	f_res = f_open(&file, "0:FatFs STM32cube.txt", FA_OPEN_EXISTING | FA_READ);
 	if (f_res == FR_OK) {
-		printf(" open file success!!! \r\n");
+		tft_prints(0, r++, " open file success!!! \r\n");
 		f_res = f_read(&file, ReadBuffer, sizeof(ReadBuffer), &fnum);
 		if (f_res == FR_OK) {
-			printf("read success!!! (%d)\n", fnum);
-			printf("read Data : %s\r\n", ReadBuffer);
+			tft_prints(0, r++, "read success!!! (%d)\n", fnum);
+			tft_prints(0, r++, "read Data : %s\r\n", ReadBuffer);
 		} else {
-			printf(" read error!!! %d\r\n", f_res);
+			tft_prints(0, r++, " read error!!! %d\r\n", f_res);
 		}
 	} else {
-		printf(" open file error : %d\r\n", f_res);
+		tft_prints(0, r++, " open file error : %d\r\n", f_res);
 	}
-	/* 不�?�读??��?�关?��??�件 */
+	/* stop write-read operation, close the file */
 	f_close(&file);
-	/* 不�?�使?��??�件系�?��?��?��?��?�载??�件系�?? */
+	/* unmount the file object */
 	f_mount(NULL, "0:", 1);
-	/* ??��?��?��?��?��?�机 */
+	/* test done */
 }
 /* USER CODE END Application */
