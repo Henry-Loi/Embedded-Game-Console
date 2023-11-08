@@ -20,22 +20,24 @@
 #include "main.h"
 
 #include "adc.h"
+#include "dma.h"
 #include "dma2d.h"
+#include "fatfs.h"
 #include "fmc.h"
 #include "gpio.h"
 #include "ltdc.h"
+#include "sdio.h"
+
+#include "cmsis_os.h"
 
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "lv_conf.h"
-#include "lv_os.h"
-#include "lvgl/lvgl.h"
-#include "user/display/lcd.h"
+#include "board.h"
+#include "gpio.h"
+#include "os.h"
+#include "sdram.h"
 #include "user/display/touch.h"
-#include "user/sdram.h"
-
-#include "stm32f4xx_hal_gpio.h"
 
 
 /* USER CODE END Includes */
@@ -57,20 +59,37 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-volatile uint16_t joy_adc_values[4] = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
+// SDRAM
+#define EXT_SDRAM_ADDR ((uint32_t)0xC0000000)
+#define EXT_SDRAM_SIZE (32 * 1024 * 1024)
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-#define EXT_SDRAM_ADDR ((uint32_t)0xC0000000)
-#define EXT_SDRAM_SIZE (32 * 1024 * 1024)
 
+DEFINE_THREAD(led_task, led_blinky);
+
+void led_blinky(void* par) {
+	uint32_t last_ticks = 0;
+
+	while (1) {
+		osDelay(4);
+		if (HAL_GetTick() - last_ticks >= 100) {
+			gpio_toggle(LED1);
+			last_ticks = HAL_GetTick();
+		}
+	}
+}
+
+DEFINE_THREAD_SIZED(lcd_task, lcd_thread, 4096);
+DEFINE_THREAD(controller_task, buttons_handler);
 /* USER CODE END 0 */
 
 /**
@@ -101,35 +120,33 @@ int main(void) {
 
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
+	MX_DMA_Init();
 	MX_LTDC_Init();
 	MX_FMC_Init();
 	MX_DMA2D_Init();
 	MX_ADC1_Init();
+	MX_SDIO_SD_Init();
+	MX_FATFS_Init();
 	/* USER CODE BEGIN 2 */
-	uint32_t last_ticks = 0;
+
 	SDRAM_Init();
 
-	lcd_init();
-	touch_init();
-
-
-	// lvgl init function calls
-	lv_init();
-	lv_port_disp_init();  /* lvgl lcd display init */
-	lv_port_indev_init(); /* lvgl lcd touch screen init */
-
-	// test touch btn
-	lv_example();
-
-	if (HAL_ADCEx_InjectedStart(&hadc1) != HAL_OK) {
-		/*debug message if needed*/
-	}
-	if (HAL_ADCEx_MultiModeStart_DMA(&hadc1, (volatile void*)joy_adc_values, 4 / 2) != HAL_OK) {
-		/*debug message if needed*/
-	}
+	// FATFS
+	// fatfs_file_system_test();
 
 	/* USER CODE END 2 */
 
+	/* Init scheduler */
+	osKernelInitialize(); /* Call init function for freertos objects (in freertos.c) */
+
+	os_create_thread(led_task, NULL, 4);
+	os_create_thread(lcd_task, NULL, 1);
+	os_create_thread(controller_task, NULL, 3);
+
+	/* Start scheduler */
+	osKernelStart();
+
+	/* We should never get here as control is now taken by the scheduler */
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	uint32_t temp = 0;
@@ -186,7 +203,7 @@ void SystemClock_Config(void) {
 	/** Configure the main internal regulator output voltage
 	 */
 	__HAL_RCC_PWR_CLK_ENABLE();
-	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
 
 	/** Initializes the RCC Oscillators according to the specified parameters
 	 * in the RCC_OscInitTypeDef structure.
@@ -196,16 +213,10 @@ void SystemClock_Config(void) {
 	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
 	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
 	RCC_OscInitStruct.PLL.PLLM = 15;
-	RCC_OscInitStruct.PLL.PLLN = 216;
+	RCC_OscInitStruct.PLL.PLLN = 144;
 	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-	RCC_OscInitStruct.PLL.PLLQ = 4;
+	RCC_OscInitStruct.PLL.PLLQ = 5;
 	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-		Error_Handler();
-	}
-
-	/** Activate the Over-Drive mode
-	 */
-	if (HAL_PWREx_EnableOverDrive() != HAL_OK) {
 		Error_Handler();
 	}
 
@@ -217,7 +228,7 @@ void SystemClock_Config(void) {
 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
 	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK) {
+	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK) {
 		Error_Handler();
 	}
 }
@@ -225,6 +236,26 @@ void SystemClock_Config(void) {
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
+
+/**
+ * @brief  Period elapsed callback in non blocking mode
+ * @note   This function is called  when TIM1 interrupt took place, inside
+ * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+ * a global variable "uwTick" used as application time base.
+ * @param  htim : TIM handle
+ * @retval None
+ */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
+	/* USER CODE BEGIN Callback 0 */
+
+	/* USER CODE END Callback 0 */
+	if (htim->Instance == TIM1) {
+		HAL_IncTick();
+	}
+	/* USER CODE BEGIN Callback 1 */
+
+	/* USER CODE END Callback 1 */
+}
 
 /**
  * @brief  This function is executed in case of error occurrence.

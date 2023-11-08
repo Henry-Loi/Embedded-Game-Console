@@ -57,23 +57,29 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define Joy_R_Btn_Pin		GPIO_PIN_4
-#define Joy_R_Btn_GPIO_Port GPIOE
-#define Joy_L_Btn_Pin		GPIO_PIN_6
-#define Joy_L_Btn_GPIO_Port GPIOE
-#define TP_CS_Pin			GPIO_PIN_8
-#define TP_CS_GPIO_Port		GPIOI
-#define LED1_Pin			GPIO_PIN_1
-#define LED1_GPIO_Port		GPIOB
-#define TP_SCK_Pin			GPIO_PIN_6
-#define TP_SCK_GPIO_Port	GPIOH
-#define TP_PEN_Pin			GPIO_PIN_7
-#define TP_PEN_GPIO_Port	GPIOH
-#define TP_SDA_Pin			GPIO_PIN_3
-#define TP_SDA_GPIO_Port	GPIOI
-#define LCD_BL_Pin			GPIO_PIN_5
-#define LCD_BL_GPIO_Port	GPIOB
+#define SD_Card_Check_Pin		GPIO_PIN_2
+#define SD_Card_Check_GPIO_Port GPIOE
+#define Joy_R_Btn_Pin			GPIO_PIN_4
+#define Joy_R_Btn_GPIO_Port		GPIOE
+#define Joy_L_Btn_Pin			GPIO_PIN_6
+#define Joy_L_Btn_GPIO_Port		GPIOE
+#define TP_CS_Pin				GPIO_PIN_8
+#define TP_CS_GPIO_Port			GPIOI
+#define LED1_Pin				GPIO_PIN_1
+#define LED1_GPIO_Port			GPIOB
+#define TP_SCK_Pin				GPIO_PIN_6
+#define TP_SCK_GPIO_Port		GPIOH
+#define TP_PEN_Pin				GPIO_PIN_7
+#define TP_PEN_GPIO_Port		GPIOH
+#define TP_SDA_Pin				GPIO_PIN_3
+#define TP_SDA_GPIO_Port		GPIOI
+#define LCD_BL_Pin				GPIO_PIN_5
+#define LCD_BL_GPIO_Port		GPIOB
 /* USER CODE BEGIN Private defines */
+// #define HAS_SD_INSERT_CHECK /* uncomment if SD Insert pin is present */
+
+#define __forceinline __attribute__((__always_inline__)) inline
+#define get_ticks() HAL_GetTick()
 
 /* USER CODE END Private defines */
 
