@@ -45,7 +45,7 @@ extern FIL SDFile;			  /* File object for SD */
 
 void MX_FATFS_Init(void);
 
-void fatfs_file_system_test(void);
+UINT fatfs_file_system_test(void);
 
 /* USER CODE BEGIN Prototypes */
 

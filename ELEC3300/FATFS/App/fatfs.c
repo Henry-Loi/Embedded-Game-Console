@@ -18,6 +18,9 @@
 /* USER CODE END Header */
 #include "fatfs.h"
 
+#include "ff.h"
+
+
 uint8_t retSDRAMDISK;  /* Return value for SDRAMDISK */
 char SDRAMDISKPath[4]; /* SDRAMDISK logical drive path */
 FATFS SDRAMDISKFatFS;  /* File system object for SDRAMDISK logical drive */
@@ -71,7 +74,7 @@ UINT fatfs_file_system_test(void) {
 	if (f_res == FR_NO_FILESYSTEM) {
 		printf("The SD card does not yet have a file system and is about to be formatted...\r\n");
 		/* formatting */
-		f_res = f_mkfs("0:", 0, 0);
+		f_res = f_mkfs("0:", 0, 0, NULL, 0);
 		if (f_res == FR_OK) {
 			printf("The SD card successfully formatted the file system\r\n");
 			/* 格式化后，先取消挂载 */
