@@ -18,9 +18,6 @@
 /* USER CODE END Header */
 #include "fatfs.h"
 
-#include "ff.h"
-
-
 uint8_t retSDRAMDISK;  /* Return value for SDRAMDISK */
 char SDRAMDISKPath[4]; /* SDRAMDISK logical drive path */
 FATFS SDRAMDISKFatFS;  /* File system object for SDRAMDISK logical drive */
@@ -70,16 +67,16 @@ UINT fatfs_file_system_test(void) {
 	/*----------------------- formatting test ---------------------------*/
 	printf("\r\n****** Register the file system object to the FatFs module ******\r\n");
 
-	/* 如果没有文件系统就格式化创建创建文件系统 */
+	/* 如�?�没??��?�件系�?�就?��式�?��?�建??�建??�件系�?? */
 	if (f_res == FR_NO_FILESYSTEM) {
 		printf("The SD card does not yet have a file system and is about to be formatted...\r\n");
 		/* formatting */
 		f_res = f_mkfs("0:", 0, 0, NULL, 0);
 		if (f_res == FR_OK) {
 			printf("The SD card successfully formatted the file system\r\n");
-			/* 格式化后，先取消挂载 */
+			/* ?��式�?��?��?��?��?��?��?�载 */
 			f_res = f_mount(NULL, "0:", 1);
-			/* 重新挂载 */
+			/* ??�新??�载 */
 			f_res = f_mount(&fs, "0:", 1);
 		} else {
 			printf("The format failed\r\n");
@@ -95,13 +92,13 @@ UINT fatfs_file_system_test(void) {
 	}
 
 	/*----------------------- write test -----------------------------*/
-	/* 打开文件，如果文件不存在则创建它 */
+	/* ??��???�件，�?��?��?�件不�?�在??��?�建�? */
 	printf("\r\n****** Create and Open new text file objects with write access ******\r\n");
 	f_res = f_open(&file, "0:FatFs STM32cube.txt", FA_CREATE_ALWAYS | FA_WRITE);
 
 	if (f_res == FR_OK) {
 		printf(" open file sucess!!! \r\n");
-		/* 将指定存储区内容写入到文件内 */
+		/* 将�?��?��?�储?��??�容??�入?��??�件??? */
 		printf("\r\n****** Write data to the text files ******\r\n");
 		f_res = f_write(&file, WriteBuffer, sizeof(WriteBuffer), &fnum);
 		if (f_res == FR_OK) {
@@ -110,13 +107,13 @@ UINT fatfs_file_system_test(void) {
 		} else {
 			printf(" write file error : %d\r\n", f_res);
 		}
-		/* 不再读写，关闭文件 */
+		/* 不�?�读??��?�关?��??�件 */
 		f_close(&file);
 	} else {
 		printf(" open file error : %d\r\n", f_res);
 	}
 
-	/*------------------- 文件系统测试：读测试 ------------------------------------*/
+	/*------------------- ??�件系�?��?��?��?�读测�?? ------------------------------------*/
 	printf("\r\n****** Read data from the text files ******\r\n");
 	f_res = f_open(&file, "0:FatFs STM32cube.txt", FA_OPEN_EXISTING | FA_READ);
 	if (f_res == FR_OK) {
@@ -131,10 +128,10 @@ UINT fatfs_file_system_test(void) {
 	} else {
 		printf(" open file error : %d\r\n", f_res);
 	}
-	/* 不再读写，关闭文件 */
+	/* 不�?�读??��?�关?��??�件 */
 	f_close(&file);
-	/* 不再使用文件系统，取消挂载文件系统 */
+	/* 不�?�使?��??�件系�?��?��?��?��?�载??�件系�?? */
 	f_mount(NULL, "0:", 1);
-	/* 操作完成，停机 */
+	/* ??��?��?��?��?��?�机 */
 }
 /* USER CODE END Application */
