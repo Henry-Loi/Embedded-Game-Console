@@ -32,6 +32,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "lv_conf.h"
+#include "lv_os.h"
 #include "lvgl/lvgl.h"
 #include "user/display/lcd.h"
 #include "user/display/touch.h"
@@ -118,13 +119,18 @@ int main(void) {
 
 	SDRAM_Init();
 
-	// LCD
 	lcd_init();
-	lv_init();
-	lv_port_disp_init();
 	touch_init();
 
-	// ADC
+
+	// lvgl init function calls
+	lv_init();
+	lv_port_disp_init();  /* lvgl lcd display init */
+	lv_port_indev_init(); /* lvgl lcd touch screen init */
+
+	// test touch btn
+	lv_example();
+
 	if (HAL_ADCEx_InjectedStart(&hadc1) != HAL_OK) {
 		/*debug message if needed*/
 	}
@@ -159,10 +165,10 @@ int main(void) {
 
 		if (HAL_GetTick() - last_ticks > 100) {
 			last_ticks = HAL_GetTick();
-			tft_update();
+			// tft_update();
 			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 		}
-		// lv_task_handler();
+		lv_task_handler();
 		touch_update();
 	}
 	/* USER CODE END 3 */
