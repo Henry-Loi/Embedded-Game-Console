@@ -1,5 +1,8 @@
 #include "lv_os.h"
 
+#include "lv_conf.h"
+#include "lvgl/lvgl.h"
+
 /* Example Testing code for touch screen */
 void btn_event_cb(lv_event_t* e) {
 	lv_event_code_t code = lv_event_get_code(e);

@@ -77,6 +77,10 @@ void Error_Handler(void);
 #define LCD_BL_GPIO_Port		GPIOB
 /* USER CODE BEGIN Private defines */
 // #define HAS_SD_INSERT_CHECK /* uncomment if SD Insert pin is present */
+
+#define __forceinline __attribute__((__always_inline__)) inline
+#define get_ticks() HAL_GetTick()
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
