@@ -18,9 +18,9 @@ void buttons_handler(void* par) {
 }
 
 int controller_tft(int r) {
-	tft_prints(0, 1, "Joy L > x: %d y: %d btn: %d", joy_adc_values[0], joy_adc_values[1],
+	tft_prints(0, r++, "Joy L > x: %d y: %d btn: %d", joy_adc_values[0], joy_adc_values[1],
 			   HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_6));
-	tft_prints(0, 2, "Joy R > x: %d y: %d btn: %d", joy_adc_values[2], joy_adc_values[3],
+	tft_prints(0, r++, "Joy R > x: %d y: %d btn: %d", joy_adc_values[2], joy_adc_values[3],
 			   HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_4));
 	return r;
 }

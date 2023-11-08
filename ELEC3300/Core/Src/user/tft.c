@@ -13,6 +13,7 @@ int touch_screen_test(int r) {
 		tft_prints(0, r++, "x: %d", touch_feedback.point[i].x);
 		tft_prints(0, r++, "y: %d", touch_feedback.point[i].y);
 	}
+	tft_prints(0, r++, "test: %d", touch_feedback.pressed_state);
 	return r;
 }
 
@@ -28,14 +29,17 @@ void lcd_thread(void* par) {
 
 	// test touch btn
 	lv_example();
+	QueueHandle_t MutexSemaphore = xSemaphoreCreateMutex();
 
 	while (1) {
 		osDelay(4);
 
 		// lv task handler
+		xSemaphoreTake(MutexSemaphore, portMAX_DELAY);
 		lv_task_handler();
+		xSemaphoreGive(MutexSemaphore);
 
-		int r = 0;
+		int r = 5;
 		tft_prints(0, r++, "%02d:%02d.%02d", (int)get_ticks() / 60000, ((int)get_ticks() / 1000) % 60,
 				   ((int)get_ticks() % 1000) / 10);
 

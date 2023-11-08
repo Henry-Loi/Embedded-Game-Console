@@ -140,7 +140,7 @@ void touch_update(void) {
 	// I don't actually know why this works
 	touch_feedback.last_pressed_state = touch_feedback.pressed_state;
 	zero_counter = (_temp & 0x80) ? 0 : zero_counter + 1;
-	touch_feedback.pressed_state = zero_counter >= 300 ? 0 : 1;
+	touch_feedback.pressed_state = zero_counter >= 20 ? 0 : 1;
 	if (touch_feedback.last_pressed_state != touch_feedback.pressed_state) {
 		touch_feedback.clicked = touch_feedback.pressed_state;
 	} else {

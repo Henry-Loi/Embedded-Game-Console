@@ -35,6 +35,7 @@
 /* USER CODE BEGIN Includes */
 #include "board.h"
 #include "gpio.h"
+#include "lvgl.h"
 #include "os.h"
 #include "sdram.h"
 #include "user/display/touch.h"
@@ -88,7 +89,7 @@ void led_blinky(void* par) {
 	}
 }
 
-DEFINE_THREAD_SIZED(lcd_task, lcd_thread, 4096);
+DEFINE_THREAD_SIZED(lcd_task, lcd_thread, 4096 * 2);
 DEFINE_THREAD(controller_task, buttons_handler);
 /* USER CODE END 0 */
 
@@ -126,7 +127,7 @@ int main(void) {
 	MX_DMA2D_Init();
 	MX_ADC1_Init();
 	MX_SDIO_SD_Init();
-	MX_FATFS_Init();
+	// MX_FATFS_Init();
 	/* USER CODE BEGIN 2 */
 
 	SDRAM_Init();
@@ -154,40 +155,6 @@ int main(void) {
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		// tft_prints(0, 0, "%d", HAL_GetTick());
-		// tft_prints(0, 11, "TEST");7
-		// tft_prints(0, 1, "LAST %d", touch_feedback.last_pressed_state);
-		// tft_prints(0, 2, "CURR %d", touch_feedback.pressed_state);
-		// tft_prints(0, 3, "TEST: %d", touch_feedback.clicked);
-
-		tft_prints(0, 4, "x: %d", touch_feedback.point[0].x);
-		tft_prints(0, 5, "y: %d", touch_feedback.point[0].y);
-		tft_prints(0, 6, "another test: %d", temp);
-		tft_prints(0, 5, "ddd: %d", touch_feedback.clicked);
-		temp += touch_feedback.clicked;
-
-		// tft_prints(0, 14, "%d", touch_feedback.state == 28);
-
-
-		// tft_prints(0, 1, "Joy L > x: %d y: %d btn: %d", joy_adc_values[0], joy_adc_values[1],
-		// 		   HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_6));
-		// tft_prints(0, 2, "Joy R > x: %d y: %d btn: %d", joy_adc_values[2], joy_adc_values[3],
-		// 		   HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_4));
-
-		// for (int i = 0; i < MAX_TOUCH_POINTS; i++) {
-		// 	tft_prints(0, 3 + i * 3, "Point %d: ", i);
-		// 	tft_prints(0, 4 + i * 3, "x: %d", touch_feedback.point[i].x);
-		// 	tft_prints(0, 5 + i * 3, "y: %d", touch_feedback.point[i].y);
-		// }
-
-
-		if (HAL_GetTick() - last_ticks > 100) {
-			last_ticks = HAL_GetTick();
-			// tft_update();
-			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
-		}
-		lv_task_handler();
-		touch_update();
 	}
 	/* USER CODE END 3 */
 }

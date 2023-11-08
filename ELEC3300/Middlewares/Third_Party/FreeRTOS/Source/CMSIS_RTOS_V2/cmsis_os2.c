@@ -32,6 +32,7 @@
 
 #include "freertos_mpool.h"             // osMemoryPool definitions
 #include "freertos_os2.h"               // Configuration check and setup
+#include "lvgl/lvgl.h"
 
 /*---------------------------------------------------------------------------*/
 #ifndef __ARM_ARCH_6M__
@@ -2418,7 +2419,9 @@ __WEAK void vApplicationIdleHook (void){}
   Dummy implementation of the callback function vApplicationTickHook().
 */
 #if (configUSE_TICK_HOOK == 1)
- __WEAK void vApplicationTickHook (void){}
+ __WEAK void vApplicationTickHook (void){
+  lv_tick_inc(1);
+ }
 #endif
 
 /**
