@@ -2,12 +2,12 @@
 
 #include "delay.h"
 #include "i2c.h"
+#include "lcd.h"
 #include "main.h"
 
 uint8_t touch_iic_addr;
 
-TouchFeedback_t touch_feedback;
-
+TouchFeedback_t touch_feedback = {0};
 
 static void touch_hw_reset(uint8_t addr) {
 	GPIO_InitTypeDef gpio_init_struct = {0};
@@ -120,25 +120,37 @@ static void touch_get_pid(char* pid) {
 }
 
 void touch_update(void) {
-	//	static uint8_t timer=0;
+	// static uint8_t timer = 0;
 	uint8_t i = 0;
 	uint8_t _temp;
 	uint8_t data_temp[6];
+	static volatile uint32_t zero_counter = 0;
 
-	//	timer++;
-	//	if(timer<10)
-	//	{
-	//		return;
-	//	}
-	//	timer=0;
+	// timer++;
+	// if (timer < 10) {
+	// 	return;
+	// }
+	// timer = 0;
+
 
 	touch_read_reg(REG_TPINFO, &_temp, 1);
 
-	touch_feedback.state = (_temp & 0x80);
+	// attempt at doing edge triggering
+	// don't think this is supposed to work this way but idc rn
+	// I don't actually know why this works
+	touch_feedback.last_pressed_state = touch_feedback.pressed_state;
+	zero_counter = (_temp & 0x80) ? 0 : zero_counter + 1;
+	touch_feedback.pressed_state = zero_counter >= 300 ? 0 : 1;
+	if (touch_feedback.last_pressed_state != touch_feedback.pressed_state) {
+		touch_feedback.clicked = touch_feedback.pressed_state;
+	} else {
+		touch_feedback.clicked = 0;
+	}
+
 	touch_feedback.num = (_temp & 0x0f);
 
 	// if touches are detected
-	if (touch_feedback.state) {
+	if (touch_feedback.pressed_state) {
 		for (i = 0; i < touch_feedback.num; i++)
 		// update point values
 		{

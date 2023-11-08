@@ -204,8 +204,8 @@ static void touchpad_read(lv_indev_drv_t* indev_drv, lv_indev_data_t* data) {
 
 /*Return true is the touchpad is pressed*/
 static bool touchpad_is_pressed(void) {
-	/*Your code comes here*/
-	return touch_feedback.state;
+	// I don't actually know why this works
+	return touch_feedback.pressed_state;
 }
 
 /*Get the x and y coordinates if the touchpad is pressed*/

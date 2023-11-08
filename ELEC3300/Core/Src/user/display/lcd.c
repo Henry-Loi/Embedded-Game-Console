@@ -49,7 +49,7 @@ void tft_clear_buf(uint8_t buf) {
 }
 
 void lcd_init() {
-	tft_clear(BLACK);
+	tft_clear(WHITE);
 	tft_clear_buf(0);
 	tft_clear_buf(1);
 	tft_backlight_control(255);
@@ -247,7 +247,7 @@ void tft_prints(uint8_t x, uint8_t y, const char* fmt, ...) {
 
 	// TODO maybe don't hardcode text color
 	for (int i = 0; buf[i] != NULL; i++)
-		tft_print_char(x + i, y, buf[i], WHITE, Font32);
+		tft_print_char(x + i, y, buf[i], BLACK, Font32);
 }
 
 // NOTE: THIS ONLY WORKS FOR CHARS NOW BECAUSE I CAN'T THINK OF A EASY WAY TO DEAL WITH THE ENTIRE DISPLAY
@@ -258,7 +258,7 @@ void tft_update() {
 		for (int y = 0; y < LCD_MAX_CHAR_HEIGHT; y++) {
 			if (CHAR_BUF[CURR_BUF][x][y] != CHAR_BUF[!CURR_BUF][x][y]) {
 				// TODO maybe don't hardcode bg color
-				tft_write_char(x, y, CHAR_BUF[!CURR_BUF][x][y], BLACK, FSIZE_BUF[CURR_BUF][x][y]);
+				tft_write_char(x, y, CHAR_BUF[!CURR_BUF][x][y], WHITE, FSIZE_BUF[CURR_BUF][x][y]);
 				tft_write_char(x, y, CHAR_BUF[CURR_BUF][x][y], COLOR_BUF[CURR_BUF][x][y], FSIZE_BUF[CURR_BUF][x][y]);
 			}
 		}

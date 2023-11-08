@@ -132,22 +132,36 @@ int main(void) {
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
+	uint32_t temp = 0;
 	while (1) {
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		tft_prints(0, 0, "%d", HAL_GetTick());
+		// tft_prints(0, 0, "%d", HAL_GetTick());
+		// tft_prints(0, 11, "TEST");7
+		// tft_prints(0, 1, "LAST %d", touch_feedback.last_pressed_state);
+		// tft_prints(0, 2, "CURR %d", touch_feedback.pressed_state);
+		// tft_prints(0, 3, "TEST: %d", touch_feedback.clicked);
 
-		tft_prints(0, 1, "Joy L > x: %d y: %d btn: %d", joy_adc_values[0], joy_adc_values[1],
-				   HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_6));
-		tft_prints(0, 2, "Joy R > x: %d y: %d btn: %d", joy_adc_values[2], joy_adc_values[3],
-				   HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_4));
+		tft_prints(0, 4, "x: %d", touch_feedback.point[0].x);
+		tft_prints(0, 5, "y: %d", touch_feedback.point[0].y);
+		tft_prints(0, 6, "another test: %d", temp);
+		tft_prints(0, 5, "ddd: %d", touch_feedback.clicked);
+		temp += touch_feedback.clicked;
 
-		for (int i = 0; i < MAX_TOUCH_POINTS; i++) {
-			tft_prints(0, 3 + i * 3, "Point %d: ", i);
-			tft_prints(0, 4 + i * 3, "x: %d", touch_feedback.point[i].x);
-			tft_prints(0, 5 + i * 3, "y: %d", touch_feedback.point[i].y);
-		}
+		// tft_prints(0, 14, "%d", touch_feedback.state == 28);
+
+
+		// tft_prints(0, 1, "Joy L > x: %d y: %d btn: %d", joy_adc_values[0], joy_adc_values[1],
+		// 		   HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_6));
+		// tft_prints(0, 2, "Joy R > x: %d y: %d btn: %d", joy_adc_values[2], joy_adc_values[3],
+		// 		   HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_4));
+
+		// for (int i = 0; i < MAX_TOUCH_POINTS; i++) {
+		// 	tft_prints(0, 3 + i * 3, "Point %d: ", i);
+		// 	tft_prints(0, 4 + i * 3, "x: %d", touch_feedback.point[i].x);
+		// 	tft_prints(0, 5 + i * 3, "y: %d", touch_feedback.point[i].y);
+		// }
 
 
 		if (HAL_GetTick() - last_ticks > 100) {

@@ -36,7 +36,9 @@ typedef struct {
 } TouchPoint_t;
 
 typedef struct {
-	uint8_t state;
+	uint32_t pressed_state;
+	uint32_t last_pressed_state;
+	uint8_t clicked;
 	uint8_t num;
 	TouchPoint_t point[MAX_TOUCH_POINTS];
 } TouchFeedback_t;
