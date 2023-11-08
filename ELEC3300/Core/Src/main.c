@@ -38,6 +38,7 @@
 #include "lvgl.h"
 #include "os.h"
 #include "sdram.h"
+#include "ui/lv_boot_animation.h"
 #include "user/display/touch.h"
 
 
@@ -133,7 +134,8 @@ int main(void) {
 	SDRAM_Init();
 
 	// FATFS
-	fatfs_file_system_test(0);
+	// fatfs_file_system_test(0);
+
 
 	/* USER CODE END 2 */
 
