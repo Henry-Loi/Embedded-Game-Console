@@ -6,6 +6,7 @@
 #include "lv_os.h"
 #include "os.h"
 #include "ui/lv_boot_animation.h"
+#include "ui/navbar.h"
 
 // touch point testing code
 int touch_screen_test(int r) {
@@ -16,6 +17,24 @@ int touch_screen_test(int r) {
 	}
 	tft_prints(0, r++, "test: %d", touch_feedback.pressed_state);
 	return r;
+}
+
+void print_line() {
+	static lv_point_t line_points[] = {{5, 5}, {70, 70}, {120, 10}, {180, 60}, {240, 10}};
+
+	/*Create style*/
+	static lv_style_t style_line;
+	lv_style_init(&style_line);
+	lv_style_set_line_width(&style_line, 8);
+	lv_style_set_line_color(&style_line, lv_palette_main(LV_PALETTE_BLUE));
+	lv_style_set_line_rounded(&style_line, true);
+
+	/*Create a line and apply the new style*/
+	lv_obj_t* line1;
+	line1 = lv_line_create(lv_scr_act());
+	lv_line_set_points(line1, line_points, 5); /*Set the points*/
+	lv_obj_add_style(line1, &style_line, 0);
+	lv_obj_center(line1);
 }
 
 void lcd_thread(void* par) {
@@ -29,7 +48,6 @@ void lcd_thread(void* par) {
 	lv_port_indev_init(); /* lvgl lcd touch screen init */
 	QueueHandle_t MutexSemaphore = xSemaphoreCreateMutex();
 
-	// test touch btn
 	// lv_boot_animation(lv_init_icon, 5000);
 
 	uint32_t last_ticks = get_ticks();
@@ -39,7 +57,9 @@ void lcd_thread(void* par) {
 	// 	xSemaphoreGive(MutexSemaphore);
 	// }
 
-	lv_example();
+	// test touch btn
+	// lv_example();
+	render_navbar();
 
 
 	while (1) {
@@ -49,10 +69,6 @@ void lcd_thread(void* par) {
 		xSemaphoreTake(MutexSemaphore, portMAX_DELAY);
 		lv_task_handler();
 		xSemaphoreGive(MutexSemaphore);
-
-		if (get_ticks() - last_ticks < 5000) {
-			continue;
-		}
 
 		// int r = 5;
 		// tft_prints(0, r++, "%02d:%02d.%02d", (int)get_ticks() / 60000, ((int)get_ticks() / 1000) % 60,
