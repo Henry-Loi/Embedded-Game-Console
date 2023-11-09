@@ -1,9 +1,11 @@
 #include "navbar.h"
 
-#include "games/tictactoe.h"
+#include "games/tictactoe/tictactoe.h"
 #include "lvgl/lvgl.h"
 
 uint8_t shown = 0;
+
+LV_IMG_DECLARE(x50px_map);
 
 // TODO: move this up?
 void toggle_tictactoe(lv_event_t* e) {
@@ -27,4 +29,5 @@ void render_navbar() {
 	lv_obj_t* tictactoe_label = lv_label_create(tictactoe_btn);
 	lv_label_set_text(tictactoe_label, "Start TicTacToe");
 	lv_obj_center(tictactoe_label);
+	
 }
