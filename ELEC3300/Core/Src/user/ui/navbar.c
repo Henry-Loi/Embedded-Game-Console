@@ -29,5 +29,4 @@ void render_navbar() {
 	lv_obj_t* tictactoe_label = lv_label_create(tictactoe_btn);
 	lv_label_set_text(tictactoe_label, "Start TicTacToe");
 	lv_obj_center(tictactoe_label);
-	
 }
