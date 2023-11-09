@@ -6,12 +6,14 @@
 /*Copy this file as "lv_port_indev.c" and set this value to "1" to enable content*/
 #if 1
 
-	/*********************
-	 *      INCLUDES
-	 *********************/
-	#include "lvgl/lvgl.h"
-	#include "lv_port_indev.h"
-	#include "user/display/touch.h"
+/*********************
+*      INCLUDES
+*********************/
+#include "board.h"
+#include "gpio.h"
+#include "lvgl/lvgl.h"
+#include "lv_port_indev.h"
+#include "user/display/touch.h"
 
 
 /*********************
@@ -83,6 +85,7 @@ void lv_port_indev_init(void) {
 	 */
 
 	static lv_indev_drv_t indev_drv;
+	static lv_indev_drv_t indev_drv2;
 
 	/*------------------
 	 * Touchpad
@@ -120,18 +123,22 @@ void lv_port_indev_init(void) {
 	//  * -----------------*/
 
 	// /*Initialize your keypad or keyboard if you have*/
-	// keypad_init();
+	keypad_init();
 
 	// /*Register a keypad input device*/
-	// lv_indev_drv_init(&indev_drv);
-	// indev_drv.type = LV_INDEV_TYPE_KEYPAD;
-	// indev_drv.read_cb = keypad_read;
-	// indev_keypad = lv_indev_drv_register(&indev_drv);
+	lv_indev_drv_init(&indev_drv2);
+	indev_drv2.type = LV_INDEV_TYPE_KEYPAD;
+	indev_drv2.read_cb = keypad_read;
+	indev_keypad = lv_indev_drv_register(&indev_drv2);
 
 	// /*Later you should create group(s) with `lv_group_t * group = lv_group_create()`,
 	//  *add objects to the group with `lv_group_add_obj(group, obj)`
 	//  *and assign this input device to group to navigate in it:
 	//  *`lv_indev_set_group(indev_keypad, group);`*/
+	
+	lv_group_t* default_group = lv_group_create();
+	lv_group_set_default(default_group);
+	lv_indev_set_group(indev_keypad, default_group);
 
 	// /*------------------
 	//  * Encoder
@@ -260,7 +267,7 @@ static void mouse_get_xy(lv_coord_t* x, lv_coord_t* y) {
 static void keypad_init(void) { /*Your code comes here*/
 }
 
-/*Will be called by the library to read the mouse*/
+/*Will be called by the library to read the keypad*/
 static void keypad_read(lv_indev_drv_t* indev_drv, lv_indev_data_t* data) {
 	static uint32_t last_key = 0;
 
@@ -273,13 +280,13 @@ static void keypad_read(lv_indev_drv_t* indev_drv, lv_indev_data_t* data) {
 		data->state = LV_INDEV_STATE_PR;
 
 		/*Translate the keys to LVGL control characters according to your key definitions*/
-		switch (act_key) {
-			case 1: act_key = LV_KEY_NEXT; break;
-			case 2: act_key = LV_KEY_PREV; break;
-			case 3: act_key = LV_KEY_LEFT; break;
-			case 4: act_key = LV_KEY_RIGHT; break;
-			case 5: act_key = LV_KEY_ENTER; break;
-		}
+		// switch (act_key) {
+		// 	case 1: act_key = LV_KEY_NEXT; break;
+		// 	case 2: act_key = LV_KEY_PREV; break;
+		// 	case 3: act_key = LV_KEY_LEFT; break;
+		// 	case 4: act_key = LV_KEY_RIGHT; break;
+		// 	case 5: act_key = LV_KEY_ENTER; break;
+		// }
 
 		last_key = act_key;
 	} else {
@@ -289,10 +296,27 @@ static void keypad_read(lv_indev_drv_t* indev_drv, lv_indev_data_t* data) {
 	data->key = last_key;
 }
 
+uint8_t last_up = 0;
+uint8_t last_down = 1;
+uint8_t last_left = 1;
+uint8_t last_right = 1;
 /*Get the currently being pressed key.  0 if no key is pressed*/
 static uint32_t keypad_get_key(void) {
-	/*Your code comes here*/
-
+	if (gpio_read(Btn_Up) && last_up == 0) {
+		last_up = 1;
+		return LV_KEY_NEXT;
+	}
+	last_up = gpio_read(Btn_Up);
+	if (!gpio_read(Btn_Down) && last_down == 1) {
+		last_down = 0;
+		return LV_KEY_PREV;
+	}
+	last_down = gpio_read(Btn_Down);
+	if (!gpio_read(Btn_Right) && last_right == 1) {
+		last_right = 0;
+		return LV_KEY_ENTER;
+	}
+	last_right = gpio_read(Btn_Right);
 	return 0;
 }
 
