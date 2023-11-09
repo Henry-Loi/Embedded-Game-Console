@@ -52,14 +52,14 @@ void lcd_thread(void* par) {
 	lv_port_indev_init(); /* lvgl lcd touch screen init */
 	QueueHandle_t MutexSemaphore = xSemaphoreCreateMutex();
 
-	// lv_boot_animation(lv_init_icon, 5000);
+	lv_boot_animation(lv_init_icon, 5000);
 
 	uint32_t last_ticks = get_ticks();
-	// while (get_ticks() - last_ticks < 5000) {
-	// 	xSemaphoreTake(MutexSemaphore, portMAX_DELAY);
-	// 	lv_task_handler();
-	// 	xSemaphoreGive(MutexSemaphore);
-	// }
+	while (get_ticks() - last_ticks < 5000) {
+		xSemaphoreTake(MutexSemaphore, portMAX_DELAY);
+		lv_task_handler();
+		xSemaphoreGive(MutexSemaphore);
+	}
 
 	// test touch btn
 	// lv_example();
