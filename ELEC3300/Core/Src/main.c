@@ -127,7 +127,7 @@ int main(void) {
 	MX_DMA2D_Init();
 	MX_ADC1_Init();
 	MX_SDIO_SD_Init();
-	// MX_FATFS_Init();
+	MX_FATFS_Init();
 	/* USER CODE BEGIN 2 */
 
 	SDRAM_Init();
