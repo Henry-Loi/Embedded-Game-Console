@@ -29,11 +29,10 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "bsp_driver_sd.h"
-#include "ff_gen_drv.h"
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
-extern const Diskio_drvTypeDef SD_Driver;
+extern const Diskio_drvTypeDef  SD_Driver;
 
 /* USER CODE BEGIN lastSection */
 /* can be used to modify / undefine previous code or add new definitions */

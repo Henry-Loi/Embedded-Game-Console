@@ -25,7 +25,9 @@
 #include "fatfs.h"
 #include "fmc.h"
 #include "gpio.h"
+#include "i2c.h"
 #include "ltdc.h"
+#include "sai.h"
 #include "sdio.h"
 
 #include "cmsis_os.h"
@@ -65,6 +67,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void PeriphCommonClock_Config(void);
 void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 // SDRAM
@@ -115,6 +118,9 @@ int main(void) {
 	/* Configure the system clock */
 	SystemClock_Config();
 
+	/* Configure the peripherals common clocks */
+	PeriphCommonClock_Config();
+
 	/* USER CODE BEGIN SysInit */
 
 
@@ -129,6 +135,8 @@ int main(void) {
 	MX_ADC1_Init();
 	MX_SDIO_SD_Init();
 	MX_FATFS_Init();
+	MX_I2C2_Init();
+	MX_SAI1_Init();
 	/* USER CODE BEGIN 2 */
 
 	SDRAM_Init();
@@ -168,6 +176,14 @@ void SystemClock_Config(void) {
 	RCC_OscInitTypeDef RCC_OscInitStruct = {0};
 	RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
+	/** Macro to configure SAI1BlockB clock source selection
+	 */
+	__HAL_RCC_SAI_BLOCKBCLKSOURCE_CONFIG(SAI_CLKSOURCE_PLLSAI);
+
+	/** Macro to configure SAI1BlockA clock source selection
+	 */
+	__HAL_RCC_SAI_BLOCKACLKSOURCE_CONFIG(SAI_CLKSOURCE_PLLSAI);
+
 	/** Configure the main internal regulator output voltage
 	 */
 	__HAL_RCC_PWR_CLK_ENABLE();
@@ -197,6 +213,26 @@ void SystemClock_Config(void) {
 	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
 	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK) {
+		Error_Handler();
+	}
+}
+
+/**
+ * @brief Peripherals Common Clock Configuration
+ * @retval None
+ */
+void PeriphCommonClock_Config(void) {
+	RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+
+	/** Initializes the peripherals clock
+	 */
+	PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SAI_PLLSAI | RCC_PERIPHCLK_LTDC;
+	PeriphClkInitStruct.PLLSAI.PLLSAIN = 60;
+	PeriphClkInitStruct.PLLSAI.PLLSAIR = 2;
+	PeriphClkInitStruct.PLLSAI.PLLSAIQ = 4;
+	PeriphClkInitStruct.PLLSAIDivQ = 1;
+	PeriphClkInitStruct.PLLSAIDivR = RCC_PLLSAIDIVR_2;
+	if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
 		Error_Handler();
 	}
 }

@@ -57,16 +57,12 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define SD_Card_Check_Pin GPIO_PIN_2
-#define SD_Card_Check_GPIO_Port GPIOE
-#define Joy_R_Btn_Pin GPIO_PIN_4
-#define Joy_R_Btn_GPIO_Port GPIOE
-#define Joy_L_Btn_Pin GPIO_PIN_6
-#define Joy_L_Btn_GPIO_Port GPIOE
 #define TP_CS_Pin GPIO_PIN_8
 #define TP_CS_GPIO_Port GPIOI
 #define Btn_Left_Pin GPIO_PIN_13
 #define Btn_Left_GPIO_Port GPIOC
+#define SD_Card_Check_Pin GPIO_PIN_11
+#define SD_Card_Check_GPIO_Port GPIOI
 #define Btn_Up_Pin GPIO_PIN_0
 #define Btn_Up_GPIO_Port GPIOA
 #define Btn_Down_Pin GPIO_PIN_2
