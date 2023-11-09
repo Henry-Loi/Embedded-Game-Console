@@ -2,8 +2,6 @@
 
 // TODO: don't hardcode everything? maybe also make it look better?
 
-#include "lvgl/lvgl.h"
-
 LV_IMG_DECLARE(circle50px);
 LV_IMG_DECLARE(x50px);
 LV_IMG_DECLARE(empty);
@@ -27,12 +25,25 @@ lv_obj_t* grid_btns[BOARD_SIZE][BOARD_SIZE] = {NULL};
 lv_obj_t* grid_labels[BOARD_SIZE][BOARD_SIZE] = {NULL};
 lv_obj_t* grid_imgs[BOARD_SIZE][BOARD_SIZE] = {NULL};
 int grid_id[BOARD_SIZE * BOARD_SIZE] = {0};
+lv_obj_t* state_label = NULL;
+
 lv_style_t style_line;
 lv_style_t style_grid_btn;
 
+bool shown = 0;
 
-lv_obj_t* state_label = NULL;
-
+void toggle_tictactoe(lv_event_t* e) {
+	if (!shown) {
+		shown = 1;
+		init_tictactoe();
+		render_tictactoe_disp();
+		lv_label_set_text(lv_obj_get_child(lv_event_get_target(e), 0), "Back");
+	} else {
+		shown = 0;
+		clear_tictactoe_disp();
+		lv_label_set_text(lv_obj_get_child(lv_event_get_target(e), 0), "Start TicTacToe");
+	}
+}
 
 void init_tictactoe() {
 	for (int i = 0; i < BOARD_SIZE; i++) {

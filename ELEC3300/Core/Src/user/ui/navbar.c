@@ -3,23 +3,7 @@
 #include "games/tictactoe/tictactoe.h"
 #include "lvgl/lvgl.h"
 
-uint8_t shown = 0;
-
-LV_IMG_DECLARE(x50px_map);
-
 // TODO: move this up?
-void toggle_tictactoe(lv_event_t* e) {
-	if (!shown) {
-		shown = 1;
-		init_tictactoe();
-		render_tictactoe_disp();
-		lv_label_set_text(lv_obj_get_child(lv_event_get_target(e), 0), "Back");
-	} else {
-		shown = 0;
-		clear_tictactoe_disp();
-		lv_label_set_text(lv_obj_get_child(lv_event_get_target(e), 0), "Start TicTacToe");
-	}
-}
 
 void render_navbar() {
 	lv_obj_t* tictactoe_btn = lv_btn_create(lv_scr_act());
