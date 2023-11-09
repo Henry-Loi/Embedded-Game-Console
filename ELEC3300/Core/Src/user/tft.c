@@ -3,6 +3,7 @@
 #include "display/touch.h"
 #include "lcd.h"
 #include "lv_conf.h"
+#include "lv_demo_widgets.h"
 #include "lv_os.h"
 #include "os.h"
 #include "sd_diskio.h"
@@ -62,16 +63,16 @@ void lcd_thread(void* par) {
 
 	// test touch btn
 	// lv_example();
-	render_navbar();
-
+	// render_navbar();
+	// lv_demo_widgets();
 
 	while (1) {
 		osDelay(4);
 
 		// lv task handler
-		xSemaphoreTake(MutexSemaphore, portMAX_DELAY);
-		lv_task_handler();
-		xSemaphoreGive(MutexSemaphore);
+		// xSemaphoreTake(MutexSemaphore, portMAX_DELAY);
+		// lv_task_handler();
+		// xSemaphoreGive(MutexSemaphore);
 
 		int r = 0;
 		tft_prints(0, r++, "%02d:%02d.%02d", (int)get_ticks() / 60000, ((int)get_ticks() / 1000) % 60,
@@ -80,7 +81,7 @@ void lcd_thread(void* par) {
 		r = touch_screen_test(r);
 		r = controller_tft(r);
 
-		// tft_update();
+		tft_update();
 		touch_update();
 	}
 }

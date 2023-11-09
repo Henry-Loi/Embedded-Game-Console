@@ -69,10 +69,10 @@ void Error_Handler(void);
 #define Btn_Left_GPIO_Port GPIOC
 #define Btn_Up_Pin GPIO_PIN_0
 #define Btn_Up_GPIO_Port GPIOA
-#define Btn_Right_Pin GPIO_PIN_2
-#define Btn_Right_GPIO_Port GPIOH
-#define Btn_Down_Pin GPIO_PIN_3
+#define Btn_Down_Pin GPIO_PIN_2
 #define Btn_Down_GPIO_Port GPIOH
+#define Btn_Right_Pin GPIO_PIN_3
+#define Btn_Right_GPIO_Port GPIOH
 #define LED1_Pin GPIO_PIN_1
 #define LED1_GPIO_Port GPIOB
 #define TP_SCK_Pin GPIO_PIN_6
