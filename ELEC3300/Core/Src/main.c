@@ -19,9 +19,11 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+#include "I2C.h"
 #include "adc.h"
 #include "dma.h"
 #include "dma2d.h"
+#include "es8388.h"
 #include "fatfs.h"
 #include "fmc.h"
 #include "gpio.h"
@@ -135,14 +137,17 @@ int main(void) {
 	MX_ADC1_Init();
 	MX_SDIO_SD_Init();
 	MX_FATFS_Init();
-	MX_I2C2_Init();
-	MX_SAI1_Init();
+	I2C_Init(); // 初始化I2C接口
+
+	// MX_I2C2_Init();
+	// MX_SAI1_Init();
 	/* USER CODE BEGIN 2 */
 
 	SDRAM_Init();
 
 	// FATFS
 	// fatfs_file_system_test(0);
+	ES8388_Test(); // ES8388音频播放和录音测试
 
 
 	/* USER CODE END 2 */
