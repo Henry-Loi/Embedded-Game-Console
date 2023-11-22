@@ -59,21 +59,35 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define SD_Card_Check_Pin GPIO_PIN_2
 #define SD_Card_Check_GPIO_Port GPIOE
-#define Joy_R_Btn_Pin GPIO_PIN_4
-#define Joy_R_Btn_GPIO_Port GPIOE
-#define Joy_L_Btn_Pin GPIO_PIN_6
-#define Joy_L_Btn_GPIO_Port GPIOE
 #define TP_CS_Pin GPIO_PIN_8
 #define TP_CS_GPIO_Port GPIOI
-#define Btn_Left_Pin GPIO_PIN_13
-#define Btn_Left_GPIO_Port GPIOC
-#define Btn_Up_Pin GPIO_PIN_0
-#define Btn_Up_GPIO_Port GPIOA
-#define Btn_Down_Pin GPIO_PIN_2
-#define Btn_Down_GPIO_Port GPIOH
-#define Btn_Right_Pin GPIO_PIN_3
-#define Btn_Right_GPIO_Port GPIOH
-#define LED1_Pin GPIO_PIN_1
+#define RBTN_LEFT_Pin GPIO_PIN_13
+#define RBTN_LEFT_GPIO_Port GPIOC
+#define LBTN_UP_Pin GPIO_PIN_6
+#define LBTN_UP_GPIO_Port GPIOF
+#define LBTN_DOWN_Pin GPIO_PIN_7
+#define LBTN_DOWN_GPIO_Port GPIOF
+#define LBTN_LEFT_Pin GPIO_PIN_8
+#define LBTN_LEFT_GPIO_Port GPIOF
+#define LBTN_RIGHT_Pin GPIO_PIN_9
+#define LBTN_RIGHT_GPIO_Port GPIOF
+#define RBTN_UP_Pin GPIO_PIN_0
+#define RBTN_UP_GPIO_Port GPIOA
+#define RBTN_DOWN_Pin GPIO_PIN_2
+#define RBTN_DOWN_GPIO_Port GPIOH
+#define RBTN_RIGHT_Pin GPIO_PIN_3
+#define RBTN_RIGHT_GPIO_Port GPIOH
+#define LED4_Pin GPIO_PIN_6
+#define LED4_GPIO_Port GPIOA
+#define LED3_Pin GPIO_PIN_7
+#define LED3_GPIO_Port GPIOA
+#define LJOY_BTN_Pin GPIO_PIN_4
+#define LJOY_BTN_GPIO_Port GPIOC
+#define RJOY_BTN_Pin GPIO_PIN_5
+#define RJOY_BTN_GPIO_Port GPIOC
+#define LED2_Pin GPIO_PIN_1
+#define LED2_GPIO_Port GPIOB
+#define LED1_Pin GPIO_PIN_2
 #define LED1_GPIO_Port GPIOB
 #define TP_SCK_Pin GPIO_PIN_6
 #define TP_SCK_GPIO_Port GPIOH
@@ -83,6 +97,14 @@ void Error_Handler(void);
 #define TP_SDA_GPIO_Port GPIOI
 #define LCD_BL_Pin GPIO_PIN_5
 #define LCD_BL_GPIO_Port GPIOB
+#define LED8_Pin GPIO_PIN_6
+#define LED8_GPIO_Port GPIOB
+#define LED7_Pin GPIO_PIN_7
+#define LED7_GPIO_Port GPIOB
+#define LED6_Pin GPIO_PIN_8
+#define LED6_GPIO_Port GPIOB
+#define LED5_Pin GPIO_PIN_9
+#define LED5_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 // #define HAS_SD_INSERT_CHECK /* uncomment if SD Insert pin is present */
 

@@ -302,7 +302,7 @@ uint8_t last_left = 1;
 uint8_t last_right = 1;
 /*Get the currently being pressed key.  0 if no key is pressed*/
 static uint32_t keypad_get_key(void) {
-	if (gpio_read(Btn_Up) && last_up == 0) {
+/* 	if (gpio_read(Btn_Up) && last_up == 0) {
 		last_up = 1;
 		return LV_KEY_NEXT;
 	}
@@ -317,7 +317,7 @@ static uint32_t keypad_get_key(void) {
 		return LV_KEY_ENTER;
 	}
 	last_right = gpio_read(Btn_Right);
-	return 0;
+	return 0; */
 }
 
 /*------------------

@@ -22,13 +22,14 @@
 #include "adc.h"
 #include "dma.h"
 #include "dma2d.h"
-#include "fatfs.h"
+
+#include "cmsis_os.h"
+
+// #include "fatfs.h"
 #include "fmc.h"
 #include "gpio.h"
 #include "ltdc.h"
 #include "sdio.h"
-
-#include "cmsis_os.h"
 
 
 /* Private includes ----------------------------------------------------------*/
@@ -85,6 +86,13 @@ void led_blinky(void* par) {
 		osDelay(4);
 		if (HAL_GetTick() - last_ticks >= 100) {
 			gpio_toggle(LED1);
+			gpio_toggle(LED2);
+			gpio_toggle(LED3);
+			gpio_toggle(LED4);
+			// gpio_toggle(LED5);
+			// gpio_toggle(LED6);
+			// gpio_toggle(LED7);
+			// gpio_toggle(LED8);
 			last_ticks = HAL_GetTick();
 		}
 	}
@@ -128,10 +136,18 @@ int main(void) {
 	MX_DMA2D_Init();
 	MX_ADC1_Init();
 	MX_SDIO_SD_Init();
-	MX_FATFS_Init();
+	//   MX_FATFS_Init();
 	/* USER CODE BEGIN 2 */
 
 	SDRAM_Init();
+	led_off(LED1);
+	led_off(LED2);
+	led_off(LED3);
+	led_off(LED4);
+	led_off(LED5);
+	led_off(LED6);
+	led_off(LED7);
+	led_off(LED8);
 
 	// FATFS
 	// fatfs_file_system_test(0);
@@ -141,10 +157,13 @@ int main(void) {
 
 	/* Init scheduler */
 	osKernelInitialize(); /* Call init function for freertos objects (in freertos.c) */
+	MX_FREERTOS_Init();
 
-	os_create_thread(led_task, NULL, 4);
-	os_create_thread(lcd_task, NULL, 1);
-	os_create_thread(controller_task, NULL, 3);
+	/* USER CODE BEGIN 100 */
+	os_create_thread(led_task, NULL, 1);
+	// os_create_thread(lcd_task, NULL, 1);
+	os_create_thread(controller_task, NULL, 1);
+	/* USER CODE END 100 */
 
 	/* Start scheduler */
 	osKernelStart();

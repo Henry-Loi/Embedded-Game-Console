@@ -1,5 +1,4 @@
 #include "controller.h"
-#include "diskio.h"
 #include "display/lcd.h"
 #include "display/touch.h"
 #include "lcd.h"
@@ -7,7 +6,6 @@
 #include "lv_demo_widgets.h"
 #include "lv_os.h"
 #include "os.h"
-#include "sd_diskio.h"
 #include "ui/lv_boot_animation.h"
 #include "ui/navbar.h"
 
@@ -24,7 +22,6 @@ int touch_screen_test(int r) {
 	return r;
 }
 
-DSTATUS SD_status(BYTE);
 
 void lcd_thread(void* par) {
 	// lcd init
