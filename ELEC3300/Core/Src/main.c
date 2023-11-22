@@ -22,14 +22,14 @@
 #include "adc.h"
 #include "dma.h"
 #include "dma2d.h"
-
-#include "cmsis_os.h"
-
-// #include "fatfs.h"
+#include "fatfs.h"
 #include "fmc.h"
 #include "gpio.h"
 #include "ltdc.h"
 #include "sdio.h"
+#include "usart.h"
+
+#include "cmsis_os.h"
 
 
 /* Private includes ----------------------------------------------------------*/
@@ -76,30 +76,7 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
-DEFINE_THREAD(led_task, led_blinky);
-
-void led_blinky(void* par) {
-	uint32_t last_ticks = 0;
-
-	while (1) {
-		osDelay(4);
-		if (HAL_GetTick() - last_ticks >= 100) {
-			gpio_toggle(LED1);
-			gpio_toggle(LED2);
-			gpio_toggle(LED3);
-			gpio_toggle(LED4);
-			// gpio_toggle(LED5);
-			// gpio_toggle(LED6);
-			// gpio_toggle(LED7);
-			// gpio_toggle(LED8);
-			last_ticks = HAL_GetTick();
-		}
-	}
-}
-
-DEFINE_THREAD_SIZED(lcd_task, lcd_thread, 4096 * 2);
-DEFINE_THREAD(controller_task, buttons_handler);
+char rx_buff;
 /* USER CODE END 0 */
 
 /**
@@ -136,7 +113,8 @@ int main(void) {
 	MX_DMA2D_Init();
 	MX_ADC1_Init();
 	MX_SDIO_SD_Init();
-	//   MX_FATFS_Init();
+	MX_FATFS_Init();
+	MX_USART1_UART_Init();
 	/* USER CODE BEGIN 2 */
 
 	SDRAM_Init();
@@ -152,18 +130,13 @@ int main(void) {
 	// FATFS
 	// fatfs_file_system_test(0);
 
+	HAL_UART_Receive_IT(&huart1, &rx_buff, 1);
 
 	/* USER CODE END 2 */
 
 	/* Init scheduler */
 	osKernelInitialize(); /* Call init function for freertos objects (in freertos.c) */
 	MX_FREERTOS_Init();
-
-	/* USER CODE BEGIN 100 */
-	os_create_thread(led_task, NULL, 1);
-	// os_create_thread(lcd_task, NULL, 1);
-	os_create_thread(controller_task, NULL, 1);
-	/* USER CODE END 100 */
 
 	/* Start scheduler */
 	osKernelStart();
@@ -222,6 +195,9 @@ void SystemClock_Config(void) {
 
 /* USER CODE BEGIN 4 */
 
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart) {
+	HAL_UART_Receive_IT(&huart1, &rx_buff, 1); // You need to toggle a breakpoint on this line!
+}
 /* USER CODE END 4 */
 
 /**
