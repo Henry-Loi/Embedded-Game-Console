@@ -93,6 +93,10 @@ void Error_Handler(void);
 #define TP_SCK_GPIO_Port GPIOH
 #define TP_PEN_Pin GPIO_PIN_7
 #define TP_PEN_GPIO_Port GPIOH
+#define IMU_CS_Pin GPIO_PIN_12
+#define IMU_CS_GPIO_Port GPIOB
+#define IMU_INT_Pin GPIO_PIN_13
+#define IMU_INT_GPIO_Port GPIOB
 #define TP_SDA_Pin GPIO_PIN_3
 #define TP_SDA_GPIO_Port GPIOI
 #define LCD_BL_Pin GPIO_PIN_5
