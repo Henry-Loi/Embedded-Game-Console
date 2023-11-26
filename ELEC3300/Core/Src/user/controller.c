@@ -33,12 +33,10 @@ void controller_thread(void* par) {
 }
 
 int controller_tft(int r) {
-	/* 	tft_prints(0, r++, "Joy L > x: %d y: %d btn: %d", ctrller.joystick[JOY_L_X], ctrller.joystick[JOY_L_Y],
-				   HAL_btn_readPin(GPIOE, GPIO_PIN_6));
-		tft_prints(0, r++, "Joy R > x: %d y: %d btn: %d", ctrller.joystick[JOY_L_X], ctrller.joystick[JOY_R_X],
-				   HAL_btn_readPin(GPIOE, GPIO_PIN_4));
-		tft_prints(0, r++, "Btn > up: %d down: %d left: %d right: %d", ctrller.button[BTN_UP], ctrller.button[BTN_DOWN],
-				   ctrller.button[BTN_LEFT], ctrller.button[BTN_RIGHT]); */
+	tft_prints(0, r++, "Joy L > x: %d y: %d btn: %d", ctrller.joystick[L_JOY_X], ctrller.joystick[L_JOY_Y],
+			   HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_6));
+	tft_prints(0, r++, "Joy R > x: %d y: %d btn: %d", ctrller.joystick[R_JOY_X], ctrller.joystick[R_JOY_Y],
+			   HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_4));
 	tft_prints(0, r++, "LEFT BTNS: %d %d %d %d", ctrller.button[L_BTN_UP], ctrller.button[L_BTN_DOWN],
 			   ctrller.button[L_BTN_LEFT], ctrller.button[L_BTN_RIGHT]);
 	tft_prints(0, r++, "RIGHT BTNS: %d %d %d %d", ctrller.button[R_BTN_UP], ctrller.button[R_BTN_DOWN],
