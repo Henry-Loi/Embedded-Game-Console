@@ -6,16 +6,21 @@
 #include "main.h"
 #include "os.h"
 
-controller ctrller = {0};
+Controller ctrller = {0};
 
 void button_update(void) {
-	/* 	ctrller.button[BTN_UP] = btn_read(Btn_Up);
-		ctrller.button[BTN_DOWN] = btn_read(Btn_Down);
-		ctrller.button[BTN_LEFT] = btn_read(Btn_Left);
-		ctrller.button[BTN_RIGHT] = btn_read(Btn_Right); */
+	ctrller.button[L_BTN_UP] = btn_read(LBTN_UP);
+	ctrller.button[L_BTN_DOWN] = btn_read(LBTN_DOWN);
+	ctrller.button[L_BTN_LEFT] = btn_read(LBTN_LEFT);
+	ctrller.button[L_BTN_RIGHT] = btn_read(LBTN_RIGHT);
+
+	ctrller.button[R_BTN_UP] = btn_read(RBTN_UP);
+	ctrller.button[R_BTN_DOWN] = btn_read(RBTN_DOWN);
+	ctrller.button[R_BTN_LEFT] = btn_read(RBTN_LEFT);
+	ctrller.button[R_BTN_RIGHT] = btn_read(RBTN_RIGHT);
 }
 
-void buttons_handler(void* par) {
+void controller_thread(void* par) {
 	// ADC DMA (Joystick)
 	if (HAL_ADCEx_InjectedStart(&hadc1) != HAL_OK) {} /*debug message if needed*/
 	if (HAL_ADCEx_MultiModeStart_DMA(&hadc1, (volatile void*)ctrller.joystick, 4 / 2) != HAL_OK) {
@@ -34,14 +39,9 @@ int controller_tft(int r) {
 				   HAL_btn_readPin(GPIOE, GPIO_PIN_4));
 		tft_prints(0, r++, "Btn > up: %d down: %d left: %d right: %d", ctrller.button[BTN_UP], ctrller.button[BTN_DOWN],
 				   ctrller.button[BTN_LEFT], ctrller.button[BTN_RIGHT]); */
-	tft_prints(0, r++, "LBTN UP: %d", btn_read(LBTN_UP));
-	tft_prints(0, r++, "LBTN DOWN: %d", btn_read(LBTN_DOWN));
-	tft_prints(0, r++, "LBTN LEFT: %d", btn_read(LBTN_LEFT));
-	tft_prints(0, r++, "LBTN RIGHT: %d", btn_read(LBTN_RIGHT));
-
-	tft_prints(0, r++, "RBTN UP: %d", btn_read(RBTN_UP));
-	tft_prints(0, r++, "RBTN DOWN: %d", btn_read(RBTN_DOWN));
-	tft_prints(0, r++, "RBTN LEFT: %d", btn_read(RBTN_LEFT));
-	tft_prints(0, r++, "RBTN RIGHT: %d", btn_read(RBTN_RIGHT));
+	tft_prints(0, r++, "LEFT BTNS: %d %d %d %d", ctrller.button[L_BTN_UP], ctrller.button[L_BTN_DOWN],
+			   ctrller.button[L_BTN_LEFT], ctrller.button[L_BTN_RIGHT]);
+	tft_prints(0, r++, "RIGHT BTNS: %d %d %d %d", ctrller.button[R_BTN_UP], ctrller.button[R_BTN_DOWN],
+			   ctrller.button[R_BTN_LEFT], ctrller.button[R_BTN_RIGHT]);
 	return r;
 }
