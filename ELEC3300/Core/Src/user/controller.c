@@ -9,10 +9,10 @@
 controller ctrller = {0};
 
 void button_update(void) {
-	ctrller.button[BTN_UP] = gpio_read(Btn_Up);
-	ctrller.button[BTN_DOWN] = gpio_read(Btn_Down);
-	ctrller.button[BTN_LEFT] = gpio_read(Btn_Left);
-	ctrller.button[BTN_RIGHT] = gpio_read(Btn_Right);
+	/* 	ctrller.button[BTN_UP] = gpio_read(Btn_Up);
+		ctrller.button[BTN_DOWN] = gpio_read(Btn_Down);
+		ctrller.button[BTN_LEFT] = gpio_read(Btn_Left);
+		ctrller.button[BTN_RIGHT] = gpio_read(Btn_Right); */
 }
 
 void buttons_handler(void* par) {
@@ -28,11 +28,20 @@ void buttons_handler(void* par) {
 }
 
 int controller_tft(int r) {
-	tft_prints(0, r++, "Joy L > x: %d y: %d btn: %d", ctrller.joystick[JOY_L_X], ctrller.joystick[JOY_L_Y],
-			   HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_6));
-	tft_prints(0, r++, "Joy R > x: %d y: %d btn: %d", ctrller.joystick[JOY_L_X], ctrller.joystick[JOY_R_X],
-			   HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_4));
-	tft_prints(0, r++, "Btn > up: %d down: %d left: %d right: %d", ctrller.button[BTN_UP], ctrller.button[BTN_DOWN],
-			   ctrller.button[BTN_LEFT], ctrller.button[BTN_RIGHT]);
+	/* 	tft_prints(0, r++, "Joy L > x: %d y: %d btn: %d", ctrller.joystick[JOY_L_X], ctrller.joystick[JOY_L_Y],
+				   HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_6));
+		tft_prints(0, r++, "Joy R > x: %d y: %d btn: %d", ctrller.joystick[JOY_L_X], ctrller.joystick[JOY_R_X],
+				   HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_4));
+		tft_prints(0, r++, "Btn > up: %d down: %d left: %d right: %d", ctrller.button[BTN_UP], ctrller.button[BTN_DOWN],
+				   ctrller.button[BTN_LEFT], ctrller.button[BTN_RIGHT]); */
+	tft_prints(0, r++, "LBTN UP: %d", gpio_read(LBTN_UP));
+	tft_prints(0, r++, "LBTN DOWN: %d", gpio_read(LBTN_DOWN));
+	tft_prints(0, r++, "LBTN LEFT: %d", gpio_read(LBTN_LEFT));
+	tft_prints(0, r++, "LBTN RIGHT: %d", gpio_read(LBTN_RIGHT));
+
+	tft_prints(0, r++, "RBTN UP: %d", gpio_read(RBTN_UP));
+	tft_prints(0, r++, "RBTN DOWN: %d", gpio_read(RBTN_DOWN));
+	tft_prints(0, r++, "RBTN LEFT: %d", gpio_read(RBTN_LEFT));
+	tft_prints(0, r++, "RBTN RIGHT: %d", gpio_read(RBTN_RIGHT));
 	return r;
 }

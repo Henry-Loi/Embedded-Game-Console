@@ -6,14 +6,15 @@
 /*Copy this file as "lv_port_indev.c" and set this value to "1" to enable content*/
 #if 1
 
-/*********************
-*      INCLUDES
-*********************/
-#include "board.h"
-#include "gpio.h"
-#include "lvgl/lvgl.h"
-#include "lv_port_indev.h"
-#include "user/display/touch.h"
+	/*********************
+	 *      INCLUDES
+	 *********************/
+	#include "lv_port_indev.h"
+
+	#include "board.h"
+	#include "gpio.h"
+	#include "lvgl/lvgl.h"
+	#include "user/display/touch.h"
 
 
 /*********************
@@ -135,7 +136,7 @@ void lv_port_indev_init(void) {
 	//  *add objects to the group with `lv_group_add_obj(group, obj)`
 	//  *and assign this input device to group to navigate in it:
 	//  *`lv_indev_set_group(indev_keypad, group);`*/
-	
+
 	lv_group_t* default_group = lv_group_create();
 	lv_group_set_default(default_group);
 	lv_indev_set_group(indev_keypad, default_group);
@@ -302,21 +303,22 @@ uint8_t last_left = 1;
 uint8_t last_right = 1;
 /*Get the currently being pressed key.  0 if no key is pressed*/
 static uint32_t keypad_get_key(void) {
-	if (gpio_read(Btn_Up) && last_up == 0) {
-		last_up = 1;
-		return LV_KEY_NEXT;
-	}
-	last_up = gpio_read(Btn_Up);
-	if (!gpio_read(Btn_Down) && last_down == 1) {
-		last_down = 0;
-		return LV_KEY_PREV;
-	}
-	last_down = gpio_read(Btn_Down);
-	if (!gpio_read(Btn_Right) && last_right == 1) {
-		last_right = 0;
-		return LV_KEY_ENTER;
-	}
-	last_right = gpio_read(Btn_Right);
+	/* 	if (gpio_read(Btn_Up) && last_up == 0) {
+			last_up = 1;
+			return LV_KEY_NEXT;
+		}
+		last_up = gpio_read(Btn_Up);
+		if (!gpio_read(Btn_Down) && last_down == 1) {
+			last_down = 0;
+			return LV_KEY_PREV;
+		}
+		last_down = gpio_read(Btn_Down);
+		if (!gpio_read(Btn_Right) && last_right == 1) {
+			last_right = 0;
+			return LV_KEY_ENTER;
+		}
+		last_right = gpio_read(Btn_Right);
+		return 0; */
 	return 0;
 }
 
