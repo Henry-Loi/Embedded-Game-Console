@@ -38,11 +38,9 @@
 #include "board.h"
 #include "gpio.h"
 #include "icm20602.h"
-#include "lvgl.h"
 #include "os.h"
 #include "sdram.h"
-#include "ui/lv_boot_animation.h"
-#include "user/display/touch.h"
+#include "user/nes/InfoNES_System.h"
 
 
 /* USER CODE END Includes */
@@ -121,6 +119,7 @@ int main(void) {
 
 	SDRAM_Init();
 	icm20602_init();
+	nesStart();
 
 	// FATFS
 	// fatfs_file_system_test(0);
