@@ -59,10 +59,6 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define SD_Card_Check_Pin GPIO_PIN_2
 #define SD_Card_Check_GPIO_Port GPIOE
-#define Joy_R_Btn_Pin GPIO_PIN_4
-#define Joy_R_Btn_GPIO_Port GPIOE
-#define Joy_L_Btn_Pin GPIO_PIN_6
-#define Joy_L_Btn_GPIO_Port GPIOE
 #define TP_CS_Pin GPIO_PIN_8
 #define TP_CS_GPIO_Port GPIOI
 #define RBTN_LEFT_Pin GPIO_PIN_13
@@ -85,6 +81,10 @@ void Error_Handler(void);
 #define LED4_GPIO_Port GPIOA
 #define LED3_Pin GPIO_PIN_7
 #define LED3_GPIO_Port GPIOA
+#define Joy_L_Btn_Pin GPIO_PIN_4
+#define Joy_L_Btn_GPIO_Port GPIOC
+#define Joy_R_Btn_Pin GPIO_PIN_5
+#define Joy_R_Btn_GPIO_Port GPIOC
 #define LED2_Pin GPIO_PIN_1
 #define LED2_GPIO_Port GPIOB
 #define LED1_Pin GPIO_PIN_2
