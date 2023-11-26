@@ -31,6 +31,7 @@
 #include "board.h"
 #include "controller.h"
 #include "gpio.h"
+#include "icm20602.h"
 #include "lv_hal_tick.h"
 #include "os.h"
 #include "serial.h"
@@ -59,6 +60,7 @@ DEFINE_THREAD_ATTR(led_task, 1);
 DEFINE_THREAD_ATTR_SIZED(lcd_task, 4096 * 2, 4);
 DEFINE_THREAD_ATTR(debug_task, 4);
 DEFINE_THREAD_ATTR(controller_task, 4);
+DEFINE_THREAD_ATTR(imu_task, 3);
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -149,6 +151,7 @@ void MX_FREERTOS_Init(void) {
 	CREATE_THREAD(lcd_task, lcd_thread, NULL);
 	CREATE_THREAD(debug_task, debug_thread, NULL);
 	CREATE_THREAD(controller_task, controller_thread, NULL);
+	CREATE_THREAD(imu_task, imu_thread, NULL);
 	/* USER CODE END RTOS_THREADS */
 
 	/* USER CODE BEGIN RTOS_EVENTS */

@@ -2,6 +2,7 @@
 #include "diskio.h"
 #include "display/lcd.h"
 #include "display/touch.h"
+#include "icm20602.h"
 #include "lcd.h"
 #include "lv_conf.h"
 #include "lv_demo_widgets.h"
@@ -73,6 +74,8 @@ void lcd_thread(void* par) {
 			// r = touch_screen_test(r);
 			// r++;
 			r = controller_tft(r);
+			r++;
+			r = imu_tft(r);
 
 			tft_update();
 		}
