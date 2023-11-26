@@ -11,7 +11,7 @@
 #include "ui/lv_boot_animation.h"
 #include "ui/navbar.h"
 
-#define USE_OWN_TFT 1
+#define USE_OWN_TFT 0
 
 // touch point testing code
 int touch_screen_test(int r) {

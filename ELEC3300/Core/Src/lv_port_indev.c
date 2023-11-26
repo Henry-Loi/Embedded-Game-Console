@@ -11,10 +11,9 @@
 	 *********************/
 	#include "lv_port_indev.h"
 
-	#include "board.h"
-	#include "gpio.h"
 	#include "lvgl/lvgl.h"
 	#include "user/display/touch.h"
+	#include "controller.h"
 
 
 /*********************
@@ -281,13 +280,14 @@ static void keypad_read(lv_indev_drv_t* indev_drv, lv_indev_data_t* data) {
 		data->state = LV_INDEV_STATE_PR;
 
 		/*Translate the keys to LVGL control characters according to your key definitions*/
-		// switch (act_key) {
-		// 	case 1: act_key = LV_KEY_NEXT; break;
-		// 	case 2: act_key = LV_KEY_PREV; break;
-		// 	case 3: act_key = LV_KEY_LEFT; break;
-		// 	case 4: act_key = LV_KEY_RIGHT; break;
-		// 	case 5: act_key = LV_KEY_ENTER; break;
-		// }
+		// TODO this is wack but idk why directly passing up/down/left/right doesn't work at all
+		switch (act_key) {
+			case LV_KEY_UP:
+			case LV_KEY_LEFT: act_key = LV_KEY_PREV; break;
+
+			case LV_KEY_DOWN:
+			case LV_KEY_RIGHT: act_key = LV_KEY_NEXT; break;
+		}
 
 		last_key = act_key;
 	} else {
@@ -297,12 +297,38 @@ static void keypad_read(lv_indev_drv_t* indev_drv, lv_indev_data_t* data) {
 	data->key = last_key;
 }
 
-uint8_t last_up = 0;
-uint8_t last_down = 1;
-uint8_t last_left = 1;
-uint8_t last_right = 1;
+uint8_t last_btn[MAX_NUM_OF_BTNS] = {1};
 /*Get the currently being pressed key.  0 if no key is pressed*/
 static uint32_t keypad_get_key(void) {
+	if (ctrller.button[L_BTN_UP] && !last_btn[L_BTN_UP]) {
+		last_btn[L_BTN_UP] = 1;
+		return LV_KEY_UP;
+	}
+	last_btn[L_BTN_UP] = ctrller.button[L_BTN_UP];
+
+	if (ctrller.button[L_BTN_DOWN] && !last_btn[L_BTN_DOWN]) {
+		last_btn[L_BTN_DOWN] = 1;
+		return LV_KEY_DOWN;
+	}
+	last_btn[L_BTN_DOWN] = ctrller.button[L_BTN_DOWN];
+
+	if (ctrller.button[L_BTN_LEFT] && !last_btn[L_BTN_LEFT]) {
+		last_btn[L_BTN_LEFT] = 1;
+		return LV_KEY_LEFT;
+	}
+	last_btn[L_BTN_LEFT] = ctrller.button[L_BTN_LEFT];
+
+	if (ctrller.button[L_BTN_RIGHT] && !last_btn[L_BTN_RIGHT]) {
+		last_btn[L_BTN_RIGHT] = 1;
+		return LV_KEY_RIGHT;
+	}
+	last_btn[L_BTN_RIGHT] = ctrller.button[L_BTN_RIGHT];
+
+	if (ctrller.button[R_BTN_RIGHT] && !last_btn[R_BTN_RIGHT]) {
+		last_btn[R_BTN_RIGHT] = 1;
+		return LV_KEY_ENTER;
+	}
+	last_btn[R_BTN_RIGHT] = ctrller.button[R_BTN_RIGHT];
 	/* 	if (gpio_read(Btn_Up) && last_up == 0) {
 			last_up = 1;
 			return LV_KEY_NEXT;

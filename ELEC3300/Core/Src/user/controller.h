@@ -31,3 +31,5 @@ typedef struct {
 	uint8_t button[MAX_NUM_OF_BTNS];
 	uint32_t joystick[MAX_NUM_OF_JOY_AXIS];
 } Controller;
+
+extern Controller ctrller;
