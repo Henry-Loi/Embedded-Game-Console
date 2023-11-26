@@ -25,6 +25,7 @@
 #include "fatfs.h"
 #include "ltdc.h"
 #include "sdio.h"
+#include "usart.h"
 #include "gpio.h"
 #include "fmc.h"
 
@@ -110,6 +111,7 @@ int main(void)
   MX_ADC1_Init();
   MX_SDIO_SD_Init();
   MX_FATFS_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 
 	SDRAM_Init();
