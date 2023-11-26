@@ -27,6 +27,8 @@
 #include "gpio.h"
 #include "ltdc.h"
 #include "sdio.h"
+#include "spi.h"
+#include "usart.h"
 
 #include "cmsis_os.h"
 
@@ -35,6 +37,7 @@
 /* USER CODE BEGIN Includes */
 #include "board.h"
 #include "gpio.h"
+#include "icm20602.h"
 #include "lvgl.h"
 #include "os.h"
 #include "sdram.h"
@@ -75,23 +78,6 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
-DEFINE_THREAD(led_task, led_blinky);
-
-void led_blinky(void* par) {
-	uint32_t last_ticks = 0;
-
-	while (1) {
-		osDelay(4);
-		if (HAL_GetTick() - last_ticks >= 100) {
-			gpio_toggle(LED1);
-			last_ticks = HAL_GetTick();
-		}
-	}
-}
-
-DEFINE_THREAD_SIZED(lcd_task, lcd_thread, 4096 * 2);
-DEFINE_THREAD(controller_task, buttons_handler);
 /* USER CODE END 0 */
 
 /**
@@ -129,9 +115,12 @@ int main(void) {
 	MX_ADC1_Init();
 	MX_SDIO_SD_Init();
 	MX_FATFS_Init();
+	MX_USART1_UART_Init();
+	MX_SPI2_Init();
 	/* USER CODE BEGIN 2 */
 
 	SDRAM_Init();
+	icm20602_init();
 
 	// FATFS
 	// fatfs_file_system_test(0);
@@ -141,10 +130,7 @@ int main(void) {
 
 	/* Init scheduler */
 	osKernelInitialize(); /* Call init function for freertos objects (in freertos.c) */
-
-	os_create_thread(led_task, NULL, 4);
-	os_create_thread(lcd_task, NULL, 1);
-	os_create_thread(controller_task, NULL, 3);
+	MX_FREERTOS_Init();
 
 	/* Start scheduler */
 	osKernelStart();

@@ -2,6 +2,7 @@
 #include "diskio.h"
 #include "display/lcd.h"
 #include "display/touch.h"
+#include "icm20602.h"
 #include "lcd.h"
 #include "lv_conf.h"
 #include "lv_demo_widgets.h"
@@ -11,7 +12,7 @@
 #include "ui/lv_boot_animation.h"
 #include "ui/navbar.h"
 
-#define USE_OWN_TFT 0
+#define USE_OWN_TFT 1
 
 // touch point testing code
 int touch_screen_test(int r) {
@@ -70,9 +71,11 @@ void lcd_thread(void* par) {
 					   ((int)get_ticks() % 1000) / 10);
 
 			r++;
-			r = touch_screen_test(r);
-			r++;
+			// r = touch_screen_test(r);
+			// r++;
 			r = controller_tft(r);
+			r++;
+			r = imu_tft(r);
 
 			tft_update();
 		}
