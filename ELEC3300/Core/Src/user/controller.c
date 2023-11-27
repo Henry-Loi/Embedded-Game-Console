@@ -22,7 +22,7 @@ void button_update(void) {
 
 void controller_thread(void* par) {
 	// ADC DMA (Joystick)
-	if (HAL_ADCEx_InjectedStart(&hadc1) != HAL_OK) {} /*debug message if needed*/
+	if (HAL_ADC_Calibration_Start(&hadc1) != HAL_OK) {} /*debug message if needed*/
 	if (HAL_ADCEx_MultiModeStart_DMA(&hadc1, (volatile void*)ctrller.joystick, 4 / 2) != HAL_OK) {
 	} /*debug message if needed*/
 
