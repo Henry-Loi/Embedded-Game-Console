@@ -25,7 +25,6 @@
 #include "fatfs.h"
 #include "fmc.h"
 #include "gpio.h"
-#include "lcd.h"
 #include "ltdc.h"
 #include "sdio.h"
 #include "spi.h"

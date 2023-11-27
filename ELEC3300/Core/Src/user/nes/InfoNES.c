@@ -41,8 +41,9 @@
 #include "InfoNES_Mapper.h"
 #include "InfoNES_System.h"
 #include "K6502.h"
-#include "gpio.h"
 #include "board.h"
+#include "gpio.h"
+
 
 /*-------------------------------------------------------------------*/
 /*  NES resources                                                    */
@@ -540,7 +541,7 @@ void InfoNES_Main() {
 
 	// Initialize InfoNES
 	InfoNES_Init();
-	static uint32_t last_ticks = 0;	
+	static uint32_t last_ticks = 0;
 
 	// Main loop
 	while (1) {
@@ -585,7 +586,6 @@ void InfoNES_Cycle() {
 	// Emulation loop
 	static uint32_t last_ticks = 0;
 	for (;;) {
-
 		if (get_ticks() - last_ticks > 100) {
 			led_toggle(LED2);
 			last_ticks = get_ticks();

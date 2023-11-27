@@ -181,8 +181,8 @@ void InfoNES_LoadFrame() {
 	unsigned int LCD_Color888;
 
 	/* Exchange 16-bit to 24-bit  RGB555 to RGB888*/
-	// lcd_y = 0;
-	// lcd_x = 0;
+	lcd_y = 32;
+	lcd_x = 239;
 
 	for (y = 0; y < NES_DISP_HEIGHT; y++) {
 		for (x = 0; x < NES_DISP_WIDTH; x++) {
@@ -197,14 +197,14 @@ void InfoNES_LoadFrame() {
 
 			LCD_Color888 = 0xff000000 | r | g | b;
 
-			// LCD_AER((lcd_y * 240 + lcd_x) * 4) = LCD_Color888;
-			tft_draw_point(x, y, convertToRGB565(LCD_Color888));
+			LCD_AER((lcd_y * 240 + lcd_x) * 4) = wColor;
+			// tft_draw_point(lcd_x, lcd_y, convertToRGB565(LCD_Color888));
 
-			/* 			lcd_y++;
-						if (lcd_y == LCD_HEIGHT) {
-							lcd_x++;
-							lcd_y = 0;
-						} */
+			lcd_y++;
+			if (lcd_y == 288) {
+				lcd_x--;
+				lcd_y = 32;
+			}
 		}
 	}
 }
@@ -247,7 +247,7 @@ void InfoNES_PadState(DWORD* pdwPad1, DWORD* pdwPad2, DWORD* pdwSystem) {
 	//    dwKeyPad1 |= (1<<3);
 	//    break;
 	//  case Key_A:
-	//    dwKeyPad1 |= (1<<2);
+	// dwKeyPad1 |= (1 << 2);
 	//    break;
 	//  case Key_Z:
 	//    dwKeyPad1 |= (1<<1);
