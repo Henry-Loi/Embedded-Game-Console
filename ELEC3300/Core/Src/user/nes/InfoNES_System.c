@@ -175,36 +175,41 @@ void InfoNES_LoadFrame() {
 	 *  Transfer the contents of work frame on the screen
 	 *
 	 */
-	int x, y, lcd_x = 0, lcd_y = 0;
-	unsigned int r, g, b;
-	WORD wColor;
-	unsigned int LCD_Color888;
+	/* 	int x, y, lcd_x = 0, lcd_y = 0;
+		unsigned int r, g, b;
+		WORD wColor;
+		unsigned int LCD_Color888; */
 
 	/* Exchange 16-bit to 24-bit  RGB555 to RGB888*/
-	lcd_y = 32;
-	lcd_x = 239;
+	/* 	lcd_y = 32;
+		lcd_x = 239;
 
-	for (y = 0; y < NES_DISP_HEIGHT; y++) {
-		for (x = 0; x < NES_DISP_WIDTH; x++) {
-			wColor = WorkFrame[(y << 8) + x];
-			r = (wColor & 0x7c00) << 9;
-			g = (wColor & 0x03e0) << 6;
-			b = (wColor & 0x001f) << 3;
+		for (y = 0; y < NES_DISP_HEIGHT; y++) {
+			for (x = 0; x < NES_DISP_WIDTH; x++) {
+				wColor = WorkFrame[(y << 8) + x];
+				r = (wColor & 0x7c00) << 9;
+				g = (wColor & 0x03e0) << 6;
+				b = (wColor & 0x001f) << 3;
 
-			//            r = (wColor & 0xf800) << 8;
-			//            g = (wColor & 0x07e0) << 5;
-			//            b = (wColor & 0x001f) << 3;
+				//            r = (wColor & 0xf800) << 8;
+				//            g = (wColor & 0x07e0) << 5;
+				//            b = (wColor & 0x001f) << 3;
 
-			LCD_Color888 = 0xff000000 | r | g | b;
+				LCD_Color888 = 0xff000000 | r | g | b;
 
-			LCD_AER((lcd_y * 240 + lcd_x) * 4) = wColor;
-			// tft_draw_point(lcd_x, lcd_y, convertToRGB565(LCD_Color888));
+				LCD_AER((lcd_y * 240 + lcd_x) * 4) = wColor;
+				// tft_draw_point(lcd_x, lcd_y, convertToRGB565(LCD_Color888));
 
-			lcd_y++;
-			if (lcd_y == 288) {
-				lcd_x--;
-				lcd_y = 32;
+				lcd_y++;
+				if (lcd_y == 288) {
+					lcd_x--;
+					lcd_y = 32;
+				}
 			}
+		} */
+	for (int y = 0; y < NES_DISP_HEIGHT; y++) {
+		for (int x = 0; x < NES_DISP_WIDTH; x++) {
+			tft_draw_point(x, y, &WorkFrame[(x << 8)]);
 		}
 	}
 }
