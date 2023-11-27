@@ -1,18 +1,18 @@
 #include "nes_game.h"
 
 
-const nesGameFile gameFileList[1] = {
+const nesGameFile gameFileList[4] = {
 	{"SuperMario", acSuperMario},
-	// {"CatAndMouse", acCatAndMouse},
-	// {"Tanks", acTanks},
-	// {"MacrossSeries", acMacrossSeries},
+	{"CatAndMouse", acCatAndMouse},
+	{"Tanks", acTanks},
+	{"MacrossSeries", acMacrossSeries},
 };
 
-nesGame nes_game[1] = {
+nesGame nes_game[4] = {
 	{(&gameFileList[0]), 0},
-	// {(&gameFileList[1]), 0},
-	// {(&gameFileList[2]), 0},
-	// {(&gameFileList[3]), 0},
+	{(&gameFileList[1]), 0},
+	{(&gameFileList[2]), 0},
+	{(&gameFileList[3]), 0},
 };
 
 // nesGameFIL  NesFile;

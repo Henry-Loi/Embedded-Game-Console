@@ -32,6 +32,7 @@
 #include "controller.h"
 #include "gpio.h"
 #include "icm20602.h"
+#include "lv_hal_tick.h"
 #include "os.h"
 #include "serial.h"
 
@@ -108,7 +109,7 @@ void vApplicationTickHook(void) {
 	added here, but the tick hook is called from an interrupt context, so
 	code must not attempt to block, and only the interrupt safe FreeRTOS API
 	functions can be used (those that end in FromISR()). */
-	// lv_tick_inc(1);
+	lv_tick_inc(1);
 }
 
 void lcd_thread(void* par);

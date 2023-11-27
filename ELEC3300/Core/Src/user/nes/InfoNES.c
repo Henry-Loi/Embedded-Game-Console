@@ -546,13 +546,15 @@ void InfoNES_Main() {
 		/*  To the menu screen                                               */
 		/*-------------------------------------------------------------------*/
 
-		// if (InfoNES_Menu() == -1)
-		// break; // Quit
+		if (InfoNES_Menu() == -1)
+			break; // Quit
 
 		/*-------------------------------------------------------------------*/
 		/*  Start a NES emulation                                            */
 		/*-------------------------------------------------------------------*/
-		InfoNES_Cycle();
+		// InfoNES_Cycle();
+		volatile int x = 0;
+		x++;
 	}
 
 	// Completion treatment
