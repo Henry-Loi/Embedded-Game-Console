@@ -22,9 +22,9 @@ void button_update(void) {
 
 void controller_thread(void* par) {
 	// ADC DMA (Joystick)
-	if (HAL_ADC_Calibration_Start(&hadc1) != HAL_OK) {} /*debug message if needed*/
-	if (HAL_ADCEx_MultiModeStart_DMA(&hadc1, (volatile void*)ctrller.joystick, 4 / 2) != HAL_OK) {
-	} /*debug message if needed*/
+	if (HAL_ADC_Start(&hadc1) != HAL_OK) {} /*debug message if needed*/
+	// if (HAL_ADCEx_MultiModeStart_DMA(&hadc1, (volatile void*)ctrller.joystick, 4 / 2) != HAL_OK) {
+	// } /*debug message if needed*/
 
 	while (1) {
 		osDelay(4);
@@ -34,9 +34,9 @@ void controller_thread(void* par) {
 
 int controller_tft(int r) {
 	tft_prints(0, r++, "Joy L > x: %d y: %d btn: %d", ctrller.joystick[L_JOY_X], ctrller.joystick[L_JOY_Y],
-			   HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_6));
+			   HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_4));
 	tft_prints(0, r++, "Joy R > x: %d y: %d btn: %d", ctrller.joystick[R_JOY_X], ctrller.joystick[R_JOY_Y],
-			   HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_4));
+			   HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_5));
 	tft_prints(0, r++, "LEFT BTNS: %d %d %d %d", ctrller.button[L_BTN_UP], ctrller.button[L_BTN_DOWN],
 			   ctrller.button[L_BTN_LEFT], ctrller.button[L_BTN_RIGHT]);
 	tft_prints(0, r++, "RIGHT BTNS: %d %d %d %d", ctrller.button[R_BTN_UP], ctrller.button[R_BTN_DOWN],

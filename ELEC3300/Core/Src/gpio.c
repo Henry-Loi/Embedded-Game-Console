@@ -20,6 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "gpio.h"
+#include "stm32f4xx_hal_gpio.h"
 
 /* USER CODE BEGIN 0 */
 
@@ -115,7 +116,7 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pins : PCPin PCPin */
   GPIO_InitStruct.Pin = Joy_L_Btn_Pin|Joy_R_Btn_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PBPin PBPin PBPin PBPin
