@@ -5,6 +5,7 @@
 #include "InfoNES_pAPU.h"
 #include "K6502.h"
 #include "games/nes_game.h"
+#include "lcd.h"
 
 #include <ctype.h>
 #include <stdarg.h>
@@ -13,7 +14,7 @@
 #include <string.h>
 
 
-#define LCD_AER(x) *(unsigned int*)(0xD0000000 + x)
+#define LCD_AER(x) *(unsigned int*)(0xc0000000 + x)
 
 #define SELECT_GAME 0 /* ѡ��Ҫ���е���Ϸ  */
 
@@ -35,7 +36,7 @@ void nesStart(void) {
 		return;
 	}
 
-	// InfoNES_Main();
+	InfoNES_Main();
 }
 
 
@@ -155,6 +156,20 @@ void InfoNES_ReleaseRom() {
 /*           Transfer the contents of work frame on the screen       */
 /*                                                                   */
 /*===================================================================*/
+unsigned short convertToRGB565(unsigned int colorRGB888) {
+	unsigned int R = (colorRGB888 >> 16) & 0xFF;
+	unsigned int G = (colorRGB888 >> 8) & 0xFF;
+	unsigned int B = colorRGB888 & 0xFF;
+
+	unsigned short R5 = (R * 31 + 127) / 255;
+	unsigned short G6 = (G * 63 + 127) / 255;
+	unsigned short B5 = (B * 31 + 127) / 255;
+
+	unsigned short colorRGB565 = (R5 << 11) | (G6 << 5) | B5;
+
+	return colorRGB565;
+}
+
 void InfoNES_LoadFrame() {
 	/*
 	 *  Transfer the contents of work frame on the screen
@@ -166,8 +181,8 @@ void InfoNES_LoadFrame() {
 	unsigned int LCD_Color888;
 
 	/* Exchange 16-bit to 24-bit  RGB555 to RGB888*/
-	lcd_y = 32;
-	lcd_x = 239;
+	// lcd_y = 0;
+	// lcd_x = 0;
 
 	for (y = 0; y < NES_DISP_HEIGHT; y++) {
 		for (x = 0; x < NES_DISP_WIDTH; x++) {
@@ -182,13 +197,14 @@ void InfoNES_LoadFrame() {
 
 			LCD_Color888 = 0xff000000 | r | g | b;
 
-			LCD_AER((lcd_y * 240 + lcd_x) * 4) = LCD_Color888;
+			// LCD_AER((lcd_y * 240 + lcd_x) * 4) = LCD_Color888;
+			tft_draw_point(x, y, convertToRGB565(LCD_Color888));
 
-			lcd_y++;
-			if (lcd_y == 288) {
-				lcd_x--;
-				lcd_y = 32;
-			}
+			/* 			lcd_y++;
+						if (lcd_y == LCD_HEIGHT) {
+							lcd_x++;
+							lcd_y = 0;
+						} */
 		}
 	}
 }

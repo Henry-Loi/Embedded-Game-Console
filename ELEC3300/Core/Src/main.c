@@ -25,6 +25,7 @@
 #include "fatfs.h"
 #include "fmc.h"
 #include "gpio.h"
+#include "lcd.h"
 #include "ltdc.h"
 #include "sdio.h"
 #include "spi.h"
@@ -122,6 +123,21 @@ int main(void) {
 
 	SDRAM_Init();
 	icm20602_init();
+
+	lcd_init();
+
+	uint32_t ll = 0;
+	/* 	while (1) {
+			if (get_ticks() - ll > 100) {
+				led_toggle(LED1);
+				ll = get_ticks();
+			}
+			for (int i = 0; i < 100; i++) {
+				for (int j = 0; j < 100; j++) {
+					tft_draw_point(i, j, BLACK);
+				}
+			}
+		} */
 	nesStart();
 
 	// FATFS
