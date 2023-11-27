@@ -1,16 +1,16 @@
 #include "InfoNES_System.h"
 
-#include <ctype.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "InfoNES.h"
 #include "InfoNES_Mapper.h"
 #include "InfoNES_pAPU.h"
 #include "K6502.h"
 #include "games/nes_game.h"
+
+#include <ctype.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 #define LCD_AER(x) *(unsigned int*)(0xD0000000 + x)
@@ -35,7 +35,7 @@ void nesStart(void) {
 		return;
 	}
 
-	InfoNES_Main();
+	// InfoNES_Main();
 }
 
 

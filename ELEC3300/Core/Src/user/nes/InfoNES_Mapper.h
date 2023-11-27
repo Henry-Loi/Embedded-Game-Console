@@ -19,7 +19,7 @@
 /*  Constants                                                        */
 /*-------------------------------------------------------------------*/
 
-#define DRAM_SIZE    0xA000
+#define DRAM_SIZE 0xA000
 
 /*-------------------------------------------------------------------*/
 /*  Mapper resources                                                 */
@@ -33,39 +33,38 @@ extern BYTE DRAM[];
 /*-------------------------------------------------------------------*/
 
 /* The address of 8Kbytes unit of the ROM */
-#define ROMPAGE(a)     &ROM[ (a) * 0x2000 ]
+#define ROMPAGE(a) &ROM[(a)*0x2000]
 /* From behind the ROM, the address of 8kbytes unit */
-#define ROMLASTPAGE(a) &ROM[ NesHeader.byRomSize * 0x4000 - ( (a) + 1 ) * 0x2000 ]
+#define ROMLASTPAGE(a) &ROM[NesHeader.byRomSize * 0x4000 - ((a) + 1) * 0x2000]
 /* The address of 1Kbytes unit of the VROM */
-#define VROMPAGE(a)    &VROM[ (a) * 0x400 ]
+#define VROMPAGE(a) &VROM[(a)*0x400]
 /* The address of 1Kbytes unit of the CRAM */
-#define CRAMPAGE(a)   &PPURAM[ 0x0000 + ((a)&0x1F) * 0x400 ]
+#define CRAMPAGE(a) &PPURAM[0x0000 + ((a)&0x1F) * 0x400]
 /* The address of 1Kbytes unit of the VRAM */
-#define VRAMPAGE(a)    &PPURAM[ 0x2000 + (a) * 0x400 ]
-/* Translate the pointer to ChrBuf into the address of Pattern Table */ 
-#define PATTBL(a)      ( ( (a) - ChrBuf ) >> 2 )
+#define VRAMPAGE(a) &PPURAM[0x2000 + (a)*0x400]
+/* Translate the pointer to ChrBuf into the address of Pattern Table */
+#define PATTBL(a) (((a)-ChrBuf) >> 2)
 
 /*-------------------------------------------------------------------*/
 /*  Macros ( Mapper specific )                                       */
 /*-------------------------------------------------------------------*/
 
 /* The address of 8Kbytes unit of the Map5 ROM */
-#define Map5_ROMPAGE(a)     &Map5_Wram[ ( (a) & 0x07 ) * 0x2000 ]
+#define Map5_ROMPAGE(a) &Map5_Wram[((a)&0x07) * 0x2000]
 /* The address of 1Kbytes unit of the Map6 Chr RAM */
-#define Map6_VROMPAGE(a)    &Map6_Chr_Ram[ (a) * 0x400 ]
+#define Map6_VROMPAGE(a) &Map6_Chr_Ram[(a)*0x400]
 /* The address of 1Kbytes unit of the Map19 Chr RAM */
-#define Map19_VROMPAGE(a)   &Map19_Chr_Ram[ (a) * 0x400 ]
+#define Map19_VROMPAGE(a) &Map19_Chr_Ram[(a)*0x400]
 /* The address of 1Kbytes unit of the Map85 Chr RAM */
-#define Map85_VROMPAGE(a)   &Map85_Chr_Ram[ (a) * 0x400 ]
+#define Map85_VROMPAGE(a) &Map85_Chr_Ram[(a)*0x400]
 
 /*-------------------------------------------------------------------*/
 /*  Table of Mapper initialize function                              */
 /*-------------------------------------------------------------------*/
 
-struct MapperTable_tag
-{
-  int nMapperNo;
-  void (*pMapperInit)();
+struct MapperTable_tag {
+	int nMapperNo;
+	void (*pMapperInit)();
 };
 
 extern const struct MapperTable_tag MapperTable[];
@@ -75,15 +74,15 @@ extern const struct MapperTable_tag MapperTable[];
 /*-------------------------------------------------------------------*/
 
 void Map0_Init(void);
-void Map0_Write( WORD wAddr, BYTE byData );
-void Map0_Sram( WORD wAddr, BYTE byData );
-void Map0_Apu( WORD wAddr, BYTE byData );
-BYTE Map0_ReadApu( WORD wAddr );
+void Map0_Write(WORD wAddr, BYTE byData);
+void Map0_Sram(WORD wAddr, BYTE byData);
+void Map0_Apu(WORD wAddr, BYTE byData);
+BYTE Map0_ReadApu(WORD wAddr);
 void Map0_VSync(void);
 void Map0_HSync(void);
-void Map0_PPU( WORD wAddr );
-void Map0_RenderScreen( BYTE byMode );
-
+void Map0_PPU(WORD wAddr);
+void Map0_RenderScreen(BYTE byMode);
+/*
 void Map1_Init(void);
 void Map1_Write( WORD wAddr, BYTE byData );
 void Map1_set_ROM_banks(void);
@@ -604,7 +603,7 @@ void Map245_HSync(void);
 #if 0
 void Map245_Set_CPU_Banks(void);
 void Map245_Set_PPU_Banks(void);
-#endif 
+#endif
 
 void Map246_Init(void);
 void Map246_Sram( WORD wAddr, BYTE byData );
@@ -635,5 +634,5 @@ void Map255_Init(void);
 void Map255_Write( WORD wAddr, BYTE byData );
 void Map255_Apu( WORD wAddr, BYTE byData );
 BYTE Map255_ReadApu( WORD wAddr );
-
+ */
 #endif /* !InfoNES_MAPPER_H_INCLUDED */
