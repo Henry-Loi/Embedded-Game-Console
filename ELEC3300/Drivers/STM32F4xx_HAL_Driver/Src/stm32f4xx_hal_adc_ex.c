@@ -595,7 +595,7 @@ uint32_t HAL_ADCEx_InjectedGetValue(ADC_HandleTypeDef* hadc, uint32_t InjectedRa
   * @param  Length  The length of data to be transferred from ADC peripheral to memory.  
   * @retval HAL status
   */
-HAL_StatusTypeDef   HAL_ADCEx_MultiModeStart_DMA(ADC_HandleTypeDef* hadc, uint32_t* pData, uint32_t Length)
+HAL_StatusTypeDef HAL_ADCEx_MultiModeStart_DMA(ADC_HandleTypeDef* hadc, uint32_t* pData, uint32_t Length)
 {
   __IO uint32_t counter = 0U;
   ADC_Common_TypeDef *tmpADC_Common;

@@ -19,7 +19,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "FreeRTOS.h"
-
+#include "task.h"
 #include "main.h"
 #include "cmsis_os.h"
 
@@ -149,12 +149,12 @@ void MX_FREERTOS_Init(void) {
 	CREATE_THREAD(debug_task, debug_thread, NULL);
 	CREATE_THREAD(controller_task, controller_thread, NULL);
 	CREATE_THREAD(imu_task, imu_thread, NULL);
-	/* USER CODE END RTOS_THREADS */
   /* USER CODE END RTOS_THREADS */
 
-	/* USER CODE BEGIN RTOS_EVENTS */
+  /* USER CODE BEGIN RTOS_EVENTS */
 	/* add events, ... */
-	/* USER CODE END RTOS_EVENTS */
+  /* USER CODE END RTOS_EVENTS */
+
 }
 
 /* USER CODE BEGIN Header_StartDefaultTask */
