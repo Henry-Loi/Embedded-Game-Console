@@ -8,8 +8,6 @@
 #define P_VERTS 3
 #define BULLETS 3
 
-// enum boolean { TRUE, FALSE };
-
 typedef struct {
 	Vec2 location;
 	Vec2 velocity;
@@ -23,6 +21,7 @@ typedef struct {
 	Vec2 velocity;
 	Vec2 obj_vert[P_VERTS];
 	Vec2 world_vert[P_VERTS];
+	Vec2 old_world_vert[P_VERTS];
 	Bullet_t bullets[BULLETS];
 } Player_t;
 

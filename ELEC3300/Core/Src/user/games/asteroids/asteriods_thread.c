@@ -1,7 +1,9 @@
 #include "asteroids.h"
+#include "controller.h"
 #include "lcd.h"
 #include "player.h"
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -56,72 +58,73 @@ void asteroids_thread(void* par) {
 		osDelay(4);
 		// check for new events every frame
 		// SDL_PumpEvents();
-		/*
-				const Uint8* state = SDL_GetKeyboardState(NULL);
+		// const Uint8* state = SDL_GetKeyboardState(NULL);
 
-				if (state[SDL_SCANCODE_ESCAPE]) {
-					quit = 1;
-				}
+		// if (state[SDL_SCANCODE_ESCAPE]) {
+		// quit = 1;
+		// }
 
-				if (state[SDL_SCANCODE_UP]) {
-					Vec2 thrust = get_direction(&p);
-					multiply_vector(&thrust, .06);
-					apply_force(&p.velocity, thrust);
-				}
+		// if (state[SDL_SCANCODE_UP]) {
+		// Vec2 thrust = get_direction(&p);
+		// multiply_vector(&thrust, .06);
+		// apply_force(&p.velocity, thrust);
+		// }
+		p.velocity = (Vec2){.x = ctrller.joystick[L_JOY_X], .y = -ctrller.joystick[L_JOY_Y]};
 
-				if (state[SDL_SCANCODE_LEFT]) {
-					rotate_player(&p, -4);
-				}
+		// if (state[SDL_SCANCODE_LEFT]) {
+		// volatile float rotate_angle = atan2(ctrller.joystick[R_JOY_Y], ctrller.joystick[R_JOY_X]);
+		rotate_player(&p, ctrller.joystick[R_JOY_X]);
+		// }
 
-				if (state[SDL_SCANCODE_RIGHT]) {
-					rotate_player(&p, 4);
-				}
 
-				while (SDL_PollEvent(&event)) {
-					switch (event.type) {
-						case SDL_KEYDOWN:
+		// if (state[SDL_SCANCODE_RIGHT]) {
+		// rotate_player(&p, 4);
+		// }
 
-							switch (event.key.keysym.sym) {
-								case SDLK_SPACE:
+		// while (SDL_PollEvent(&event)) {
+		// switch (event.type) {
+		// case SDL_KEYDOWN:
 
-									if (p.lives > 0) {
-										shoot_bullet(&p);
-									}
+		// switch (event.key.keysym.sym) {
+		// case SDLK_SPACE:
 
-									break;
-							}
-					}
-				}
-		 */
+		// if (p.lives > 0) {
+		// shoot_bullet(&p);
+		// }
+
+		// break;
+		// }
+		// }
+		// }
 		// draw to the pixel buffer
 		draw_player(&p);
-		draw_player(&lives[0]);
-		draw_player(&lives[1]);
-		draw_player(&lives[2]);
+		// draw_player(&lives[0]);
+		// draw_player(&lives[1]);
+		// draw_player(&lives[2]);
 		draw_asteroids(asteroids, last_asteroids, ASTEROIDS);
 		update_player(&p);
 		bounds_player(&p);
 		bounds_asteroids(asteroids, ASTEROIDS);
 
-		int res = collision_asteroids(asteroids, ASTEROIDS, &p.location, p.hit_radius);
+		// int res = collision_asteroids(asteroids, ASTEROIDS, &p.location, p.hit_radius);
 
-		if (res != -1) {
-			p.lives--;
-			p.location.x = 0;
-			p.location.y = 0;
-			p.velocity.x = 0;
-			p.velocity.y = 0;
+		/* 		if (res != -1) {
+					p.lives--;
+					p.location.x = 0;
+					p.location.y = 0;
+					p.velocity.x = 0;
+					p.velocity.y = 0;
 
-			int i = LIVES - 1;
+					int i = LIVES - 1;
 
-			for (i = LIVES; i >= 0; i--) {
-				if (lives[i].lives > 0) {
-					lives[i].lives = 0;
-					break;
+					for (i = LIVES; i >= 0; i--) {
+						if (lives[i].lives > 0) {
+							lives[i].lives = 0;
+							break;
+						}
+					}
 				}
-			}
-		}
-
+		 */
 		int i = 0;
 		Vec2 translation = {-LCD_WIDTH / 2, -LCD_HEIGHT / 2};
 

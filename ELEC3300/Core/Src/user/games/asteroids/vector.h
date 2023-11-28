@@ -1,6 +1,7 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+#include <stdbool.h>
 typedef struct {
 	float x;
 	float y;
@@ -15,5 +16,6 @@ void rotate_vector(Vec2* v, float degrees);
 float magnitude_vector(Vec2* v);
 void normalise_vector(Vec2* v);
 void limit_vector(Vec2* v, float limit);
+bool equal_vector(Vec2* v1, Vec2* v2);
 
 #endif

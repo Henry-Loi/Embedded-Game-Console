@@ -63,3 +63,5 @@ void rotate_vector(Vec2* v, float degrees) {
 	v->x = matrix[0][0] * x + matrix[0][1] * y;
 	v->y = matrix[1][0] * x + matrix[1][1] * y;
 }
+
+bool equal_vector(Vec2* v1, Vec2* v2) { return v1->x == v2->x && v1->y && v2->y; }

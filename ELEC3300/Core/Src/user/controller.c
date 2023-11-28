@@ -8,6 +8,8 @@
 
 #include "stm32f4xx_hal_adc.h"
 
+#include <math.h>
+
 #define JOY_SCALE 2000
 
 Controller ctrller = {
@@ -30,11 +32,14 @@ void button_update(void) {
 
 	for (int i = 0; i < MAX_NUM_OF_JOY_AXIS; i++) {
 		ctrller.joystick[i] = ((float)ctrller.joy_val[i] - ctrller.joy_offset[i]) * ctrller.joy_scale[i];
+		if (fabs(ctrller.joystick[i]) < 0.05) {
+			ctrller.joystick[i] = 0.0f;
+		}
 	}
 
 	for (int i = 0; i < MAX_NUM_OF_BTNS; i++) {
 		if (ctrller.button[i] != ctrller.last_button_state[i]) {
-			ctrller.unactive_count = get_ticks();
+			ctrller.inactive_count = get_ticks();
 		}
 		ctrller.last_button_state[i] = ctrller.button[i];
 	}
@@ -52,10 +57,10 @@ void controller_thread(void* par) {
 }
 
 int controller_tft(int r) {
-	tft_prints(0, r++, "Joy L > x: %f y: %f btn: %d", (double)ctrller.joystick[L_JOY_X],
-			   (double)ctrller.joystick[L_JOY_Y], HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_4));
-	tft_prints(0, r++, "Joy R > x: %f y: %f btn: %d", (double)ctrller.joystick[R_JOY_X],
-			   (double)ctrller.joystick[R_JOY_Y], HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_5));
+	tft_prints(0, r++, "JOY L > x: %f y: %f BTN: %d", (double)ctrller.joystick[L_JOY_X],
+			   (double)ctrller.joystick[L_JOY_Y], ctrller.button[L_JOY_BTN]);
+	tft_prints(0, r++, "JOY R > x: %f y: %f BTN: %d", (double)ctrller.joystick[R_JOY_X],
+			   (double)ctrller.joystick[R_JOY_Y], ctrller.button[R_JOY_BTN]);
 	tft_prints(0, r++, "LEFT BTNS: %d %d %d %d", ctrller.button[L_BTN_UP], ctrller.button[L_BTN_DOWN],
 			   ctrller.button[L_BTN_LEFT], ctrller.button[L_BTN_RIGHT]);
 	tft_prints(0, r++, "RIGHT BTNS: %d %d %d %d", ctrller.button[R_BTN_UP], ctrller.button[R_BTN_DOWN],

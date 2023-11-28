@@ -3,10 +3,10 @@
 // #include "renderer.h"
 #include "lcd.h"
 
+#include <math.h>
 #include <stdio.h>
 
 void init_player(Player_t* p) {
-	int i = 0;
 	Vec2 translation = {LCD_WIDTH / 2, LCD_HEIGHT / 2};
 
 	p->hit_radius = 15;
@@ -23,14 +23,15 @@ void init_player(Player_t* p) {
 	p->obj_vert[2].y = -1;
 
 	// convert player verts from object space to world space
-	for (i = 0; i < P_VERTS; i++) {
+	for (int i = 0; i < P_VERTS; i++) {
 		multiply_vector(&p->obj_vert[i], -1);
 		multiply_vector(&p->obj_vert[i], 12);
 		add_vector(&p->world_vert[i], &p->obj_vert[i]);
 		add_vector(&p->world_vert[i], &translation);
+		p->old_world_vert[i] = p->world_vert[i];
 	}
 
-	for (i = 0; i < BULLETS; i++) {
+	for (int i = 0; i < BULLETS; i++) {
 		p->bullets[i].alive = false;
 	}
 }
@@ -45,9 +46,7 @@ Vec2 get_direction(Player_t* p) {
 }
 
 void shoot_bullet(Player_t* p) {
-	int i = 0;
-
-	for (i = 0; i < BULLETS; i++) {
+	for (int i = 0; i < BULLETS; i++) {
 		if (!(p->bullets[i].alive)) {
 			p->bullets[i].alive = true;
 			p->bullets[i].location = p->world_vert[0];
@@ -59,37 +58,29 @@ void shoot_bullet(Player_t* p) {
 }
 
 void draw_player(Player_t* p) {
-	int i = 0;
-
 	if (p->lives > 0) {
-		tft_draw_line(p->world_vert[0].x, p->world_vert[0].y, p->world_vert[1].x, p->world_vert[1].y, WHITE);
-		tft_draw_line(p->world_vert[1].x, p->world_vert[1].y, p->world_vert[2].x, p->world_vert[2].y, WHITE);
-		tft_draw_line(p->world_vert[2].x, p->world_vert[2].y, p->world_vert[0].x, p->world_vert[0].y, WHITE);
+		bool rerender = false;
+		for (int i = 0; i < P_VERTS; i++) {
+			if (!(equal_vector(&p->old_world_vert[i], &p->old_world_vert[(i + 1) % P_VERTS]))) {
+				rerender = true;
+				break;
+			}
+		}
+		for (int i = 0; i < P_VERTS; i++) {
+			if (rerender) {
+				tft_draw_line(p->old_world_vert[i].x, p->old_world_vert[i].y, p->old_world_vert[(i + 1) % P_VERTS].x,
+							  p->old_world_vert[(i + 1) % P_VERTS].y, BLACK);
+			}
+			tft_draw_line(p->world_vert[i].x, p->world_vert[i].y, p->world_vert[(i + 1) % P_VERTS].x,
+						  p->world_vert[(i + 1) % P_VERTS].y, WHITE);
+		}
 	}
 
-	/*
-	//draw vers representing the player
-	for (i = 0; i < P_VERTS; i++) {
-
-		draw_pixel(pixel_buffer, p->world_vert[i].x, p->world_vert[i].y, 0xff00ffff);
-	}
-	*/
-
-	// draw verts representing the bullets
-	for (i = 0; i < BULLETS; i++) {
+	for (int i = 0; i < BULLETS; i++) {
 		if (p->bullets[i].alive) {
 			tft_draw_point(p->bullets[i].location.x, p->bullets[i].location.y, WHITE);
 		}
 	}
-
-	/*
-	//draw vert representing ships location
-	vector2d cpy = {p->location.x, p->location.y};
-	vector2d translation = {LCD_WIDTH / 2, LCD_HEIGHT / 2};
-	add_vector(&cpy, &translation);
-
-	draw_pixel(pixel_buffer, cpy.x, cpy.y, 0x00ff00ff);
-	*/
 }
 
 void update_player(Player_t* p) {
@@ -98,29 +89,25 @@ void update_player(Player_t* p) {
 
 	Vec2 translation = {LCD_WIDTH / 2, LCD_HEIGHT / 2};
 
-	int i = 0;
-
-	for (i = 0; i < P_VERTS; i++) {
+	for (int i = 0; i < P_VERTS; i++) {
+		p->old_world_vert[i] = p->world_vert[i];
 		p->world_vert[i] = add_vector_new(&p->obj_vert[i], &p->location);
+		// add_vector(&p->world_vert[i], &p->velocity);
 		add_vector(&p->world_vert[i], &translation);
 	}
 
-	for (i = 0; i < BULLETS; i++) {
+	for (int i = 0; i < BULLETS; i++) {
 		add_vector(&p->bullets[i].location, &p->bullets[i].velocity);
 	}
 }
 
 void rotate_player(Player_t* p, float degrees) {
-	int i = 0;
-
-	for (i = 0; i < P_VERTS; i++) {
+	for (int i = 0; i < P_VERTS; i++) {
 		rotate_vector(&p->obj_vert[i], degrees);
 	}
 }
 
 void bounds_player(Player_t* p) {
-	int i = 0;
-
 	if (p->location.x < -LCD_WIDTH / 2) {
 		p->location.x = LCD_WIDTH / 2;
 	}
@@ -139,7 +126,7 @@ void bounds_player(Player_t* p) {
 
 	// bullet is out of bounds, reset bullet to be shot again
 	// bullets are in world space
-	for (i = 0; i < BULLETS; i++) {
+	for (int i = 0; i < BULLETS; i++) {
 		if (p->bullets[i].location.x < 0 || p->bullets[i].location.x >= LCD_WIDTH) {
 			p->bullets[i].alive = false;
 		}
