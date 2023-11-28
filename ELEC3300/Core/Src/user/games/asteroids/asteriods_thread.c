@@ -56,47 +56,29 @@ void asteroids_thread(void* par) {
 	tft_clear(BLACK);
 	while (quit == 0) {
 		osDelay(4);
-		// check for new events every frame
-		// SDL_PumpEvents();
-		// const Uint8* state = SDL_GetKeyboardState(NULL);
-
 		// if (state[SDL_SCANCODE_ESCAPE]) {
 		// quit = 1;
 		// }
 
-		// if (state[SDL_SCANCODE_UP]) {
-		// Vec2 thrust = get_direction(&p);
-		// multiply_vector(&thrust, .06);
-		// apply_force(&p.velocity, thrust);
-		// }
 		p.velocity = (Vec2){.x = ctrller.joystick[L_JOY_X], .y = -ctrller.joystick[L_JOY_Y]};
-
-		// if (state[SDL_SCANCODE_LEFT]) {
-		// volatile float rotate_angle = atan2(ctrller.joystick[R_JOY_Y], ctrller.joystick[R_JOY_X]);
 		rotate_player(&p, ctrller.joystick[R_JOY_X]);
-		// }
-
-
-		// if (state[SDL_SCANCODE_RIGHT]) {
-		// rotate_player(&p, 4);
-		// }
-
-		// while (SDL_PollEvent(&event)) {
-		// switch (event.type) {
-		// case SDL_KEYDOWN:
-
-		// switch (event.key.keysym.sym) {
-		// case SDLK_SPACE:
+		if (ctrller.button[L_BTN_UP]) {
+			p.velocity = (Vec2){.x = 0, .y = -0.7};
+		}
+		if (ctrller.button[L_BTN_DOWN]) {
+			p.velocity = (Vec2){.x = 0, .y = 0.7};
+		}
+		if (ctrller.button[L_BTN_LEFT]) {
+			p.velocity = (Vec2){.x = -0.7, .y = 0};
+		}
+		if (ctrller.button[L_BTN_RIGHT]) {
+			p.velocity = (Vec2){.x = 0.7, .y = 0};
+		}
 
 		// if (p.lives > 0) {
-		// shoot_bullet(&p);
-		// }
-
-		// break;
-		// }
-		// }
-		// }
-		// draw to the pixel buffer
+		if (ctrller.button[R_BTN_RIGHT]) {
+			shoot_bullet(&p);
+		}
 		draw_player(&p);
 		// draw_player(&lives[0]);
 		// draw_player(&lives[1]);
@@ -125,10 +107,9 @@ void asteroids_thread(void* par) {
 					}
 				}
 		 */
-		int i = 0;
 		Vec2 translation = {-LCD_WIDTH / 2, -LCD_HEIGHT / 2};
 
-		for (i = 0; i < BULLETS; i++) {
+		for (int i = 0; i < BULLETS; i++) {
 			// only check for collision for bullets that are shown on screen
 			if (p.bullets[i].alive) {
 				// convert bullet screen space location to world space to compare
@@ -136,10 +117,21 @@ void asteroids_thread(void* par) {
 				Vec2 world = add_vector_new(&p.bullets[i].location, &translation);
 				int index = collision_asteroids(asteroids, ASTEROIDS, &world, 1);
 
-				// collision occured
+				// collision occurred
 				if (index != -1) {
 					asteroids[index].alive = 0;
 					p.bullets[i].alive = false;
+					tft_draw_point(p.bullets[i].last_loc.x, p.bullets[i].last_loc.y, BLACK);
+					tft_draw_point(p.bullets[i].location.x, p.bullets[i].location.y, BLACK);
+					for (int j = 0; j < VERTS; j++) {
+						tft_draw_line(last_asteroids[index].world_vert[j].x, last_asteroids[index].world_vert[j].y,
+									  last_asteroids[index].world_vert[(j + 1) % VERTS].x,
+									  last_asteroids[index].world_vert[(j + 1) % VERTS].y, BLACK);
+
+						tft_draw_line(asteroids[index].world_vert[j].x, asteroids[index].world_vert[j].y,
+									  asteroids[index].world_vert[(j + 1) % VERTS].x,
+									  asteroids[index].world_vert[(j + 1) % VERTS].y, BLACK);
+					}
 
 					if (asteroids[index].size != SMALL) {
 						spawn_asteroids(asteroids, ASTEROIDS, asteroids[index].size, asteroids[index].location);

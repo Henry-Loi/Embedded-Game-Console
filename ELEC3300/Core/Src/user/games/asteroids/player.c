@@ -78,6 +78,7 @@ void draw_player(Player_t* p) {
 
 	for (int i = 0; i < BULLETS; i++) {
 		if (p->bullets[i].alive) {
+			tft_draw_point(p->bullets[i].last_loc.x, p->bullets[i].last_loc.y, BLACK);
 			tft_draw_point(p->bullets[i].location.x, p->bullets[i].location.y, WHITE);
 		}
 	}
@@ -97,6 +98,7 @@ void update_player(Player_t* p) {
 	}
 
 	for (int i = 0; i < BULLETS; i++) {
+		p->bullets[i].last_loc = p->bullets[i].location;
 		add_vector(&p->bullets[i].location, &p->bullets[i].velocity);
 	}
 }
@@ -129,10 +131,14 @@ void bounds_player(Player_t* p) {
 	for (int i = 0; i < BULLETS; i++) {
 		if (p->bullets[i].location.x < 0 || p->bullets[i].location.x >= LCD_WIDTH) {
 			p->bullets[i].alive = false;
+			tft_draw_point(p->bullets[i].last_loc.x, p->bullets[i].last_loc.y, BLACK);
+			tft_draw_point(p->bullets[i].location.x, p->bullets[i].location.y, BLACK);
 		}
 
 		if (p->bullets[i].location.y < 0 || p->bullets[i].location.y >= LCD_HEIGHT) {
 			p->bullets[i].alive = false;
+			tft_draw_point(p->bullets[i].last_loc.x, p->bullets[i].last_loc.y, BLACK);
+			tft_draw_point(p->bullets[i].location.x, p->bullets[i].location.y, BLACK);
 		}
 	}
 }

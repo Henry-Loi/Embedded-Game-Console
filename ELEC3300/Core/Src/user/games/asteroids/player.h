@@ -10,6 +10,7 @@
 
 typedef struct {
 	Vec2 location;
+	Vec2 last_loc;
 	Vec2 velocity;
 	bool alive;
 } Bullet_t;
