@@ -34,7 +34,7 @@ typedef struct {
 	float joystick[MAX_NUM_OF_JOY_AXIS];
 	uint16_t joy_offset[MAX_NUM_OF_JOY_AXIS];
 	float joy_scale[MAX_NUM_OF_JOY_AXIS];
-	uint32_t button_unactive_count;
+	uint32_t unactive_count;
 } Controller;
 
 extern Controller ctrller;

@@ -60,7 +60,7 @@ void lcd_thread(void* par) {
 	while (1) {
 		osDelay(4);
 
-		if (get_ticks() - ctrller.button_unactive_count > DARKSCREEN_MODE_TIMEOUT) {
+		if (get_ticks() - ctrller.unactive_count > DARKSCREEN_MODE_TIMEOUT) {
 			tft_backlight_control(0);
 		} else {
 			tft_backlight_control(255);
