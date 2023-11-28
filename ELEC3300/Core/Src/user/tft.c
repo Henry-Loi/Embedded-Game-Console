@@ -3,6 +3,7 @@
 #include "diskio.h"
 #include "display/lcd.h"
 #include "display/touch.h"
+#include "fatfs_platform.h"
 #include "icm20602.h"
 #include "lcd.h"
 #include "lv_conf.h"
@@ -82,6 +83,8 @@ void lcd_thread(void* par) {
 			r = controller_tft(r);
 			r++;
 			r = imu_tft(r);
+			r++;
+			r = fatfs_tft(r);
 
 			tft_update();
 		}
