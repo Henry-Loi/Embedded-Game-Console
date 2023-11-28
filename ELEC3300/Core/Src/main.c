@@ -39,11 +39,14 @@
 #include "gpio.h"
 #include "icm20602.h"
 #include "lvgl.h"
+#include "nes/InfoNES.h"
+#include "nes/InfoNES_System.h"
 #include "os.h"
 #include "sdram.h"
 #include "ui/lv_boot_animation.h"
 #include "user/display/touch.h"
 #include "user/nes/InfoNES_System.h"
+
 
 
 /* USER CODE END Includes */
@@ -137,8 +140,10 @@ int main(void) {
 				}
 			}
 		} */
-	nesStart();
 
+	if (InfoNES_Load(NULL) == 0) {
+		InfoNES_Main();
+	}
 	// FATFS
 	// fatfs_file_system_test(0);
 

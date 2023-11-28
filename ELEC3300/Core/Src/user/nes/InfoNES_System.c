@@ -1,72 +1,28 @@
+
 #include "InfoNES_System.h"
 
 #include "InfoNES.h"
-#include "InfoNES_Mapper.h"
-#include "InfoNES_pAPU.h"
-#include "K6502.h"
-#include "games/nes_game.h"
 #include "lcd.h"
 
-#include <ctype.h>
-#include <stdarg.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
+// extern DWORD* FrameBuffer;
 
-#define LCD_AER(x) *(unsigned int*)(0xc0000000 + x)
-
-#define SELECT_GAME 0 /* ѡ��Ҫ���е���Ϸ  */
-
-// Palette data
-WORD NesPalette[64] = {0x39ce, 0x1071, 0x0015, 0x2013, 0x440e, 0x5402, 0x5000, 0x3c20, 0x20a0, 0x0100, 0x0140,
-					   0x00e2, 0x0ceb, 0x0000, 0x0000, 0x0000, 0x5ef7, 0x01dd, 0x10fd, 0x401e, 0x5c17, 0x700b,
-					   0x6ca0, 0x6521, 0x45c0, 0x0240, 0x02a0, 0x0247, 0x0211, 0x0000, 0x0000, 0x0000, 0x7fff,
-					   0x1eff, 0x2e5f, 0x223f, 0x79ff, 0x7dd6, 0x7dcc, 0x7e67, 0x7ae7, 0x4342, 0x2769, 0x2ff3,
-					   0x03bb, 0x0000, 0x0000, 0x0000, 0x7fff, 0x579f, 0x635f, 0x6b3f, 0x7f1f, 0x7f1b, 0x7ef6,
-					   0x7f75, 0x7f94, 0x73f4, 0x57d7, 0x5bf9, 0x4ffe, 0x0000, 0x0000, 0x0000
-
+WORD NesPalette[64] = {
+	0x738E, 0x88C4, 0xA800, 0x9808, 0x7011, 0x1015, 0x0014, 0x004F, 0x0148, 0x0200, 0x0280, 0x11C0, 0x59C3,
+	0x0000, 0x0000, 0x0000, 0xBDD7, 0xEB80, 0xE9C4, 0xF010, 0xB817, 0x581C, 0x015B, 0x0A59, 0x0391, 0x0480,
+	0x0540, 0x3C80, 0x8C00, 0x0000, 0x0000, 0x0000, 0xFFDF, 0xFDC7, 0xFC8B, 0xFC48, 0xFBDE, 0xB39F, 0x639F,
+	0x3CDF, 0x3DDE, 0x1690, 0x4EC9, 0x9FCB, 0xDF40, 0x0000, 0x0000, 0x0000, 0xFFDF, 0xFF15, 0xFE98, 0xFE5A,
+	0xFE1F, 0xDE1F, 0xB5DF, 0xAEDF, 0xA71F, 0xA7DC, 0xBF95, 0xCFD6, 0xF7D3, 0x0000, 0x0000, 0x0000,
 };
 
-
-void nesStart(void) {
-	WorkFrame = (WORD*)0xD0260000;
-
-	if (0 != InfoNES_Load("SuperMario")) {
-		return;
-	}
-
-	InfoNES_Main();
-}
+/* Menu screen */
+int InfoNES_Menu() { return 0; }
 
 
-/*===================================================================*/
-/*                                                                   */
-/*                  InfoNES_Menu() : Menu screen                     */
-/*                                                                   */
-/*===================================================================*/
-int InfoNES_Menu() {
-	/*
-	 *  Menu screen
-	 *
-	 *  Return values
-	 *     0 : Normally
-	 *    -1 : Exit InfoNES
-	 */
-
-	// if (PAD_PUSH(PAD_System, PAD_SYS_QUIT))
-	// return -1;
-
-	// Nothing to do here
-	return 0;
-}
-
-
-/*===================================================================*/
-/*                                                                   */
-/*               InfoNES_ReadRom() : Read ROM image file             */
-/*                                                                   */
-/*===================================================================*/
+extern const BYTE nes_rom[];
+/* Read ROM image file */
 int InfoNES_ReadRom(const char* pszFileName) {
 	/*
 	 *  Read ROM image file
@@ -79,307 +35,99 @@ int InfoNES_ReadRom(const char* pszFileName) {
 	 *    -1 : Error
 	 */
 
-	//  FILE *fp;
-
-	/* Open ROM file */
-	//  fp = fopen( pszFileName, "rb" );
-	//  if ( fp == NULL )
-	//    return -1;
 
 	/* Read ROM Header */
-	nesReadFile(&NesHeader, sizeof NesHeader, 1, &nes_game[SELECT_GAME]);
-
-	//  fread( &NesHeader, sizeof NesHeader, 1, fp );
+	BYTE* rom = (BYTE*)nes_rom;
+	memcpy(&NesHeader, rom, sizeof(NesHeader));
 	if (memcmp(NesHeader.byID, "NES\x1a", 4) != 0) {
 		/* not .nes file */
-		//    fclose( fp );
 		return -1;
 	}
+	rom += sizeof(NesHeader);
 
 	/* Clear SRAM */
 	memset(SRAM, 0, SRAM_SIZE);
 
 	/* If trainer presents Read Triner at 0x7000-0x71ff */
 	if (NesHeader.byInfo1 & 4) {
-		//    fread( &SRAM[ 0x1000 ], 512, 1, fp );
-		nesReadFile(&SRAM[0x1000], 512, 1, &nes_game[SELECT_GAME]);
+		// memcpy( &SRAM[ 0x1000 ], rom, 512);
+		rom += 512;
 	}
 
 	/* Allocate Memory for ROM Image */
-	ROM = (BYTE*)malloc(NesHeader.byRomSize * 0x4000);
-
-	/* Read ROM Image */
-	//  fread( ROM, 0x4000, NesHeader.byRomSize, fp );
-	nesReadFile(ROM, 0x4000, NesHeader.byRomSize, &nes_game[SELECT_GAME]);
+	ROM = rom;
+	rom += NesHeader.byRomSize * 0x4000;
 
 	if (NesHeader.byVRomSize > 0) {
 		/* Allocate Memory for VROM Image */
-		VROM = (BYTE*)malloc(NesHeader.byVRomSize * 0x2000);
-
-		/* Read VROM Image */
-		//    fread( VROM, 0x2000, NesHeader.byVRomSize, fp );
-		nesReadFile(VROM, 0x2000, NesHeader.byVRomSize, &nes_game[SELECT_GAME]);
+		VROM = (BYTE*)rom;
+		rom += NesHeader.byVRomSize * 0x2000;
 	}
-
-	//  /* File close */
-	//  fclose( fp );
 
 	/* Successful */
 	return 0;
 }
 
-/*===================================================================*/
-/*                                                                   */
-/*           InfoNES_ReleaseRom() : Release a memory for ROM         */
-/*                                                                   */
-/*===================================================================*/
-void InfoNES_ReleaseRom() {
-	/*
-	 *  Release a memory for ROM
-	 *
-	 */
 
-	if (ROM) {
-		free(ROM);
-		ROM = NULL;
-	}
+/* Release a memory for ROM */
+void InfoNES_ReleaseRom() {}
 
-	if (VROM) {
-		free(VROM);
-		VROM = NULL;
-	}
-}
 
-/*===================================================================*/
-/*                                                                   */
-/*      InfoNES_LoadFrame() :                                        */
-/*           Transfer the contents of work frame on the screen       */
-/*                                                                   */
-/*===================================================================*/
-unsigned short convertToRGB565(unsigned int colorRGB888) {
-	unsigned int R = (colorRGB888 >> 16) & 0xFF;
-	unsigned int G = (colorRGB888 >> 8) & 0xFF;
-	unsigned int B = colorRGB888 & 0xFF;
-
-	unsigned short R5 = (R * 31 + 127) / 255;
-	unsigned short G6 = (G * 63 + 127) / 255;
-	unsigned short B5 = (B * 31 + 127) / 255;
-
-	unsigned short colorRGB565 = (R5 << 11) | (G6 << 5) | B5;
-
-	return colorRGB565;
-}
-
+/* Transfer the contents of work frame on the screen */
 void InfoNES_LoadFrame() {
-	/*
-	 *  Transfer the contents of work frame on the screen
-	 *
-	 */
-	/* 	int x, y, lcd_x = 0, lcd_y = 0;
-		unsigned int r, g, b;
-		WORD wColor;
-		unsigned int LCD_Color888; */
+	unsigned int x, y;
+	unsigned short *src, *dst;
+	src = (unsigned short*)WorkFrame;
 
-	/* Exchange 16-bit to 24-bit  RGB555 to RGB888*/
-	/* 	lcd_y = 32;
-		lcd_x = 239;
-
-		for (y = 0; y < NES_DISP_HEIGHT; y++) {
-			for (x = 0; x < NES_DISP_WIDTH; x++) {
-				wColor = WorkFrame[(y << 8) + x];
-				r = (wColor & 0x7c00) << 9;
-				g = (wColor & 0x03e0) << 6;
-				b = (wColor & 0x001f) << 3;
-
-				//            r = (wColor & 0xf800) << 8;
-				//            g = (wColor & 0x07e0) << 5;
-				//            b = (wColor & 0x001f) << 3;
-
-				LCD_Color888 = 0xff000000 | r | g | b;
-
-				LCD_AER((lcd_y * 240 + lcd_x) * 4) = wColor;
-				// tft_draw_point(lcd_x, lcd_y, convertToRGB565(LCD_Color888));
-
-				lcd_y++;
-				if (lcd_y == 288) {
-					lcd_x--;
-					lcd_y = 32;
-				}
-			}
-		} */
-	for (int y = 0; y < NES_DISP_HEIGHT; y++) {
-		for (int x = 0; x < NES_DISP_WIDTH; x++) {
-			tft_draw_point(x, y, &WorkFrame[(x << 8)]);
+	for (y = 0; y < NES_DISP_HEIGHT; y++) {
+		// dst = (unsigned short*)FrameBuffer + (NES_DISP_HEIGHT - 1 - x);
+		// unsigned short* temp = &WorkFrame[(y << 8)];
+		for (x = 0; x < NES_DISP_WIDTH; x++) {
+			// *dst = *src;
+			// dst += NES_DISP_HEIGHT;
+			// src++;
+			tft_draw_point(x, y, WorkFrame[(y << NES_DISP_WIDTH) + x]);
+			// tft_draw_point(x, y, temp[x]);
 		}
 	}
 }
 
 
-/*===================================================================*/
-/*                                                                   */
-/*             InfoNES_PadState() : Get a joypad state               */
-/*                                                                   */
-/*===================================================================*/
-void InfoNES_PadState(DWORD* pdwPad1, DWORD* pdwPad2, DWORD* pdwSystem) {
-	/*
-	 *  Get a joypad state
-	 *
-	 *  Parameters
-	 *    DWORD *pdwPad1                   (Write)
-	 *      Joypad 1 State
-	 *
-	 *    DWORD *pdwPad2                   (Write)
-	 *      Joypad 2 State
-	 *
-	 *    DWORD *pdwSystem                 (Write)
-	 *      Input for InfoNES
-	 *
-	 */
-
-	//      case Key_Right:
-	//    dwKeyPad1 |= (1<<7);
-	//    break;
-	//  case Key_Left:
-	//    dwKeyPad1 |= (1<<6);
-	//    break;
-	//  case Key_Down:
-	//    dwKeyPad1 |= (1<<5);
-	//    break;
-	//  case Key_Up:
-	//    dwKeyPad1 |= (1<<4);
-	//    break;
-	//  case Key_S:
-	//    dwKeyPad1 |= (1<<3);
-	//    break;
-	//  case Key_A:
-	// dwKeyPad1 |= (1 << 2);
-	//    break;
-	//  case Key_Z:
-	//    dwKeyPad1 |= (1<<1);
-	//    break;
-	//  case Key_X:
-	//    dwKeyPad1 |= (1<<0);
-
-	// extern unsigned char BSP_GetKey(void);
-
-	// *pdwPad1 = 0;
-
-	// if (BSP_GetKey()) {
-	// *pdwPad1 |= (1 << 3); // Key_S
-	// }
-}
+/* Get a joypad state */
+void InfoNES_PadState(DWORD* pdwPad1, DWORD* pdwPad2, DWORD* pdwSystem) {}
 
 
-/*===================================================================*/
-/*                                                                   */
-/*             InfoNES_MemoryCopy() : memcpy                         */
-/*                                                                   */
-/*===================================================================*/
-void* InfoNES_MemoryCopy(void* dest, const void* src, int count) {
-	/*
-	 *  memcpy
-	 *
-	 *  Parameters
-	 *    void *dest                       (Write)
-	 *      Points to the starting address of the copied block's destination
-	 *
-	 *    const void *src                  (Read)
-	 *      Points to the starting address of the block of memory to copy
-	 *
-	 *    int count                        (Read)
-	 *      Specifies the size, in bytes, of the block of memory to copy
-	 *
-	 *  Return values
-	 *    Pointer of destination
-	 */
-
-	memcpy(dest, src, count);
-	return dest;
-}
+/* memcpy */
+void* InfoNES_MemoryCopy(void* dest, const void* src, int count) { return memcpy(dest, src, count); }
 
 
-/*===================================================================*/
-/*                                                                   */
-/*             InfoNES_MemorySet() : memset                          */
-/*                                                                   */
-/*===================================================================*/
-void* InfoNES_MemorySet(void* dest, int c, int count) {
-	/*
-	 *  memset
-	 *
-	 *  Parameters
-	 *    void *dest                       (Write)
-	 *      Points to the starting address of the block of memory to fill
-	 *
-	 *    int c                            (Read)
-	 *      Specifies the byte value with which to fill the memory block
-	 *
-	 *    int count                        (Read)
-	 *      Specifies the size, in bytes, of the block of memory to fill
-	 *
-	 *  Return values
-	 *    Pointer of destination
-	 */
-
-	memset(dest, c, count);
-	return dest;
-}
+/* memset */
+void* InfoNES_MemorySet(void* dest, int c, int count) { return memset(dest, c, count); }
 
 
-/*===================================================================*/
-/*                                                                   */
-/*        InfoNES_SoundInit() : Sound Emulation Initialize           */
-/*                                                                   */
-/*===================================================================*/
-void InfoNES_SoundInit(void) {
-	//  sound_fd = 0;
-}
+/* Print debug message */
+void InfoNES_DebugPrint(char* pszMsg) {}
 
 
-/*===================================================================*/
-/*                                                                   */
-/*        InfoNES_SoundOpen() : Sound Open                           */
-/*                                                                   */
-/*===================================================================*/
-int InfoNES_SoundOpen(int samples_per_sync, int sample_rate) {
-	/* Successful */
-	return 1;
-}
-
-/*===================================================================*/
-/*                                                                   */
-/*        InfoNES_SoundClose() : Sound Close                         */
-/*                                                                   */
-/*===================================================================*/
-void InfoNES_SoundClose(void) {
-	//  if ( sound_fd )
-	//  {
-	//    close(sound_fd);
-	//  }
-}
-
-/*===================================================================*/
-/*                                                                   */
-/*            InfoNES_SoundOutput() : Sound Output 5 Waves           */
-/*                                                                   */
-/*===================================================================*/
-void InfoNES_SoundOutput(int samples, BYTE* wave1, BYTE* wave2, BYTE* wave3, BYTE* wave4, BYTE* wave5) {}
-
-/*===================================================================*/
-/*                                                                   */
-/*            InfoNES_Wait() : Wait Emulation if required            */
-/*                                                                   */
-/*===================================================================*/
+/* Wait */
 void InfoNES_Wait() {}
 
-/*===================================================================*/
-/*                                                                   */
-/*            InfoNES_MessageBox() : Print System Message            */
-/*                                                                   */
-/*===================================================================*/
-void InfoNES_MessageBox(char* pszMsg, ...) {
-	//    va_list args;
-	//    va_start( args, pszMsg );
-	//    printf( pszMsg, args );
-	//    va_end( args );
-}
+
+/* Sound Initialize */
+void InfoNES_SoundInit(void) {}
+
+
+/* Sound Open */
+int InfoNES_SoundOpen(int samples_per_sync, int sample_rate) { return 0; }
+
+
+/* Sound Close */
+void InfoNES_SoundClose(void) {}
+
+
+/* Sound Output 5 Waves - 2 Pulse, 1 Triangle, 1 Noise, 1 DPCM */
+void InfoNES_SoundOutput(int samples, BYTE* wave1, BYTE* wave2, BYTE* wave3, BYTE* wave4, BYTE* wave5) {}
+
+
+/* Print system message */
+void InfoNES_MessageBox(char* pszMsg, ...) {}
