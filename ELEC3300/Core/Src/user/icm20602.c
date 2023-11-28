@@ -1,7 +1,13 @@
 #include "icm20602.h"
 
 #include "board.h"
+#include "controller.h"
 #include "gpio.h"
+#include "lcd.h"
+#include "main.h"
+
+#include <math.h>
+
 
 IMUData imu_data = {0};
 
@@ -99,6 +105,8 @@ static uint8_t tx_buff[14];
 #define ICM20602_ADDRESS 0xD2
 #define CS_ICM_GPIO_Port IMU_CS_GPIO_Port
 #define CS_ICM_Pin		 IMU_CS_Pin
+
+#define ABS(val) ((val) > 0 ? (val) : -(val))
 
 uint8_t icm20602_read_buffer(uint8_t const regAddr, uint8_t* pData, uint8_t len) {
 	HAL_GPIO_WritePin(CS_ICM_GPIO_Port, CS_ICM_Pin, 0);
@@ -237,6 +245,9 @@ float icm20602_get_temp() {
 }
 
 int16_t accel[3] = {0};
+uint32_t imu_gyro_last_ticks = 0;
+uint8_t imu_gyro_offset_do_once_flag = 1;
+uint8_t test = 0;
 void imu_thread(void* par) {
 	uint32_t last_ticks = 0;
 	while (1) {
@@ -248,11 +259,40 @@ void imu_thread(void* par) {
 
 		icm20602_get_accel_adc(imu_data.accel);
 		icm20602_get_gyro_adc(imu_data.gyro);
+
+		if (imu_gyro_offset_do_once_flag) {
+			imu_data.gyro_offset[0] = imu_data.gyro[0];
+			imu_data.gyro_offset[1] = imu_data.gyro[1];
+			imu_data.gyro_offset[2] = imu_data.gyro[2];
+			imu_gyro_offset_do_once_flag = 0;
+		}
+
+		if (get_ticks() - imu_gyro_last_ticks > 40) {
+			imu_data.gyro_last[0] = imu_data.gyro[0];
+			imu_data.gyro_last[1] = imu_data.gyro[1];
+			imu_data.gyro_last[2] = imu_data.gyro[2];
+
+			imu_gyro_last_ticks = get_ticks();
+		}
+
+		test = 0;
+		for (int i = 0; i < 3; i++) {
+			if (ABS(imu_data.gyro[i] - imu_data.gyro_last[i]) > 100) {
+				ctrller.unactive_count = get_ticks();
+				test = 1;
+			}
+		}
 	}
 }
 
 int imu_tft(int r) {
 	tft_prints(0, r++, "IMU accel: %d %d %d", imu_data.accel[0], imu_data.accel[1], imu_data.accel[2]);
 	tft_prints(0, r++, "IMU gyro: %d %d %d", imu_data.gyro[0], imu_data.gyro[1], imu_data.gyro[2]);
+	tft_prints(0, r++, "IMU gyro vel: %f %f %f", (double)imu_data.gyro_vel[0], (double)imu_data.gyro_vel[1],
+			   (double)imu_data.gyro_vel[2]);
+	tft_prints(0, r++, "Value x: %d", ABS(imu_data.gyro[0] - imu_data.gyro_last[0]));
+	tft_prints(0, r++, "Value y: %d", ABS(imu_data.gyro[1] - imu_data.gyro_last[1]));
+	tft_prints(0, r++, "Value z: %d %d", ABS(imu_data.gyro[2] - imu_data.gyro_last[2]), test);
+
 	return r;
 }

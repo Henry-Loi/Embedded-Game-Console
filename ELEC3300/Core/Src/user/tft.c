@@ -1,3 +1,4 @@
+#include "board.h"
 #include "controller.h"
 #include "diskio.h"
 #include "display/lcd.h"
@@ -7,12 +8,14 @@
 #include "lv_conf.h"
 #include "lv_demo_widgets.h"
 #include "lv_os.h"
+#include "main.h"
 #include "os.h"
 #include "sd_diskio.h"
 #include "ui/lv_boot_animation.h"
 #include "ui/navbar.h"
 
-#define USE_OWN_TFT 1
+#define USE_OWN_TFT				1
+#define DARKSCREEN_MODE_TIMEOUT (30 * 1000)
 
 // touch point testing code
 int touch_screen_test(int r) {
@@ -57,15 +60,18 @@ void lcd_thread(void* par) {
 	while (1) {
 		osDelay(4);
 
+		if (get_ticks() - ctrller.unactive_count > DARKSCREEN_MODE_TIMEOUT) {
+			tft_backlight_control(0);
+		} else {
+			tft_backlight_control(255);
+		}
+
 		if (!USE_OWN_TFT) {
 			// lv task handler
 			xSemaphoreTake(MutexSemaphore, portMAX_DELAY);
 			lv_task_handler();
 			xSemaphoreGive(MutexSemaphore);
-		}
-
-
-		else {
+		} else {
 			int r = 0;
 			tft_prints(0, r++, "%02d:%02d.%02d", (int)get_ticks() / 60000, ((int)get_ticks() / 1000) % 60,
 					   ((int)get_ticks() % 1000) / 10);

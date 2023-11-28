@@ -1,5 +1,6 @@
 #include "touch.h"
 
+#include "controller.h"
 #include "delay.h"
 #include "i2c.h"
 #include "lcd.h"
@@ -161,6 +162,8 @@ void touch_update(void) {
 		}
 		_temp = 0;
 		touch_write_reg(REG_TPINFO, &_temp, 1);
+
+		ctrller.unactive_count = get_ticks();
 	}
 }
 

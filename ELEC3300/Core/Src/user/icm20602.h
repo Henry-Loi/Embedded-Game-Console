@@ -52,6 +52,9 @@ float icm20602_get_temp(void);
 typedef struct {
 	int16_t accel[3];
 	int16_t gyro[3];
+	int16_t gyro_last[3];
+	float gyro_vel[3];
+	float gyro_offset[3];
 } IMUData;
 
 void imu_thread(void* par);
