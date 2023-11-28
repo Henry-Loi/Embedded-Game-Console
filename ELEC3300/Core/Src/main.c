@@ -23,6 +23,7 @@
 #include "dma.h"
 #include "dma2d.h"
 #include "fatfs.h"
+#include "i2s.h"
 #include "ltdc.h"
 #include "sdio.h"
 #include "spi.h"
@@ -115,6 +116,7 @@ int main(void)
   MX_FATFS_Init();
   MX_USART1_UART_Init();
   MX_SPI2_Init();
+  MX_I2S3_Init();
   /* USER CODE BEGIN 2 */
 
 	SDRAM_Init();

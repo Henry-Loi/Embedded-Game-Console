@@ -57,8 +57,6 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define SD_Card_Check_Pin GPIO_PIN_2
-#define SD_Card_Check_GPIO_Port GPIOE
 #define TP_CS_Pin GPIO_PIN_8
 #define TP_CS_GPIO_Port GPIOI
 #define RBTN_LEFT_Pin GPIO_PIN_13
@@ -99,6 +97,8 @@ void Error_Handler(void);
 #define IMU_INT_GPIO_Port GPIOB
 #define TP_SDA_Pin GPIO_PIN_3
 #define TP_SDA_GPIO_Port GPIOI
+#define SD_Card_Check_Pin GPIO_PIN_5
+#define SD_Card_Check_GPIO_Port GPIOD
 #define LCD_BL_Pin GPIO_PIN_5
 #define LCD_BL_GPIO_Port GPIOB
 #define LED8_Pin GPIO_PIN_6
