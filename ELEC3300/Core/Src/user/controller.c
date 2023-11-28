@@ -25,8 +25,18 @@ void button_update(void) {
 	ctrller.button[R_BTN_LEFT] = btn_read(RBTN_LEFT);
 	ctrller.button[R_BTN_RIGHT] = btn_read(RBTN_RIGHT);
 
+	ctrller.button[L_JOY_BTN] = btn_read(Joy_L_Btn);
+	ctrller.button[R_JOY_BTN] = btn_read(Joy_L_Btn);
+
 	for (int i = 0; i < MAX_NUM_OF_JOY_AXIS; i++) {
 		ctrller.joystick[i] = ((float)ctrller.joy_val[i] - ctrller.joy_offset[i]) * ctrller.joy_scale[i];
+	}
+
+	for (int i = 0; i < MAX_NUM_OF_BTNS; i++) {
+		if (ctrller.button[i] != ctrller.last_button_state[i]) {
+			ctrller.button_unactive_count = get_ticks();
+		}
+		ctrller.last_button_state[i] = ctrller.button[i];
 	}
 }
 

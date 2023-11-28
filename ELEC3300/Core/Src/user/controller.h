@@ -29,10 +29,12 @@ typedef enum {
 
 typedef struct {
 	uint8_t button[MAX_NUM_OF_BTNS];
+	uint8_t last_button_state[MAX_NUM_OF_BTNS];
 	uint16_t joy_val[MAX_NUM_OF_JOY_AXIS];
 	float joystick[MAX_NUM_OF_JOY_AXIS];
 	uint16_t joy_offset[MAX_NUM_OF_JOY_AXIS];
 	float joy_scale[MAX_NUM_OF_JOY_AXIS];
+	uint32_t button_unactive_count;
 } Controller;
 
 extern Controller ctrller;
