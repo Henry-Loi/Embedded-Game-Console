@@ -131,12 +131,14 @@ static void move_ball() {
 	/* Turn the ball around if it hits the edge of the screen. */
 	if (ball.x < 0) {
 		score[1] += 1;
+		tft_prints(LCD_MAX_CHAR_WIDTH / 2 - 6, 1, "%d          %d", score[0], score[1]);
 		tft_clear(BLACK);
 		init_game();
 	}
 
 	if (ball.x > SCREEN_WIDTH - 10) {
 		score[0] += 1;
+		tft_prints(LCD_MAX_CHAR_WIDTH / 2 - 6, 1, "%d          %d", score[0], score[1]);
 		tft_clear(BLACK);
 		init_game();
 	}
@@ -304,9 +306,42 @@ static void move_paddle(int d) {
 	}
 }
 
-static void draw_game_over(int p) { tft_prints(15, 15, "Game Over"); }
+// for multiplayer only
+static void move_paddle2(int d) {
+	// if the down arrow is pressed move paddle down
+	if (d == 0) {
+		paddle[0].last_y = paddle[0].y;
+		paddle[0].last_x = paddle[0].x;
+		if (paddle[0].y >= SCREEN_HEIGHT - paddle[0].h) {
+			paddle[0].y = SCREEN_HEIGHT - paddle[0].h;
 
-static void draw_menu() { tft_prints(0, 15, "Menu"); }
+		} else {
+			paddle[0].y += 5;
+		}
+	}
+
+	// if the up arrow is pressed move paddle up
+	if (d == 1) {
+		paddle[0].last_y = paddle[0].y;
+		paddle[0].last_x = paddle[0].x;
+		if (paddle[0].y <= 0) {
+			paddle[0].y = 0;
+
+		} else {
+			paddle[0].y -= 5;
+		}
+	}
+}
+
+static void draw_game_over(int p) {
+	tft_prints(LCD_MAX_CHAR_WIDTH / 2 - 20, LCD_MAX_CHAR_HEIGHT / 2, "Game Over (Click Right Right Key to restart)");
+}
+
+static void draw_menu() {
+	tft_prints(LCD_MAX_CHAR_WIDTH / 2 - 2, LCD_MAX_CHAR_HEIGHT / 2 - 1, "Menu");
+	tft_prints(LCD_MAX_CHAR_WIDTH / 2 - 25, LCD_MAX_CHAR_HEIGHT / 2 + 1,
+			   "Single Player (Left Key) Multi Player (Right Key)");
+}
 
 
 static void draw_net() { tft_draw_line(SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2, SCREEN_HEIGHT, WHITE); }
@@ -331,8 +366,7 @@ static void draw_player_1_score() { tft_prints(20, 1, "%d", score[1]); }
 void pong_thread(void* par) {
 	tft_clear(BLACK);
 
-	int sleep = 0;
-	int quit = 0;
+	uint8_t is_single_player = 1;
 	int state = 0;
 	int r = 0;
 	uint32_t last_game_tick = get_ticks();
@@ -341,6 +375,7 @@ void pong_thread(void* par) {
 	init_game();
 
 	tft_set_text_color(WHITE);
+
 	// render loop
 	while (1) {
 		osDelay(4);
@@ -355,24 +390,41 @@ void pong_thread(void* par) {
 			move_paddle(1);
 		}
 
-		// draw background
-		// if (get_ticks() - last_game_tick > 10) {
-		// 	tft_clear(BLACK);
-		// 	last_game_tick = get_ticks();
-		// }
+		if (!is_single_player) {
+			if (gpio_read(LBTN_UP)) {
+				move_paddle2(0);
+			}
+
+			if (gpio_read(LBTN_DOWN)) {
+				move_paddle2(1);
+			}
+		}
+
 
 		// display main menu
 		if (state == 0) {
-			if (gpio_read(RBTN_RIGHT)) {
+			if (!gpio_read(RBTN_RIGHT) || !gpio_read(RBTN_LEFT)) {
+				if (!gpio_read(RBTN_RIGHT)) {
+					is_single_player = 0;
+				} else {
+					is_single_player = 1;
+				}
 				state = 1;
+				tft_prints(LCD_MAX_CHAR_WIDTH / 2 - 6, 1, "%d          %d", score[0], score[1]);
+				tft_clear(BLACK);
+			} else {
+				// draw menu
+				draw_menu();
 			}
-
-			// draw menu
-			draw_menu();
 
 			// display gameover
 		} else if (state == 2) {
-			if (gpio_read(RBTN_RIGHT)) {
+			if (!gpio_read(RBTN_RIGHT) || !gpio_read(RBTN_LEFT)) {
+				if (!gpio_read(RBTN_RIGHT)) {
+					is_single_player = 0;
+				} else {
+					is_single_player = 1;
+				}
 				state = 0;
 				// delay for a little bit so the space bar press dosnt get triggered twice
 				// while the main menu is showing
@@ -402,7 +454,9 @@ void pong_thread(void* par) {
 			}
 
 			// paddle ai movement
-			move_paddle_ai();
+			if (is_single_player) {
+				move_paddle_ai();
+			}
 
 			//* Move the balls for the next frame.
 			move_ball();
@@ -417,10 +471,10 @@ void pong_thread(void* par) {
 			draw_ball();
 
 			// draw the score
-			draw_player_0_score();
+			// draw_player_0_score();
 
 			// draw the score
-			draw_player_1_score();
+			// draw_player_1_score();
 		}
 
 		tft_update();
