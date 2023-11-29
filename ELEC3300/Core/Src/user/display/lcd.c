@@ -4,31 +4,26 @@
 #include "lcd_font.h"
 #include "strhelper.h"
 #include "tim.h"
+
 #include "stm32f429xx.h"
+
 
 typedef struct {
 	uint8_t curr_buffer;
 	char char_buffer[2][LCD_MAX_CHAR_WIDTH][LCD_MAX_CHAR_HEIGHT];
 	Color_t color_buffer[2][LCD_MAX_CHAR_WIDTH][LCD_MAX_CHAR_HEIGHT];
 	FontSize_t fontsize_buffer[2][LCD_MAX_CHAR_WIDTH][LCD_MAX_CHAR_HEIGHT];
-
+	Color_t text_color;
 } TFTBuffer_t;
 
-TFTBuffer_t tft_buffer = {0};
+TFTBuffer_t tft_buffer = {.color_buffer = BLACK};
 
 #define CURR_BUF  tft_buffer.curr_buffer
 #define CHAR_BUF  tft_buffer.char_buffer
 #define COLOR_BUF tft_buffer.color_buffer
 #define FSIZE_BUF tft_buffer.fontsize_buffer
 
-void tft_backlight_control(uint8_t brightness) {
-	// if (brightness) {
-	// 	HAL_GPIO_WritePin(LCD_BL_GPIO_PORT, LCD_BL_GPIO_PIN, GPIO_PIN_SET);
-	// } else {
-	// 	HAL_GPIO_WritePin(LCD_BL_GPIO_PORT, LCD_BL_GPIO_PIN, GPIO_PIN_RESET);
-	// }
-	TIM3->CCR2 = brightness;
-}
+void tft_backlight_control(uint8_t brightness) { TIM3->CCR2 = brightness; }
 
 void tft_clear(Color_t color) {
 #if USE_DMA2D_EN
@@ -52,13 +47,14 @@ void tft_clear_buf(uint8_t buf) {
 }
 
 void lcd_init() {
+	// backlight controller pwm init
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
+	TIM3->ARR = 255;
+	TIM3->CCR2 = 255;
+
 	tft_clear(WHITE);
 	tft_clear_buf(0);
 	tft_clear_buf(1);
-
-	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
-	TIM3->ARR = 255;
-
 	tft_backlight_control(255);
 
 	for (int x = 0; x < LCD_MAX_CHAR_WIDTH; x++) {
@@ -170,6 +166,12 @@ void tft_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, Color_t c
 	}
 }
 
+void tft_fill_rect(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, Color_t color) {
+	for (int i = y1; i < y2; i++) {
+		tft_draw_line(x1, i, x2, i, color);
+	}
+}
+
 // void tft_print_char(uint16_t x, uint16_t y, char ch, Color_t color, FontSize_t fsize) {
 void tft_write_char(uint16_t x, uint16_t y, char ch, Color_t color, FontSize_t fsize) {
 	const uint8_t* ch_code;
@@ -254,8 +256,10 @@ void tft_prints(uint8_t x, uint8_t y, const char* fmt, ...) {
 
 	// TODO maybe don't hardcode text color
 	for (int i = 0; buf[i] != NULL; i++)
-		tft_print_char(x + i, y, buf[i], BLACK, Font32);
+		tft_print_char(x + i, y, buf[i], tft_buffer.text_color, Font32);
 }
+
+void tft_set_text_color(Color_t color) { tft_buffer.text_color = color; }
 
 // NOTE: THIS ONLY WORKS FOR CHARS NOW BECAUSE I CAN'T THINK OF A EASY WAY TO DEAL WITH THE ENTIRE DISPLAY
 // MAKING A 1024x600 BUFFER IS WAY TOO LARGE IT CAN'T FIT
