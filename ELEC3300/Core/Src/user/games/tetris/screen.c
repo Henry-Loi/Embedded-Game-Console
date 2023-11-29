@@ -38,10 +38,10 @@
 #define BORDER_WIDTH 10
 #define TOP_PADDING	 10
 
-int screen[MAX_Y][MAX_X];
+int screen[MAX_Y][MAX_X] = {{0}};
 
 static void print_matrix(void) {
-	for (int y = 0; y < MAX_Y; y++) {
+	for (int y = 1; y < MAX_Y; y++) {
 		for (int x = 0; x < MAX_X; x++) {
 			Color_t curr_color = WHITE;
 			switch (screen[y][x]) {
@@ -86,12 +86,17 @@ void prompt_new_game(void) {
 	refresh_screen();
 	// wclear(score_win);
 	// wprintw(score_win, "Sorry, you lost :( score %d\n", score);
+	tft_prints(45, 3, "GAME OVER");
+	tft_prints(45, 4, "FINAL SCORE: %d", tetris_score);
+	tft_prints(45, 5, "PRESS ANY KEY TO");
+	tft_prints(45, 6, "CONTINUE");
 
-	if (tetris_score > tetris_high_score) {
-		// wprintw(score_win, "Congratulations! New record!\n");
-		tetris_high_score = tetris_score;
+	for (int i = 0; i < MAX_NUM_OF_BTNS; i++) {
+		if (ctrller.button[i]) {
+			gameover = false;
+			break;
+		}
 	}
-
 	// wprintw(score_win, "Start a new game ? (y/n)");
 	// wrefresh(score_win);
 
@@ -100,7 +105,8 @@ void prompt_new_game(void) {
 	// exit(EXIT_SUCCESS);
 	// }
 
-	start_new_game();
+	if (!gameover)
+		start_new_game();
 }
 
 
@@ -116,6 +122,8 @@ TouchBtn_t tetris_screen_btns[MAX_NUM_OF_V_BTNS] = {
 	{.x = LCD_WIDTH - 180 - 150, .y = 400, .x_len = 150, .y_len = 150, .label = "R ROT", .border_color = RED},
 	{.x = 100, .y = 100, .x_len = 150, .y_len = 150, .label = "HOME", .border_color = RED},
 };
+
+bool tetris_do_once = true;
 void tetris_thread(void* par) {
 	// srand((unsigned)time(NULL));
 	// init_score();
@@ -125,6 +133,17 @@ void tetris_thread(void* par) {
 	while (1) {
 		osDelay(4);
 
+		tft_update();
+		if (gameover) {
+			if (tetris_do_once) {
+				tetris_do_once = false;
+				gameover = false;
+				start_new_game();
+			} else {
+				prompt_new_game();
+			}
+			continue;
+		}
 		// tft_set_text_color(BLACK);
 		if (get_ticks() - last_ticks > 500) {
 			last_ticks = get_ticks();
@@ -175,7 +194,6 @@ void tetris_thread(void* par) {
 		}
 
 		refresh_screen();
-		tft_update();
 		// draw_windows();
 	}
 }

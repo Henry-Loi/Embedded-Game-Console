@@ -30,6 +30,7 @@ static struct piece next_piece;
 
 /* delay to wait for input (milliseconds) */
 int tetris_delay;
+bool gameover = false;
 
 static void add_current_piece(void) {
 	int y, x;
@@ -118,7 +119,7 @@ static void handle_piece_bottom(void) {
 	next_piece = get_random_piece();
 
 	if (check_piece_overlap()) {
-		prompt_new_game();
+		gameover = true;
 		return;
 	}
 

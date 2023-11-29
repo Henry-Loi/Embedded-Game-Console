@@ -19,7 +19,9 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <stdbool.h>
 extern int tetris_delay;
+extern bool gameover;
 
 void move_down(void);
 void move_bottom(void);
