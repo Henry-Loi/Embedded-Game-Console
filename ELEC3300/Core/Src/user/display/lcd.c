@@ -25,6 +25,8 @@ TFTBuffer_t tft_buffer = {.color_buffer = BLACK};
 
 void tft_backlight_control(uint8_t brightness) { TIM3->CCR2 = brightness; }
 
+uint8_t tft_get_brightness(void) { return TIM3->CCR2 / 255 * 100; };
+
 void tft_clear(Color_t color) {
 #if USE_DMA2D_EN
 	dma2d_transfer_data_r2m((uint32_t*)LCD_FRAME_BUFFER, LCD_WIDTH, LCD_HEIGHT, 0, color);

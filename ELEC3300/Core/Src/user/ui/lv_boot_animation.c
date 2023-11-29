@@ -1,21 +1,28 @@
 #include "lv_boot_animation.h"
 
+#include "lv_area.h"
+#include "lv_img.h"
+
 #include "stm32f4xx_hal.h"
 
 #include <stdio.h>
+
 
 lv_obj_t* bar = NULL;
 
 static void set_value(void* bar, int32_t v) { lv_bar_set_value(bar, v, LV_ANIM_OFF); }
 
-void clear_bar() {
-	lv_obj_del(bar);
-}
+void clear_bar() { lv_obj_del(bar); }
 
 void lv_boot_animation(void (*end_cb)(lv_anim_t*), uint32_t boot_time) {
 	static lv_style_t style_logo;
 	static lv_style_t style_bar_bg;
 	static lv_style_t style_indic;
+
+	LV_IMG_DECLARE(Logo);
+	lv_obj_t* logo = lv_img_create(lv_scr_act());
+	lv_img_set_src(logo, &Logo);
+	lv_obj_align(logo, LV_ALIGN_TOP_MID, 0, 10);
 
 	/**/
 	lv_style_init(&style_logo);

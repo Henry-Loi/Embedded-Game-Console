@@ -38,6 +38,8 @@ typedef enum { Font12, Font16, Font24, Font32 } FontSize_t;
 
 void tft_backlight_control(uint8_t bightness);
 
+uint8_t tft_get_brightness(void);
+
 void lcd_init(void);
 
 void tft_clear(Color_t color);

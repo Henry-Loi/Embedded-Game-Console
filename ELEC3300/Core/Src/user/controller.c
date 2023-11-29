@@ -35,11 +35,19 @@ void button_update(void) {
 		}
 	}
 
+	// add buttons to inactive count
 	for (int i = 0; i < MAX_NUM_OF_BTNS; i++) {
 		if (ctrller.button[i] != ctrller.last_button_state[i]) {
 			ctrller.inactive_count = get_ticks();
 		}
 		ctrller.last_button_state[i] = ctrller.button[i];
+	}
+
+	// add joystick to inactive count
+	for (int i = 0; i < MAX_NUM_OF_JOY_AXIS; i++) {
+		if (ctrller.joystick[i] != 0) {
+			ctrller.inactive_count = get_ticks();
+		}
 	}
 }
 
