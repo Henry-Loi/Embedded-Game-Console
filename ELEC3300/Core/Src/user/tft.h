@@ -14,6 +14,9 @@
 
 #define TFT_PAGE_ENUM(X) X,
 #define TFT_PAGE_NAME(X) #X,
+#define TFT_PAGE_FUNC_DELCARE(X) \
+	void X##_cb(lv_event_t* e) { lcd_screen = X; }
+#define TFT_PAGE_FUNC(X) X##_cb,
 
 typedef enum { TFT_PAGE_TABLE(TFT_PAGE_ENUM) NUM_OF_PAGE, NUM_OF_GAME = 3 } TFT_Display_Screen;
 

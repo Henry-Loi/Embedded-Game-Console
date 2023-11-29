@@ -4,6 +4,7 @@
 #include "games/tictactoe/tictactoe.h"
 #include "lcd.h"
 #include "lv_area.h"
+#include "lv_event.h"
 #include "lvgl/lvgl.h"
 #include "tft.h"
 
@@ -29,6 +30,8 @@ static void slider_event_cb(lv_event_t* e) {
 	lv_obj_align_to(slider_label, slider, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
 }
 
+TFT_PAGE_TABLE(TFT_PAGE_FUNC_DELCARE)
+void (*tft_page_cb_arr[])(lv_event_t*) = {TFT_PAGE_TABLE(TFT_PAGE_FUNC)};
 void lvgl_main_page(void) {
 	/*Create a slider in the center of the display*/
 	lv_obj_t* slider = lv_slider_create(lv_scr_act());
@@ -62,6 +65,7 @@ void lvgl_main_page(void) {
 
 		label = lv_label_create(obj);
 		lv_label_set_text_fmt(label, "%s", tft_page_names[i]);
+		lv_obj_add_event_cb(obj, tft_page_cb_arr[i], LV_EVENT_CLICKED, NULL);
 		lv_obj_center(label);
 	}
 
