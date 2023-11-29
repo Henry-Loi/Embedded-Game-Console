@@ -27,6 +27,7 @@
 #include "ltdc.h"
 #include "sdio.h"
 #include "spi.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 #include "fmc.h"
@@ -117,8 +118,9 @@ int main(void)
   MX_USART1_UART_Init();
   MX_SPI2_Init();
   MX_I2S3_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-
+  
 	SDRAM_Init();
 	icm20602_init();
 

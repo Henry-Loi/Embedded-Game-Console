@@ -99,8 +99,6 @@ void Error_Handler(void);
 #define TP_SDA_GPIO_Port GPIOI
 #define SD_Card_Check_Pin GPIO_PIN_5
 #define SD_Card_Check_GPIO_Port GPIOD
-#define LCD_BL_Pin GPIO_PIN_5
-#define LCD_BL_GPIO_Port GPIOB
 #define LED8_Pin GPIO_PIN_6
 #define LED8_GPIO_Port GPIOB
 #define LED7_Pin GPIO_PIN_7

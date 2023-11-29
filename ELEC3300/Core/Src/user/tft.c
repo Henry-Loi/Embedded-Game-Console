@@ -14,7 +14,7 @@
 #include "ui/lv_boot_animation.h"
 #include "ui/navbar.h"
 
-#define USE_OWN_TFT				1
+#define USE_OWN_TFT				0 // 1: use own tft driver, 0: use lvgl
 #define DARKSCREEN_MODE_TIMEOUT (30 * 1000)
 
 // touch point testing code
