@@ -121,7 +121,7 @@ int main(void) {
 
 	SDRAM_Init();
 	icm20602_init();
-
+	lcd_init();
 	// FATFS
 	// fatfs_file_system_test(0);
 

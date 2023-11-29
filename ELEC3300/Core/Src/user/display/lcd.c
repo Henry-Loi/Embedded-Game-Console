@@ -163,6 +163,12 @@ void tft_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, Color_t c
 	}
 }
 
+void tft_fill_rect(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, Color_t color) {
+	for (int i = y1; i < y2; i++) {
+		tft_draw_line(x1, i, x2, i, color);
+	}
+}
+
 // void tft_print_char(uint16_t x, uint16_t y, char ch, Color_t color, FontSize_t fsize) {
 void tft_write_char(uint16_t x, uint16_t y, char ch, Color_t color, FontSize_t fsize) {
 	const uint8_t* ch_code;
