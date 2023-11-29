@@ -3,6 +3,7 @@
 #include "diskio.h"
 #include "display/lcd.h"
 #include "display/touch.h"
+#include "display/touch_btns.h"
 #include "fatfs_platform.h"
 #include "icm20602.h"
 #include "lcd.h"
@@ -25,11 +26,14 @@ int touch_screen_test(int r) {
 		tft_prints(0, r++, "x: %d", touch_feedback.point[i].x);
 		tft_prints(0, r++, "y: %d", touch_feedback.point[i].y);
 	}
-	tft_prints(0, r++, "NUM OF PRESSES: %d", touch_feedback.pressed_state);
+	tft_prints(0, r++, "NUM OF PRESSES: %d", touch_feedback.num);
+	tft_prints(0, r++, "CLICKED : %d", touch_feedback.clicked);
+	tft_prints(0, r++, "PRESSED : %d", touch_feedback.pressed_state);
 	return r;
 }
 
 DSTATUS SD_status(BYTE);
+
 
 void lcd_thread(void* par) {
 	// lcd init
@@ -73,21 +77,24 @@ void lcd_thread(void* par) {
 			lv_task_handler();
 			xSemaphoreGive(MutexSemaphore);
 		} else {
-			int r = 0;
-			tft_prints(0, r++, "%02d:%02d.%02d", (int)get_ticks() / 60000, ((int)get_ticks() / 1000) % 60,
-					   ((int)get_ticks() % 1000) / 10);
+			// int r = 0;
+			// tft_prints(0, r++, "%02d:%02d.%02d", (int)get_ticks() / 60000, ((int)get_ticks() / 1000) % 60,
+			//    ((int)get_ticks() % 1000) / 10);
 
-			r++;
+			// r++;
 			// r = touch_screen_test(r);
 			// r++;
-			r = controller_tft(r);
-			r++;
-			r = imu_tft(r);
-			r++;
-			r = fatfs_tft(r);
 
-			tft_update();
+			// r++;
+			// r = controller_tft(r);
+			// r++;
+			// r = imu_tft(r);
+			// r++;
+			// r = fatfs_tft(r);
+
+			// tft_update();
 		}
 		touch_update();
 	}
 }
+/*  */

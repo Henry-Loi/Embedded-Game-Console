@@ -154,7 +154,7 @@ void MX_FREERTOS_Init(void) {
 	/* USER CODE BEGIN RTOS_THREADS */
 	/* add threads, ... */
 	CREATE_THREAD(led_task, led_blinky, NULL);
-	// CREATE_THREAD(lcd_task, lcd_thread, NULL);
+	CREATE_THREAD(lcd_task, lcd_thread, NULL);
 	// CREATE_THREAD(debug_task, debug_thread, NULL);
 	CREATE_THREAD(controller_task, controller_thread, NULL);
 	// CREATE_THREAD(imu_task, imu_thread, NULL);

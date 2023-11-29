@@ -32,7 +32,7 @@
 typedef uint16_t Color_t;
 
 // @brief whether or not to use DMA for transfer
-#define USE_DMA2D_EN 1
+#define USE_DMA2D_EN 0
 
 typedef enum { Font12, Font16, Font24, Font32 } FontSize_t;
 

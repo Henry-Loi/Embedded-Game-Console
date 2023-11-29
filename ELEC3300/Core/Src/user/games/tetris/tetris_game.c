@@ -176,6 +176,15 @@ void rotate(void) {
 	add_current_piece();
 }
 
+
+void rotate2(void) {
+	remove_current_piece();
+	current_piece.rotation = (current_piece.rotation - 1 + 4) % 4;
+	if (check_piece_overlap())
+		current_piece.rotation = (current_piece.rotation + 1) % 4;
+	add_current_piece();
+}
+
 void get_next_piece(char next[4][4]) {
 	int y, x;
 

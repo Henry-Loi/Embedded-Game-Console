@@ -19,9 +19,11 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
-#define TOP_PADDING 5
+#define TOP_PADDING	 5
+#define LEFT_PADDING 350
 
-#define MAX_X 22
+// #define MAX_X 22
+#define MAX_X 11
 #define MAX_Y 19
 
 extern int screen[MAX_Y][MAX_X];
