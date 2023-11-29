@@ -31,13 +31,13 @@
 #include "board.h"
 #include "controller.h"
 #include "games/asteroids/asteroids_thread.h"
+#include "games/pong/pong.h"
 #include "games/tetris/tetris.h"
 #include "gpio.h"
 #include "icm20602.h"
 #include "lv_hal_tick.h"
 #include "os.h"
 #include "serial.h"
-
 
 /* USER CODE END Includes */
 
@@ -65,6 +65,7 @@ DEFINE_THREAD_ATTR(controller_task, 4);
 DEFINE_THREAD_ATTR(imu_task, 3);
 DEFINE_THREAD_ATTR_SIZED(asteroids_task, 4096 * 2, 4);
 DEFINE_THREAD_ATTR_SIZED(tetris_task, 4096, 4);
+DEFINE_THREAD_ATTR_SIZED(pong_task, 4096, 4);
 
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
@@ -158,7 +159,8 @@ void MX_FREERTOS_Init(void) {
 	CREATE_THREAD(controller_task, controller_thread, NULL);
 	CREATE_THREAD(imu_task, imu_thread, NULL);
 	// CREATE_THREAD(asteroids_task, asteroids_thread, NULL);
-	CREATE_THREAD(tetris_task, tetris_thread, NULL);
+	// CREATE_THREAD(tetris_task, tetris_thread, NULL);
+	CREATE_THREAD(pong_task, pong_thread, NULL);
 
 	/* USER CODE END RTOS_THREADS */
 

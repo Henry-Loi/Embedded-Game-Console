@@ -9,10 +9,10 @@ typedef struct {
 	char char_buffer[2][LCD_MAX_CHAR_WIDTH][LCD_MAX_CHAR_HEIGHT];
 	Color_t color_buffer[2][LCD_MAX_CHAR_WIDTH][LCD_MAX_CHAR_HEIGHT];
 	FontSize_t fontsize_buffer[2][LCD_MAX_CHAR_WIDTH][LCD_MAX_CHAR_HEIGHT];
-
+	Color_t text_color;
 } TFTBuffer_t;
 
-TFTBuffer_t tft_buffer = {0};
+TFTBuffer_t tft_buffer = {.color_buffer = BLACK};
 
 #define CURR_BUF  tft_buffer.curr_buffer
 #define CHAR_BUF  tft_buffer.char_buffer
@@ -253,8 +253,10 @@ void tft_prints(uint8_t x, uint8_t y, const char* fmt, ...) {
 
 	// TODO maybe don't hardcode text color
 	for (int i = 0; buf[i] != NULL; i++)
-		tft_print_char(x + i, y, buf[i], BLACK, Font32);
+		tft_print_char(x + i, y, buf[i], tft_buffer.text_color, Font32);
 }
+
+void tft_set_text_color(Color_t color) { tft_buffer.text_color = color; }
 
 // NOTE: THIS ONLY WORKS FOR CHARS NOW BECAUSE I CAN'T THINK OF A EASY WAY TO DEAL WITH THE ENTIRE DISPLAY
 // MAKING A 1024x600 BUFFER IS WAY TOO LARGE IT CAN'T FIT
