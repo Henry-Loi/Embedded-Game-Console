@@ -17,13 +17,15 @@
 
 
 typedef struct ball_s {
-	int x, y;	/* position on the screen */
+	int x, y; /* position on the screen */
+	int last_x, last_y;
 	int w, h;	// ball width and height
 	int dx, dy; /* movement vector */
 } ball_t;
 
 typedef struct paddle {
 	int x, y;
+	int last_x, last_y;
 	int w, h;
 } paddle_t;
 
@@ -119,7 +121,8 @@ int check_collision(ball_t a, paddle_t b) {
 
 /* This routine moves each ball by its motion vector. */
 static void move_ball() {
-	tft_fill_rect(ball.x, ball.y, ball.x + ball.w, ball.y + ball.h, BLACK);
+	ball.last_x = ball.x;
+	ball.last_y = ball.y;
 
 	/* Move the ball by its motion vector. */
 	ball.x += ball.dx;
@@ -220,7 +223,9 @@ static void move_ball() {
 }
 
 static void move_paddle_ai() {
-	tft_fill_rect(paddle[0].x, paddle[0].y, paddle[0].x + paddle[0].w, paddle[0].y + paddle[0].h, BLACK);
+	paddle[0].last_y = paddle[0].y;
+	paddle[0].last_x = paddle[0].x;
+
 	int center = paddle[0].y + 25;
 	int screen_center = SCREEN_HEIGHT / 2 - 25;
 	int ball_speed = ball.dy;
@@ -274,9 +279,10 @@ static void move_paddle_ai() {
 }
 
 static void move_paddle(int d) {
-	tft_fill_rect(paddle[1].x, paddle[1].y, paddle[1].x + paddle[1].w, paddle[1].y + paddle[1].h, BLACK);
 	// if the down arrow is pressed move paddle down
 	if (d == 0) {
+		paddle[1].last_y = paddle[1].y;
+		paddle[1].last_x = paddle[1].x;
 		if (paddle[1].y >= SCREEN_HEIGHT - paddle[1].h) {
 			paddle[1].y = SCREEN_HEIGHT - paddle[1].h;
 
@@ -287,6 +293,8 @@ static void move_paddle(int d) {
 
 	// if the up arrow is pressed move paddle up
 	if (d == 1) {
+		paddle[1].last_y = paddle[1].y;
+		paddle[1].last_x = paddle[1].x;
 		if (paddle[1].y <= 0) {
 			paddle[1].y = 0;
 
@@ -303,10 +311,15 @@ static void draw_menu() { tft_prints(0, 15, "Menu"); }
 
 static void draw_net() { tft_draw_line(SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2, SCREEN_HEIGHT, WHITE); }
 
-static void draw_ball() { tft_fill_rect(ball.x, ball.y, ball.x + ball.w, ball.y + ball.h, WHITE); }
+static void draw_ball() {
+	tft_fill_rect(ball.last_x, ball.last_y, ball.last_x + ball.w, ball.last_y + ball.h, BLACK);
+	tft_fill_rect(ball.x, ball.y, ball.x + ball.w, ball.y + ball.h, WHITE);
+}
 
 static void draw_paddle() {
 	for (int i = 0; i < 2; i++) {
+		tft_fill_rect(paddle[i].last_x, paddle[i].last_y, paddle[i].last_x + paddle[i].w,
+					  paddle[i].last_y + paddle[i].h, BLACK);
 		tft_fill_rect(paddle[i].x, paddle[i].y, paddle[i].x + paddle[i].w, paddle[i].y + paddle[i].h, WHITE);
 	}
 }
@@ -331,6 +344,8 @@ void pong_thread(void* par) {
 	// render loop
 	while (1) {
 		osDelay(4);
+
+		// HAL_Delay(100);
 
 		if (gpio_read(RBTN_UP)) {
 			move_paddle(0);

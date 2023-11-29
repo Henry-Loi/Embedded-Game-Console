@@ -106,6 +106,6 @@ void tetris_thread(void* par) {
 			}
 		}
 		tft_update();
-		move_piece_down(0, x; GRAY, 4)
+		move_piece_down(0, x, GRAY, 4);
 	}
 }
