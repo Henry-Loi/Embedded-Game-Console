@@ -14,6 +14,8 @@ static void set_value(void* bar, int32_t v) { lv_bar_set_value(bar, v, LV_ANIM_O
 
 void clear_bar() { lv_obj_del(bar); }
 
+void lv_init_icon(lv_anim_t* a) {}
+
 void lv_boot_animation(void (*end_cb)(lv_anim_t*), uint32_t boot_time) {
 	static lv_style_t style_logo;
 	static lv_style_t style_bar_bg;

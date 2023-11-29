@@ -28,5 +28,5 @@
 	(4 + (ICON_SIZE * ICON_ROW_COUNT) \
 	 + (ICON_ROW_SPACE * (ICON_ROW_COUNT - 1))) //((LV_VER_RES - ICON_PAD_TOP  - ICON_PAD_BOTTOM))       // 行间距
 
-void lv_init_icon(void);
+void lv_init_icon(lv_anim_t*);
 void lv_boot_animation(void (*end_cb)(lv_anim_t*), uint32_t boot_time);
