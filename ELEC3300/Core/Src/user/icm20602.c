@@ -277,7 +277,7 @@ void imu_thread(void* par) {
 
 		test = 0;
 		for (int i = 0; i < 3; i++) {
-			if (ABS(imu_data.gyro[i] - imu_data.gyro_last[i]) > 100) {
+			if (ABS(imu_data.gyro[i] - imu_data.gyro_last[i]) > 200) {
 				ctrller.inactive_count = get_ticks();
 				test = 1;
 			}

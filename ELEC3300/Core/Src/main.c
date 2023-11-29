@@ -28,6 +28,7 @@
 #include "ltdc.h"
 #include "sdio.h"
 #include "spi.h"
+#include "tim.h"
 #include "usart.h"
 
 #include "cmsis_os.h"
@@ -117,6 +118,7 @@ int main(void) {
 	MX_FATFS_Init();
 	MX_USART1_UART_Init();
 	MX_SPI2_Init();
+	MX_TIM3_Init();
 	/* USER CODE BEGIN 2 */
 
 	SDRAM_Init();

@@ -17,6 +17,7 @@
 
 #define USE_OWN_TFT				1
 #define DARKSCREEN_MODE_TIMEOUT (30 * 1000)
+#define GARYSCREEN_MODE_TIMEOUT (5 * 1000)
 
 // touch point testing code
 int touch_screen_test(int r) {
@@ -63,6 +64,8 @@ void lcd_thread(void* par) {
 
 		if (get_ticks() - ctrller.inactive_count > DARKSCREEN_MODE_TIMEOUT) {
 			tft_backlight_control(0);
+		} else if (get_ticks() - ctrller.inactive_count > GARYSCREEN_MODE_TIMEOUT) {
+			tft_backlight_control(120);
 		} else {
 			tft_backlight_control(255);
 		}
