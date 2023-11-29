@@ -56,4 +56,6 @@ void tft_prints(uint8_t x, uint8_t y, const char* fmt, ...);
 
 void tft_update();
 
+void tft_set_text_color(Color_t color);
+
 #endif /* _LCD_H_ */
