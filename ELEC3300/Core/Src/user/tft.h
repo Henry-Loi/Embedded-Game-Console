@@ -3,7 +3,7 @@
 #include "sd_diskio.h"
 #include "tft.h"
 
-#define USE_LVGL_DISPLAY 1
+// #define USE_LVGL_DISPLAY 0
 
 #define TFT_PAGE_TABLE(X) \
 	X(Pong_Page)          \

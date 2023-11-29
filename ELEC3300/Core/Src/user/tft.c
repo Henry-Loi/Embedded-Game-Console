@@ -24,7 +24,7 @@ void lcd_thread(void* par) {
 	QueueHandle_t MutexSemaphore = xSemaphoreCreateMutex();
 
 	// power saving mode
-	// tft_inactive_handler();
+	tft_inactive_handler();
 
 #ifdef USE_LVGL_DISPLAY
 	// lvgl init function calls
@@ -58,6 +58,15 @@ void lcd_thread(void* par) {
 				xSemaphoreTake(MutexSemaphore, portMAX_DELAY);
 				lv_task_handler();
 				xSemaphoreGive(MutexSemaphore);
+#else
+				tft_set_text_color(BLACK);
+				tft_prints(LCD_MAX_CHAR_WIDTH / 2 - 4, r++, "Main Page");
+				tft_prints(12, LCD_MAX_CHAR_HEIGHT / 2, "%s", tft_page_names[Pong_Page]);
+				tft_prints(LCD_MAX_CHAR_WIDTH / 2 - 5, LCD_MAX_CHAR_HEIGHT / 2, "%s", tft_page_names[Tetris_Page]);
+				tft_prints(LCD_MAX_CHAR_WIDTH / 2 + 10, LCD_MAX_CHAR_HEIGHT / 2, "%s", tft_page_names[Asteroids_Page]);
+
+				tft_prints(18, LCD_MAX_CHAR_HEIGHT / 2 + 10, "<         Brightness         >");
+
 #endif
 				break;
 			case Debug_Page:
