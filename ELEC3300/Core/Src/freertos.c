@@ -32,7 +32,7 @@
 #include "controller.h"
 #include "games/asteroids/asteroids_thread.h"
 #include "games/pong/pong.h"
-#include "games/tetris/tetris.h"
+#include "games/tetris/screen.h"
 #include "gpio.h"
 #include "icm20602.h"
 #include "lv_hal_tick.h"
@@ -157,10 +157,10 @@ void MX_FREERTOS_Init(void) {
 	// CREATE_THREAD(lcd_task, lcd_thread, NULL);
 	// CREATE_THREAD(debug_task, debug_thread, NULL);
 	CREATE_THREAD(controller_task, controller_thread, NULL);
-	CREATE_THREAD(imu_task, imu_thread, NULL);
+	// CREATE_THREAD(imu_task, imu_thread, NULL);
 	// CREATE_THREAD(asteroids_task, asteroids_thread, NULL);
-	// CREATE_THREAD(tetris_task, tetris_thread, NULL);
-	CREATE_THREAD(pong_task, pong_thread, NULL);
+	CREATE_THREAD(tetris_task, tetris_thread, NULL);
+	// CREATE_THREAD(pong_task, pong_thread, NULL);
 
 	/* USER CODE END RTOS_THREADS */
 
