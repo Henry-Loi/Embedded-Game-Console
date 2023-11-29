@@ -73,7 +73,6 @@ static void print_score(void) {
 
 	tft_prints(45, 0, "LEVEL: %d                      ", level);
 	tft_prints(45, 1, "SCORE: %d                      ", tetris_score);
-	tft_prints(45, 2, "HIGH SCORE: %d                 ", tetris_high_score);
 
 	get_next_piece(next);
 }
