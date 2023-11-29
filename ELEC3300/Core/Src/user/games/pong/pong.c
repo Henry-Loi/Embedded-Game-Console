@@ -1,6 +1,7 @@
 #include "pong.h"
 
 #include "board.h"
+#include "controller.h"
 #include "delay.h"
 #include "lcd.h"
 #include "main.h"
@@ -10,7 +11,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <time.h>
 
 #define SCREEN_WIDTH  LCD_WIDTH	 // window height
 #define SCREEN_HEIGHT LCD_HEIGHT // window width
@@ -39,7 +40,7 @@ int width, height; // used if fullscreen
 // inisilise starting position and sizes of game elemements
 static void init_game() {
 	ball.x = SCREEN_WIDTH / 2;
-	ball.y = SCREEN_HEIGHT / 2;
+	ball.y = rand() % SCREEN_HEIGHT;
 	ball.w = 10;
 	ball.h = 10;
 	ball.dy = 1;
@@ -62,7 +63,7 @@ int check_score() {
 	// loop through player scores
 	for (i = 0; i < 2; i++) {
 		// check if score is @ the score win limit
-		if (score[i] == 10) {
+		if (score[i] == WINING_SCORE) {
 			// reset scores
 			score[0] = 0;
 			score[1] = 0;
@@ -216,8 +217,8 @@ static void move_ball() {
 				// ball moving left
 			} else {
 				// teleport ball to avoid mutli collision glitch
-				if (ball.x > 600) {
-					ball.x = 600;
+				if (ball.x > LCD_WIDTH - 30) {
+					ball.x = LCD_WIDTH;
 				}
 			}
 		}
@@ -334,7 +335,8 @@ static void move_paddle2(int d) {
 }
 
 static void draw_game_over(int p) {
-	tft_prints(LCD_MAX_CHAR_WIDTH / 2 - 20, LCD_MAX_CHAR_HEIGHT / 2, "Game Over (Click Right Right Key to restart)");
+	tft_prints(LCD_MAX_CHAR_WIDTH / 2 - 20, LCD_MAX_CHAR_HEIGHT / 2 - 1,
+			   "Game Over (Click Right Right Key to restart)");
 }
 
 static void draw_menu() {
@@ -348,15 +350,16 @@ static void draw_net() { tft_draw_line(SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2, SC
 
 static void draw_ball() {
 	tft_fill_rect(ball.last_x, ball.last_y, ball.last_x + ball.w, ball.last_y + ball.h, BLACK);
-	tft_fill_rect(ball.x, ball.y, ball.x + ball.w, ball.y + ball.h, WHITE);
+	tft_fill_rect(ball.x, ball.y, ball.x + ball.w, ball.y + ball.h, YELLOW);
 }
 
 static void draw_paddle() {
 	for (int i = 0; i < 2; i++) {
 		tft_fill_rect(paddle[i].last_x, paddle[i].last_y, paddle[i].last_x + paddle[i].w,
 					  paddle[i].last_y + paddle[i].h, BLACK);
-		tft_fill_rect(paddle[i].x, paddle[i].y, paddle[i].x + paddle[i].w, paddle[i].y + paddle[i].h, WHITE);
 	}
+	tft_fill_rect(paddle[0].x, paddle[0].y, paddle[0].x + paddle[0].w, paddle[0].y + paddle[0].h, RED);
+	tft_fill_rect(paddle[1].x, paddle[1].y, paddle[1].x + paddle[1].w, paddle[1].y + paddle[1].h, BLUE);
 }
 
 static void draw_player_0_score() { tft_prints(12, 1, "%d", score[0]); }
@@ -370,9 +373,11 @@ void pong_thread(void* par) {
 	int state = 0;
 	int r = 0;
 	uint32_t last_game_tick = get_ticks();
+	srand(time(NULL));
 
 	// Initialize the ball position data.
 	init_game();
+	uint8_t in_game_once_flag = 0;
 
 	tft_set_text_color(WHITE);
 
@@ -382,20 +387,20 @@ void pong_thread(void* par) {
 
 		// HAL_Delay(100);
 
-		if (gpio_read(RBTN_UP)) {
+		if (gpio_read(RBTN_UP) || ctrller.joystick[R_JOY_Y] < 0) {
 			move_paddle(0);
 		}
 
-		if (gpio_read(RBTN_DOWN)) {
+		if (gpio_read(RBTN_DOWN) || ctrller.joystick[R_JOY_Y] > 0) {
 			move_paddle(1);
 		}
 
 		if (!is_single_player) {
-			if (gpio_read(LBTN_UP)) {
+			if (gpio_read(LBTN_UP) || ctrller.joystick[L_JOY_Y] < -0.1f) {
 				move_paddle2(0);
 			}
 
-			if (gpio_read(LBTN_DOWN)) {
+			if (gpio_read(LBTN_DOWN) || ctrller.joystick[L_JOY_Y] > 0.1f) {
 				move_paddle2(1);
 			}
 		}
@@ -403,6 +408,10 @@ void pong_thread(void* par) {
 
 		// display main menu
 		if (state == 0) {
+			if (in_game_once_flag == 0) {
+				tft_clear(BLACK);
+				in_game_once_flag = 1;
+			}
 			if (!gpio_read(RBTN_RIGHT) || !gpio_read(RBTN_LEFT)) {
 				if (!gpio_read(RBTN_RIGHT)) {
 					is_single_player = 0;
@@ -410,8 +419,8 @@ void pong_thread(void* par) {
 					is_single_player = 1;
 				}
 				state = 1;
+				in_game_once_flag = 0;
 				tft_prints(LCD_MAX_CHAR_WIDTH / 2 - 6, 1, "%d          %d", score[0], score[1]);
-				tft_clear(BLACK);
 			} else {
 				// draw menu
 				draw_menu();
@@ -426,6 +435,8 @@ void pong_thread(void* par) {
 					is_single_player = 1;
 				}
 				state = 0;
+				tft_clear(BLACK);
+				in_game_once_flag = 0;
 				// delay for a little bit so the space bar press dosnt get triggered twice
 				// while the main menu is showing
 				delay(500);
@@ -442,6 +453,10 @@ void pong_thread(void* par) {
 
 			// display the game
 		} else if (state == 1) {
+			if (in_game_once_flag == 0) {
+				tft_clear(BLACK);
+				in_game_once_flag = 1;
+			}
 			// check score
 			r = check_score();
 
@@ -469,12 +484,6 @@ void pong_thread(void* par) {
 
 			//* Put the ball on the screen.
 			draw_ball();
-
-			// draw the score
-			// draw_player_0_score();
-
-			// draw the score
-			// draw_player_1_score();
 		}
 
 		tft_update();
