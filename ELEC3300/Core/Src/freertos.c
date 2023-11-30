@@ -59,12 +59,12 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 DEFINE_THREAD_ATTR(led_task, osPriorityNormal);
-DEFINE_THREAD_ATTR_SIZED(lcd_task, 4096 * 2, osPriorityAboveNormal);
+DEFINE_THREAD_ATTR_SIZED(lcd_task, 4096, osPriorityAboveNormal);
 DEFINE_THREAD_ATTR(debug_task, 2);
 DEFINE_THREAD_ATTR(controller_task, osPriorityAboveNormal);
 DEFINE_THREAD_ATTR(imu_task, osPriorityAboveNormal);
-DEFINE_THREAD_ATTR_SIZED(asteroids_task, 4096 * 2, osPriorityRealtime);
-DEFINE_THREAD_ATTR_SIZED(tetris_task, 4096, osPriorityRealtime2);
+DEFINE_THREAD_ATTR_SIZED(asteroids_task, 4096, osPriorityRealtime);
+DEFINE_THREAD_ATTR_SIZED(tetris_task, 1024, osPriorityRealtime2);
 DEFINE_THREAD_ATTR_SIZED(pong_task, 1024, osPriorityRealtime3);
 
 /* USER CODE END Variables */
@@ -158,7 +158,7 @@ void MX_FREERTOS_Init(void) {
 	// CREATE_THREAD(debug_task, debug_thread, NULL);
 	CREATE_THREAD(controller_task, controller_thread, NULL);
 	// CREATE_THREAD(imu_task, imu_thread, NULL);
-	// CREATE_THREAD(asteroids_task, asteroids_thread, NULL);
+	CREATE_THREAD(asteroids_task, asteroids_thread, NULL);
 	CREATE_THREAD(tetris_task, tetris_thread, NULL);
 	CREATE_THREAD(pong_task, pong_thread, NULL);
 

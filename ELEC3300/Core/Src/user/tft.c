@@ -95,8 +95,16 @@ void lcd_thread(void* par) {
 									 .label = "TETRIS",
 									 .border_color = GRAY};
 
+			TouchBtn_t asteroids_btn = {.x = 25 * LCD_CHAR_SPACING_WIDTH,
+										.y = 16 * LCD_CHAR_SPACING_HEIGHT,
+										.x_len = 140,
+										.y_len = 30,
+										.label = "ASTEROIDS",
+										.border_color = GRAY};
+
 			render_button(tetris_btn);
 			render_button(pong_btn);
+			render_button(asteroids_btn);
 			if (detect_button_press(tetris_btn)) {
 				tft_clear(WHITE);
 				curr_page = TETRIS_PAGE;
@@ -105,6 +113,11 @@ void lcd_thread(void* par) {
 			if (detect_button_press(pong_btn)) {
 				tft_clear(BLACK);
 				curr_page = PONG_PAGE;
+			}
+
+			if (detect_button_press(asteroids_btn)) {
+				tft_clear(BLACK);
+				curr_page = ASTEROIDS_PAGE;
 			}
 		}
 
