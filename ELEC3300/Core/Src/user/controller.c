@@ -34,6 +34,8 @@ void button_update(void) {
 		ctrller.joystick[i] = ((float)ctrller.joy_val[i] - ctrller.joy_offset[i]) * ctrller.joy_scale[i];
 		if (fabs(ctrller.joystick[i]) < 0.05) {
 			ctrller.joystick[i] = 0.0f;
+		} else {
+			ctrller.inactive_count = get_ticks();
 		}
 	}
 

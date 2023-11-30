@@ -116,14 +116,14 @@ void lcd_thread(void* par) {
 											 .x_len = 50,
 											 .y_len = 30,
 											 .label = "inc_brightness",
-											 .border_color = RED};
+											 .border_color = WHITE};
 
 			TouchBtn_t inc_brightness_btn = {.x = 40 * LCD_CHAR_SPACING_WIDTH,
 											 .y = 23 * LCD_CHAR_SPACING_HEIGHT,
 											 .x_len = 50,
 											 .y_len = 30,
 											 .label = "dec_brightness",
-											 .border_color = RED};
+											 .border_color = WHITE};
 
 
 			render_button(tetris_btn);
