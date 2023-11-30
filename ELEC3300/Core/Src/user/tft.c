@@ -20,6 +20,7 @@
 
 #define USE_OWN_TFT				1
 #define DARKSCREEN_MODE_TIMEOUT (30 * 1000)
+#define GRAYSCREEN_MODE_TIMEOUT (5 * 1000)
 
 // touch point testing code
 int touch_screen_test(int r) {
@@ -37,7 +38,7 @@ int touch_screen_test(int r) {
 DSTATUS SD_status(BYTE);
 
 Page_t curr_page = HOME_PAGE;
-
+int brightness = 255;
 void lcd_thread(void* par) {
 	// lcd init
 	// lcd_init();
@@ -68,10 +69,18 @@ void lcd_thread(void* par) {
 	while (1) {
 		osDelay(4);
 
+		/* 		if (get_ticks() - ctrller.inactive_count > DARKSCREEN_MODE_TIMEOUT) {
+					tft_backlight_control(0);
+				} else {
+					tft_backlight_control(255);
+				}
+		 */
 		if (get_ticks() - ctrller.inactive_count > DARKSCREEN_MODE_TIMEOUT) {
 			tft_backlight_control(0);
+		} else if (get_ticks() - ctrller.inactive_count > GRAYSCREEN_MODE_TIMEOUT) {
+			tft_backlight_control(120);
 		} else {
-			tft_backlight_control(255);
+			tft_backlight_control(brightness);
 		}
 
 
@@ -86,25 +95,42 @@ void lcd_thread(void* par) {
 								   .x_len = 140,
 								   .y_len = 30,
 								   .label = "PONG",
-								   .border_color = GRAY};
+								   .border_color = WHITE};
 
 			TouchBtn_t tetris_btn = {.x = 25 * LCD_CHAR_SPACING_WIDTH,
 									 .y = 12 * LCD_CHAR_SPACING_HEIGHT,
 									 .x_len = 140,
 									 .y_len = 30,
 									 .label = "TETRIS",
-									 .border_color = GRAY};
+									 .border_color = WHITE};
 
 			TouchBtn_t asteroids_btn = {.x = 25 * LCD_CHAR_SPACING_WIDTH,
 										.y = 16 * LCD_CHAR_SPACING_HEIGHT,
-										.x_len = 140,
+										.x_len = 170,
 										.y_len = 30,
 										.label = "ASTEROIDS",
-										.border_color = GRAY};
+										.border_color = WHITE};
+
+			TouchBtn_t dec_brightness_btn = {.x = 19 * LCD_CHAR_SPACING_WIDTH,
+											 .y = 23 * LCD_CHAR_SPACING_HEIGHT,
+											 .x_len = 50,
+											 .y_len = 30,
+											 .label = "inc_brightness",
+											 .border_color = RED};
+
+			TouchBtn_t inc_brightness_btn = {.x = 40 * LCD_CHAR_SPACING_WIDTH,
+											 .y = 23 * LCD_CHAR_SPACING_HEIGHT,
+											 .x_len = 50,
+											 .y_len = 30,
+											 .label = "dec_brightness",
+											 .border_color = RED};
+
 
 			render_button(tetris_btn);
 			render_button(pong_btn);
 			render_button(asteroids_btn);
+			render_button(inc_brightness_btn);
+			render_button(dec_brightness_btn);
 			if (detect_button_press(tetris_btn)) {
 				tft_clear(WHITE);
 				curr_page = TETRIS_PAGE;
@@ -118,6 +144,18 @@ void lcd_thread(void* par) {
 			if (detect_button_press(asteroids_btn)) {
 				tft_clear(BLACK);
 				curr_page = ASTEROIDS_PAGE;
+			}
+			if (detect_button_press(inc_brightness_btn)) {
+				brightness += 1;
+				if (brightness >= 255) {
+					brightness = 255;
+				}
+			}
+			if (detect_button_press(dec_brightness_btn)) {
+				brightness -= 1;
+				if (brightness <= 0) {
+					brightness = 0;
+				}
 			}
 		}
 

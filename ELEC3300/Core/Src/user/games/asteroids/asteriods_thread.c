@@ -52,6 +52,8 @@ void asteroids_thread(void* par) {
 	// SDL_Event event;
 	uint32_t next_game_tick = get_ticks();
 
+	bool ast_do_once = true;
+	bool ast_do_once_2 = true;
 	uint32_t last_ticks = 0;
 	// render loop
 	while (quit == 0) {
@@ -63,6 +65,12 @@ void asteroids_thread(void* par) {
 			continue;
 		}
 
+		if (ast_do_once) {
+			tft_clear(BLACK);
+			tft_clear_buf();
+			tft_update();
+			ast_do_once = false;
+		}
 		p.velocity = (Vec2){.x = ctrller.joystick[L_JOY_X], .y = -ctrller.joystick[L_JOY_Y]};
 		rotate_player(&p, ctrller.joystick[R_JOY_X]);
 		if (ctrller.button[L_BTN_UP]) {
@@ -82,6 +90,8 @@ void asteroids_thread(void* par) {
 		if (ctrller.button[R_BTN_RIGHT]) {
 			shoot_bullet(&p);
 		}
+
+
 		draw_player(&p);
 		// draw_player(&lives[0]);
 		// draw_player(&lives[1]);
@@ -91,6 +101,12 @@ void asteroids_thread(void* par) {
 		bounds_player(&p);
 		bounds_asteroids(asteroids, ASTEROIDS);
 
+		/* if (ast_do_once_2) {
+			// tft_clear(BLACK);
+			tft_clear_buf();
+			tft_update();
+			ast_do_once_2 = false;
+		} */
 		// int res = collision_asteroids(asteroids, ASTEROIDS, &p.location, p.hit_radius);
 
 		/* 		if (res != -1) {

@@ -3,6 +3,9 @@
 #include "dma2d.h"
 #include "lcd_font.h"
 #include "strhelper.h"
+#include "tim.h"
+
+#include "stm32f429xx.h"
 
 typedef struct {
 	uint8_t curr_buffer;
@@ -19,13 +22,14 @@ TFTBuffer_t tft_buffer = {.color_buffer = BLACK};
 #define COLOR_BUF tft_buffer.color_buffer
 #define FSIZE_BUF tft_buffer.fontsize_buffer
 
-void tft_backlight_control(uint8_t brightness) {
+/* void tft_backlight_control(uint8_t brightness) {
 	if (brightness) {
 		HAL_GPIO_WritePin(LCD_BL_GPIO_PORT, LCD_BL_GPIO_PIN, GPIO_PIN_SET);
 	} else {
 		HAL_GPIO_WritePin(LCD_BL_GPIO_PORT, LCD_BL_GPIO_PIN, GPIO_PIN_RESET);
 	}
-}
+} */
+void tft_backlight_control(uint8_t brightness) { TIM3->CCR2 = brightness; }
 
 void tft_clear(Color_t color) {
 #if USE_DMA2D_EN
@@ -49,6 +53,10 @@ void tft_clear_buf(uint8_t buf) {
 }
 
 void lcd_init() {
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
+	TIM3->ARR = 255;
+	TIM3->CCR2 = 255;
+
 	tft_clear(WHITE);
 	tft_clear_buf(0);
 	tft_clear_buf(1);
