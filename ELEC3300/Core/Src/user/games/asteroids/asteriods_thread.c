@@ -65,12 +65,6 @@ void asteroids_thread(void* par) {
 			continue;
 		}
 
-		if (ast_do_once) {
-			tft_clear(BLACK);
-			tft_clear_buf();
-			tft_update();
-			ast_do_once = false;
-		}
 		p.velocity = (Vec2){.x = ctrller.joystick[L_JOY_X], .y = -ctrller.joystick[L_JOY_Y]};
 		rotate_player(&p, ctrller.joystick[R_JOY_X]);
 		if (ctrller.button[L_BTN_UP]) {

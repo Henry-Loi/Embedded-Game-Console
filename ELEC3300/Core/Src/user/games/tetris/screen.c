@@ -88,9 +88,9 @@ void prompt_new_game(void) {
 	// wclear(score_win);
 	// wprintw(score_win, "Sorry, you lost :( score %d\n", score);
 	tft_prints(45, 3, "GAME OVER");
-	tft_prints(45, 4, "FINAL SCORE: %d", tetris_score);
-	tft_prints(45, 5, "PRESS ANY KEY TO");
-	tft_prints(45, 6, "CONTINUE");
+	// tft_prints(45, 4, "FINAL SCORE: %d", tetris_score);
+	// tft_prints(45, 5, "PRESS ANY KEY TO");
+	// tft_prints(45, 6, "CONTINUE");
 
 	for (int i = 0; i < MAX_NUM_OF_BTNS; i++) {
 		if (ctrller.button[i]) {

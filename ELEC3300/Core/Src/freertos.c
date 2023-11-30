@@ -71,7 +71,7 @@ DEFINE_THREAD(led_task, led_blinky);
 DEFINE_THREAD_SIZED(lcd_task, lcd_thread, 2048);
 DEFINE_THREAD(imu_task, imu_thread);
 DEFINE_THREAD(controller_task, controller_thread);
-DEFINE_THREAD_SIZED(tetris_task, tetris_thread, 2048);
+DEFINE_THREAD_SIZED(tetris_task, tetris_thread, 4096);
 DEFINE_THREAD_SIZED(pong_task, pong_thread, 2048);
 DEFINE_THREAD_SIZED(asteroids_task, asteroids_thread, 2048);
 /* USER CODE END Variables */

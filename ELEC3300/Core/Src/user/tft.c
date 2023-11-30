@@ -138,11 +138,17 @@ void lcd_thread(void* par) {
 
 			if (detect_button_press(pong_btn)) {
 				tft_clear(BLACK);
+
+				tft_clear_buf(0);
+				tft_clear_buf(1);
 				curr_page = PONG_PAGE;
 			}
 
 			if (detect_button_press(asteroids_btn)) {
 				tft_clear(BLACK);
+
+				tft_clear_buf(0);
+				tft_clear_buf(1);
 				curr_page = ASTEROIDS_PAGE;
 			}
 			if (detect_button_press(inc_brightness_btn)) {
