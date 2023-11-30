@@ -58,15 +58,22 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-DEFINE_THREAD_ATTR(led_task, osPriorityNormal);
-DEFINE_THREAD_ATTR_SIZED(lcd_task, 4096, osPriorityAboveNormal);
+/* DEFINE_THREAD_ATTR(led_task, osPriorityNormal);
+DEFINE_THREAD_ATTR_SIZED(lcd_task, 2048, osPriorityAboveNormal);
 DEFINE_THREAD_ATTR(debug_task, 2);
 DEFINE_THREAD_ATTR(controller_task, osPriorityAboveNormal);
 DEFINE_THREAD_ATTR(imu_task, osPriorityAboveNormal);
 DEFINE_THREAD_ATTR_SIZED(asteroids_task, 4096, osPriorityRealtime);
-DEFINE_THREAD_ATTR_SIZED(tetris_task, 1024, osPriorityRealtime2);
+DEFINE_THREAD_ATTR_SIZED(tetris_task, 4086, osPriorityRealtime2);
 DEFINE_THREAD_ATTR_SIZED(pong_task, 1024, osPriorityRealtime3);
-
+ */
+DEFINE_THREAD(led_task, led_blinky);
+DEFINE_THREAD_SIZED(lcd_task, lcd_thread, 2048);
+DEFINE_THREAD(imu_task, imu_thread);
+DEFINE_THREAD(controller_task, controller_thread);
+DEFINE_THREAD_SIZED(tetris_task, tetris_thread, 2048);
+DEFINE_THREAD_SIZED(pong_task, pong_thread, 2048);
+DEFINE_THREAD_SIZED(asteroids_task, asteroids_thread, 2048);
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -153,14 +160,22 @@ void MX_FREERTOS_Init(void) {
 
 	/* USER CODE BEGIN RTOS_THREADS */
 	/* add threads, ... */
-	CREATE_THREAD(led_task, led_blinky, NULL);
-	CREATE_THREAD(lcd_task, lcd_thread, NULL);
+	// CREATE_THREAD(led_task, led_blinky, NULL);
+	// CREATE_THREAD(lcd_task, lcd_thread, NULL);
 	// CREATE_THREAD(debug_task, debug_thread, NULL);
-	CREATE_THREAD(controller_task, controller_thread, NULL);
+	// CREATE_THREAD(controller_task, controller_thread, NULL);
 	// CREATE_THREAD(imu_task, imu_thread, NULL);
-	CREATE_THREAD(asteroids_task, asteroids_thread, NULL);
-	CREATE_THREAD(tetris_task, tetris_thread, NULL);
-	CREATE_THREAD(pong_task, pong_thread, NULL);
+	// CREATE_THREAD(asteroids_task, asteroids_thread, NULL);
+	// CREATE_THREAD(tetris_task, tetris_thread, NULL);
+	// CREATE_THREAD(pong_task, pong_thread, NULL);
+	os_create_thread(led_task, NULL, 1);
+	os_create_thread(lcd_task, NULL, 3);
+	os_create_thread(imu_task, NULL, 3);
+	os_create_thread(controller_task, NULL, 3);
+	os_create_thread(tetris_task, NULL, 4);
+	os_create_thread(pong_task, NULL, 4);
+	os_create_thread(asteroids_task, NULL, 4);
+
 
 	/* USER CODE END RTOS_THREADS */
 

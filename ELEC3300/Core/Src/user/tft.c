@@ -19,7 +19,7 @@
 #include "ui/navbar.h"
 
 #define USE_OWN_TFT				1
-#define DARKSCREEN_MODE_TIMEOUT (30 * 1000)
+#define DARKSCREEN_MODE_TIMEOUT (15 * 1000)
 #define GRAYSCREEN_MODE_TIMEOUT (5 * 1000)
 
 // touch point testing code
