@@ -58,14 +58,14 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-DEFINE_THREAD_ATTR(led_task, 1);
-DEFINE_THREAD_ATTR_SIZED(lcd_task, 4096 * 2, 4);
+DEFINE_THREAD_ATTR(led_task, osPriorityNormal);
+DEFINE_THREAD_ATTR_SIZED(lcd_task, 4096 * 2, osPriorityAboveNormal);
 DEFINE_THREAD_ATTR(debug_task, 2);
-DEFINE_THREAD_ATTR(controller_task, 4);
-DEFINE_THREAD_ATTR(imu_task, 3);
-DEFINE_THREAD_ATTR_SIZED(asteroids_task, 4096 * 2, 4);
-DEFINE_THREAD_ATTR_SIZED(tetris_task, 4096, 4);
-DEFINE_THREAD_ATTR_SIZED(pong_task, 4096, 4);
+DEFINE_THREAD_ATTR(controller_task, osPriorityAboveNormal);
+DEFINE_THREAD_ATTR(imu_task, osPriorityAboveNormal);
+DEFINE_THREAD_ATTR_SIZED(asteroids_task, 4096 * 2, osPriorityRealtime);
+DEFINE_THREAD_ATTR_SIZED(tetris_task, 4096, osPriorityRealtime2);
+DEFINE_THREAD_ATTR_SIZED(pong_task, 4096, osPriorityRealtime3);
 
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
@@ -102,7 +102,7 @@ void led_blinky(void* par) {
 			led_toggle(LED5);
 			led_toggle(LED6);
 			led_toggle(LED7);
-			led_toggle(LED8);
+			// led_toggle(LED8);
 			last_ticks = HAL_GetTick();
 		}
 	}
@@ -157,7 +157,7 @@ void MX_FREERTOS_Init(void) {
 	CREATE_THREAD(lcd_task, lcd_thread, NULL);
 	// CREATE_THREAD(debug_task, debug_thread, NULL);
 	CREATE_THREAD(controller_task, controller_thread, NULL);
-	CREATE_THREAD(imu_task, imu_thread, NULL);
+	// CREATE_THREAD(imu_task, imu_thread, NULL);
 	// CREATE_THREAD(asteroids_task, asteroids_thread, NULL);
 	CREATE_THREAD(tetris_task, tetris_thread, NULL);
 	// CREATE_THREAD(pong_task, pong_thread, NULL);

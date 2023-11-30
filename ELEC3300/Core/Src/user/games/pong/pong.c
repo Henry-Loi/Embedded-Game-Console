@@ -380,7 +380,6 @@ void pong_thread(void* par) {
 	init_game();
 	uint8_t in_game_once_flag = 0;
 
-	tft_set_text_color(WHITE);
 
 	// render loop
 	while (1) {
@@ -389,6 +388,9 @@ void pong_thread(void* par) {
 		if (curr_page != PONG_PAGE) {
 			continue;
 		}
+
+		tft_set_text_color(WHITE);
+		led_on(LED8);
 
 		// HAL_Delay(100);
 
@@ -491,6 +493,6 @@ void pong_thread(void* par) {
 			draw_ball();
 		}
 
-		// tft_update();
+		tft_update();
 	}
 }

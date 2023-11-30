@@ -40,7 +40,7 @@ Page_t curr_page = HOME_PAGE;
 
 void lcd_thread(void* par) {
 	// lcd init
-	lcd_init();
+	// lcd_init();
 	touch_init();
 
 	QueueHandle_t MutexSemaphore = xSemaphoreCreateMutex();
@@ -81,16 +81,30 @@ void lcd_thread(void* par) {
 			tft_prints(26, 16, "ASTEROIDS");
 			tft_prints(20, LCD_MAX_CHAR_HEIGHT - 1, "<     Brightness     >");
 
+			TouchBtn_t pong_btn = {.x = 25 * LCD_CHAR_SPACING_WIDTH,
+								   .y = 8 * LCD_CHAR_SPACING_HEIGHT,
+								   .x_len = 140,
+								   .y_len = 30,
+								   .label = "PONG",
+								   .border_color = GRAY};
+
 			TouchBtn_t tetris_btn = {.x = 25 * LCD_CHAR_SPACING_WIDTH,
 									 .y = 12 * LCD_CHAR_SPACING_HEIGHT,
 									 .x_len = 140,
 									 .y_len = 30,
 									 .label = "TETRIS",
 									 .border_color = GRAY};
+
 			render_button(tetris_btn);
+			render_button(pong_btn);
 			if (detect_button_press(tetris_btn)) {
 				tft_clear(WHITE);
 				curr_page = TETRIS_PAGE;
+			}
+
+			if (detect_button_press(pong_btn)) {
+				tft_clear(BLACK);
+				curr_page = PONG_PAGE;
 			}
 		}
 
