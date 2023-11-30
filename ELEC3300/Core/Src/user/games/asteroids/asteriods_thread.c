@@ -2,6 +2,7 @@
 #include "controller.h"
 #include "lcd.h"
 #include "player.h"
+#include "tft.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -44,7 +45,7 @@ void asteroids_thread(void* par) {
 	// set up Player_t and asteroids in world space
 	init_player(&p);
 	init_asteroids(asteroids, ASTEROIDS);
-	lcd_init();
+	// lcd_init();
 
 	int sleep = 0;
 	int quit = 0;
@@ -53,12 +54,14 @@ void asteroids_thread(void* par) {
 
 	uint32_t last_ticks = 0;
 	// render loop
-	tft_clear(BLACK);
 	while (quit == 0) {
 		osDelay(4);
 		// if (state[SDL_SCANCODE_ESCAPE]) {
 		// quit = 1;
 		// }
+		if (curr_page != ASTEROIDS_PAGE) {
+			continue;
+		}
 
 		p.velocity = (Vec2){.x = ctrller.joystick[L_JOY_X], .y = -ctrller.joystick[L_JOY_Y]};
 		rotate_player(&p, ctrller.joystick[R_JOY_X]);

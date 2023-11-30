@@ -22,6 +22,7 @@
 #include "lcd.h"
 #include "score.h"
 #include "tetris_game.h"
+#include "tft.h"
 #include "touch_btns.h"
 
 #include <stdbool.h>
@@ -133,7 +134,11 @@ void tetris_thread(void* par) {
 	while (1) {
 		osDelay(4);
 
-		tft_update();
+		if (curr_page != TETRIS_PAGE) {
+			continue;
+		}
+
+		// tft_update();
 		if (gameover) {
 			if (tetris_do_once) {
 				tetris_do_once = false;

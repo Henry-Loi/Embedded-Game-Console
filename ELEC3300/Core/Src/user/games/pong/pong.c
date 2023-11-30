@@ -5,6 +5,7 @@
 #include "delay.h"
 #include "lcd.h"
 #include "main.h"
+#include "tft.h"
 
 #include "cmsis_os2.h"
 #include "stm32f4xx_hal.h"
@@ -385,6 +386,10 @@ void pong_thread(void* par) {
 	while (1) {
 		osDelay(4);
 
+		if (curr_page != PONG_PAGE) {
+			continue;
+		}
+
 		// HAL_Delay(100);
 
 		if (gpio_read(RBTN_UP) || ctrller.joystick[R_JOY_Y] < 0) {
@@ -486,6 +491,6 @@ void pong_thread(void* par) {
 			draw_ball();
 		}
 
-		tft_update();
+		// tft_update();
 	}
 }

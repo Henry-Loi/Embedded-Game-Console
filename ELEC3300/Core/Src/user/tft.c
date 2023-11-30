@@ -1,3 +1,5 @@
+#include "tft.h"
+
 #include "board.h"
 #include "controller.h"
 #include "diskio.h"
@@ -34,6 +36,7 @@ int touch_screen_test(int r) {
 
 DSTATUS SD_status(BYTE);
 
+Page_t curr_page = HOME_PAGE;
 
 void lcd_thread(void* par) {
 	// lcd init
@@ -41,27 +44,27 @@ void lcd_thread(void* par) {
 	touch_init();
 
 	QueueHandle_t MutexSemaphore = xSemaphoreCreateMutex();
+	/*
+		if (!USE_OWN_TFT) {
+			// lvgl init function calls
+			lv_init();
+			lv_port_disp_init();
+			lv_port_indev_init();
 
-	if (!USE_OWN_TFT) {
-		// lvgl init function calls
-		lv_init();
-		lv_port_disp_init();  /* lvgl lcd display init */
-		lv_port_indev_init(); /* lvgl lcd touch screen init */
+			lv_boot_animation(lv_init_icon, 5000);
 
-		lv_boot_animation(lv_init_icon, 5000);
+			uint32_t last_ticks = get_ticks();
+			// hold everything else until bar renders
+			while (get_ticks() - last_ticks < 5000) {
+				xSemaphoreTake(MutexSemaphore, portMAX_DELAY);
+				lv_task_handler();
+				xSemaphoreGive(MutexSemaphore);
+			}
 
-		uint32_t last_ticks = get_ticks();
-		// hold everything else until bar renders
-		while (get_ticks() - last_ticks < 5000) {
-			xSemaphoreTake(MutexSemaphore, portMAX_DELAY);
-			lv_task_handler();
-			xSemaphoreGive(MutexSemaphore);
+			// actual stuff
+			render_navbar();
 		}
-
-		// actual stuff
-		render_navbar();
-	}
-
+	 */
 	while (1) {
 		osDelay(4);
 
@@ -71,30 +74,51 @@ void lcd_thread(void* par) {
 			tft_backlight_control(255);
 		}
 
-		if (!USE_OWN_TFT) {
+
+		if (curr_page == HOME_PAGE) {
+			tft_prints(26, 8, "PONG");
+			tft_prints(26, 12, "TETRIS");
+			tft_prints(26, 16, "ASTEROIDS");
+			tft_prints(20, LCD_MAX_CHAR_HEIGHT - 1, "<     Brightness     >");
+
+			TouchBtn_t tetris_btn = {.x = 25 * LCD_CHAR_SPACING_WIDTH,
+									 .y = 12 * LCD_CHAR_SPACING_HEIGHT,
+									 .x_len = 140,
+									 .y_len = 30,
+									 .label = "TETRIS",
+									 .border_color = GRAY};
+			render_button(tetris_btn);
+			if (detect_button_press(tetris_btn)) {
+				tft_clear(WHITE);
+				curr_page = TETRIS_PAGE;
+			}
+		}
+
+		/* if (!USE_OWN_TFT) {
 			// lv task handler
 			xSemaphoreTake(MutexSemaphore, portMAX_DELAY);
 			lv_task_handler();
 			xSemaphoreGive(MutexSemaphore);
-		} else {
-			// int r = 0;
-			// tft_prints(0, r++, "%02d:%02d.%02d", (int)get_ticks() / 60000, ((int)get_ticks() / 1000) % 60,
-			//    ((int)get_ticks() % 1000) / 10);
+		} else { */
+		// int r = 0;
+		// tft_prints(0, r++, "%02d:%02d.%02d", (int)get_ticks() / 60000, ((int)get_ticks() / 1000) % 60,
+		//    ((int)get_ticks() % 1000) / 10);
 
-			// r++;
-			// r = touch_screen_test(r);
-			// r++;
+		// r++;
+		// r = touch_screen_test(r);
+		// r++;
 
-			// r++;
-			// r = controller_tft(r);
-			// r++;
-			// r = imu_tft(r);
-			// r++;
-			// r = fatfs_tft(r);
+		// r++;
+		// r = controller_tft(r);
+		// r++;
+		// r = imu_tft(r);
+		// r++;
+		// r = fatfs_tft(r);
 
-			// tft_update();
-		}
+		// tft_update();
+		//}
 		touch_update();
+		tft_update();
 	}
 }
 /*  */
