@@ -368,7 +368,7 @@ static void draw_player_0_score() { tft_prints(12, 1, "%d", score[0]); }
 static void draw_player_1_score() { tft_prints(20, 1, "%d", score[1]); }
 
 void pong_thread(void* par) {
-	tft_clear(BLACK);
+	// tft_clear(BLACK);
 
 	uint8_t is_single_player = 1;
 	int state = 0;

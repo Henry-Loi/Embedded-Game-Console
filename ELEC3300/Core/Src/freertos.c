@@ -65,7 +65,7 @@ DEFINE_THREAD_ATTR(controller_task, osPriorityAboveNormal);
 DEFINE_THREAD_ATTR(imu_task, osPriorityAboveNormal);
 DEFINE_THREAD_ATTR_SIZED(asteroids_task, 4096 * 2, osPriorityRealtime);
 DEFINE_THREAD_ATTR_SIZED(tetris_task, 4096, osPriorityRealtime2);
-DEFINE_THREAD_ATTR_SIZED(pong_task, 4096, osPriorityRealtime3);
+DEFINE_THREAD_ATTR_SIZED(pong_task, 1024, osPriorityRealtime3);
 
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
@@ -160,7 +160,7 @@ void MX_FREERTOS_Init(void) {
 	// CREATE_THREAD(imu_task, imu_thread, NULL);
 	// CREATE_THREAD(asteroids_task, asteroids_thread, NULL);
 	CREATE_THREAD(tetris_task, tetris_thread, NULL);
-	// CREATE_THREAD(pong_task, pong_thread, NULL);
+	CREATE_THREAD(pong_task, pong_thread, NULL);
 
 	/* USER CODE END RTOS_THREADS */
 
