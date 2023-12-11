@@ -1,2 +1,0 @@
-../Core/Src/sdram.c:15:6:SDRAM_Init	8	static
-../Core/Src/sdram.c:28:6:SDRAM_Initialization_sequence	24	static
