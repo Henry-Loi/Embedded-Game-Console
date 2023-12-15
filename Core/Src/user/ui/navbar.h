@@ -1,6 +1,6 @@
-#ifndef NAVBAR_H
-#define NAVBAR_H
+// #ifndef NAVBAR_H
+// #define NAVBAR_H
 
-void render_navbar();
+// void render_navbar();
 
-#endif
+// #endif

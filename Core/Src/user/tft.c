@@ -9,14 +9,9 @@
 #include "fatfs_platform.h"
 #include "icm20602.h"
 #include "lcd.h"
-#include "lv_conf.h"
-#include "lv_demo_widgets.h"
-#include "lv_os.h"
 #include "main.h"
 #include "os.h"
 #include "sd_diskio.h"
-#include "ui/lv_boot_animation.h"
-#include "ui/navbar.h"
 
 #define USE_OWN_TFT				1
 #define DARKSCREEN_MODE_TIMEOUT (15 * 1000)

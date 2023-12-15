@@ -36,7 +36,6 @@
 #include "board.h"
 #include "gpio.h"
 #include "icm20602.h"
-#include "lvgl.h"
 #include "os.h"
 #include "sdram.h"
 #include "ui/lv_boot_animation.h"

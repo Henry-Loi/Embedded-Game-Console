@@ -35,7 +35,6 @@
 #include "games/tetris/screen.h"
 #include "gpio.h"
 #include "icm20602.h"
-#include "lv_hal_tick.h"
 #include "os.h"
 #include "serial.h"
 
